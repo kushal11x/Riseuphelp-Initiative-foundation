@@ -8,7 +8,7 @@ interface FooterProps {
   onOpenPolicy?: (tab: PolicyTab) => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenPolicy }) => {
+export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenPolicy }) => {
   const [localPolicyOpen, setLocalPolicyOpen] = useState(false);
   const [localPolicyTab, setLocalPolicyTab] = useState<PolicyTab>('privacy');
 
@@ -171,6 +171,15 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPolicy }) => {
             className="hover:text-white underline cursor-pointer"
           >
             Contact Us
+          </button>
+          <span>•</span>
+          <button
+            type="button"
+            onClick={onOpenAdmin}
+            className="hover:text-amber-300 text-emerald-300 underline cursor-pointer font-medium"
+            title="Foundation Trustee & Admin Portal"
+          >
+            Admin Portal
           </button>
         </div>
 
