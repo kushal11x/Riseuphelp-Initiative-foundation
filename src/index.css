@@ -1,0 +1,237 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('https://static.figma.com/font/GeistMono_wght__1') format('woff2');
+}
+
+@layer base {
+  html {
+    text-rendering: optimizeSpeed;
+  }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #1a1a1a;
+  }
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Official Liquid Glass CSS Matrix - GPU Accelerated Layer */
+.liquid-glass {
+  background: rgba(0, 0, 0, 0.4);
+  background-blend-mode: luminosity;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: none;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+
+.liquid-glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(180deg,
+    rgba(255,255,255,0.4) 0%,
+    rgba(255,255,255,0.1) 50%,
+    rgba(0,0,0,0.2) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.liquid-glass-white {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+  position: relative;
+  overflow: hidden;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+
+.liquid-glass-white::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(180deg,
+    rgba(255,255,255,0.9) 0%,
+    rgba(255,255,255,0.3) 50%,
+    rgba(229,231,235,0.6) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Custom Matte Canvas & Gradient Transitions */
+.matte-gradient-canvas {
+  background: radial-gradient(circle at 50% 0%, rgba(253, 184, 19, 0.09) 0%, rgba(255, 255, 255, 0) 55%),
+              linear-gradient(180deg, #ffffff 0%, #fffdf8 30%, #fef9ed 65%, #f7f3eb 100%);
+}
+
+/* =========================================================
+   HIGH-PERFORMANCE ULTRA-SMOOTH CSS BORDER STYLES
+   ========================================================= */
+.flow-light-border {
+  position: relative;
+  background: #ffffff;
+  border-radius: 1.5rem;
+  border: 1.5px solid rgba(8, 76, 54, 0.12);
+  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.flow-light-border:hover {
+  border-color: rgba(8, 76, 54, 0.4);
+  box-shadow: 0 16px 32px -8px rgba(8, 76, 54, 0.12), 0 0 0 1px rgba(253, 184, 19, 0.25);
+  transform: translateY(-2px);
+}
+
+.flow-card-glow {
+  position: relative;
+}
+
+/* Off-thread pure compositor sway animations for Hanging Paper Frames */
+@keyframes paper-sway-left {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(-1.2deg);
+  }
+  50% {
+    transform: translate3d(0, 0, 0) rotate(1.2deg);
+  }
+}
+
+@keyframes paper-sway-right {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(1.2deg);
+  }
+  50% {
+    transform: translate3d(0, 0, 0) rotate(-1.2deg);
+  }
+}
+
+.animate-paper-sway-left {
+  animation: paper-sway-left 6s ease-in-out infinite;
+  transform-origin: top center;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.animate-paper-sway-right {
+  animation: paper-sway-right 6s ease-in-out infinite 0.8s;
+  transform-origin: top center;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Dedicated High-Performance GPU Acceleration Classes */
+.gpu-layer {
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+}
+
+/* Smooth GPU Marquee Track Optimization */
+.animate-marquee,
+.animate-marquee-reverse {
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+}
+
+
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #c2c2c2;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #0e6245;
+}
+
+/* =========================================================
+   PIXEL-PERFECT 1-PAGE OFFICIAL 80G TAX RECEIPT PRINT CSS
+   ========================================================= */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm 15mm;
+  }
+  
+  html, body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    height: auto !important;
+    overflow: visible !important;
+    font-size: 11pt !important;
+  }
+
+  /* Hide the rest of the web application */
+  #hero,
+  nav,
+  footer,
+  .matte-gradient-canvas,
+  #sponsorship-grid,
+  video,
+  iframe {
+    display: none !important;
+  }
+
+  /* Isolate only the receipt card */
+  .receipt-print-wrapper {
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 20px !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 2px solid #084c36 !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
