@@ -220,17 +220,17 @@ export const EducationLivelihoodPage: React.FC<EducationLivelihoodPageProps> = (
           <div className="bg-white rounded-3xl overflow-hidden border border-neutral-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
             <div>
               {/* Real Image Header */}
-              <div className="relative h-44 w-full overflow-hidden bg-neutral-900">
+              <div className="relative h-48 w-full overflow-hidden bg-neutral-900">
                 <img
-                  src="/uploads/slum_teacher_whiteboard_class.jpg"
-                  alt="Slum Child Monthly Education & Nutrition"
+                  src="/uploads/slum_packed_thali_tiffin.jpg"
+                  alt="Slum Child Study & Wholesome Tiffin Meal"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute top-3 left-3 bg-blue-600 text-white font-mono font-bold text-[10px] uppercase px-2.5 py-0.5 rounded-full shadow-xs">
-                  Slum Education Cell
+                  Slum Education & Tiffin
                 </div>
-                <div className="absolute bottom-2 right-2 bg-neutral-950/85 backdrop-blur-xs text-white font-mono font-bold text-xs px-2 py-0.5 rounded-md border border-neutral-700">
-                  ₹350 / Month
+                <div className="absolute bottom-2 right-2 bg-neutral-950/85 backdrop-blur-xs text-white font-mono font-bold text-xs px-2.5 py-0.5 rounded-md border border-neutral-700">
+                  ₹75 / Tiffin Meal
                 </div>
               </div>
 
@@ -244,16 +244,16 @@ export const EducationLivelihoodPage: React.FC<EducationLivelihoodPageProps> = (
                   </h4>
                 </div>
                 <p className="text-xs text-neutral-600 mb-3 leading-relaxed">
-                  Daily after-school remedial coaching, NCERT textbooks, workbook practice, and wholesome evening tiffin meals for slum children in Jaipur.
+                  Daily remedial education coaching accompanied by a fresh, hygienic 5-compartment packed hot thali tiffin (poori/roti, seasonal sabzi, steamed rice, boondi raita, and sweet gulab jamun) for slum children in Jaipur.
                 </p>
                 <div className="bg-blue-50/80 rounded-xl p-2.5 text-[11px] text-blue-950 font-semibold border border-blue-200/70 mb-3">
                   <div className="flex justify-between">
-                    <span>1 Month Education & Tiffin:</span>
-                    <strong className="text-blue-900">₹350</strong>
+                    <span>1 Wholesome Tiffin Meal:</span>
+                    <strong className="text-blue-900 font-bold">₹75</strong>
                   </div>
                   <div className="flex justify-between mt-0.5 text-neutral-600">
-                    <span>3 Months Term Sponsorship:</span>
-                    <strong className="text-neutral-800">₹1,050</strong>
+                    <span>5 Tiffins Weekly Pack:</span>
+                    <strong className="text-neutral-800 font-bold">₹375</strong>
                   </div>
                 </div>
               </div>
@@ -261,16 +261,16 @@ export const EducationLivelihoodPage: React.FC<EducationLivelihoodPageProps> = (
 
             <div className="p-5 pt-0 space-y-2">
               <button
-                onClick={() => handleSponsorCustomInitiative('Slum Child 1-Month Education & Nutrition Sponsorship', 350, 'Monthly Study Share', 1)}
+                onClick={() => handleSponsorCustomInitiative('Slum Child Wholesome Study Tiffin (1 Meal)', 75, '1 Tiffin Meal', 1)}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-xs transition-colors cursor-pointer shadow-sm active:scale-95"
               >
-                Sponsor 1 Month (₹350)
+                Sponsor 1 Tiffin (₹75)
               </button>
               <button
-                onClick={() => handleSponsorCustomInitiative('Slum Child 3-Month Term Education Sponsorship', 1050, '3-Month Term Share', 3)}
+                onClick={() => handleSponsorCustomInitiative('Slum Children 5 Tiffins Weekly Pack', 375, '5 Tiffins Pack', 5)}
                 className="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold py-2 rounded-xl text-xs transition-colors cursor-pointer"
               >
-                Sponsor 3 Months (₹1,050)
+                Sponsor 5 Tiffins (₹375)
               </button>
             </div>
           </div>

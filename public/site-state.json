@@ -819,8 +819,9 @@
       "date": "09 Sep 2026",
       "isRecent": true,
       "createdAt": 1789295000000,
-      "image": "/uploads/slum_children_tiffin_distribution.jpg",
+      "image": "/uploads/slum_packed_thali_tiffin.jpg",
       "images": [
+        "/uploads/slum_packed_thali_tiffin.jpg",
         "/uploads/slum_children_tiffin_distribution.jpg",
         "/uploads/slum_volunteer_meal_handover.jpg",
         "/uploads/slum_tiffin_class_table.jpg",
@@ -833,9 +834,9 @@
         "/uploads/WhatsApp_Image_2026-09-10_at_1_1789323065227_e16bcece34.jpg"
       ],
       "stats": "120+ Fresh Tiffins & Mentorship Kits",
-      "summary": "Serving hot, healthy, and wholesome meal tiffins, fresh bananas, and stationery kits alongside foundational classroom education for underprivileged slum children in Jaipur.",
-      "fullStory": "On Wednesday, September 9, 2026, Rise Up Help Initiative Foundation organized its scheduled Class 6 Slum Education & Nutrition Drive in Jaipur. Dedicated volunteer mentors conducted classroom lessons on whiteboard while distributing freshly prepared nutritious meal tiffins, bananas, and academic stationery supplies to children from underprivileged slum communities. Proper nutrition combined with free education ensures every child has the strength, focus, and dignity to study and build a brighter future.",
-      "impactMetrics": "100% wholesome hot tiffin meals, fruits & stationery delivered directly into children's hands.",
+      "summary": "Serving fresh, hygienic 5-compartment packed hot thali tiffins (₹75/meal) with poori, seasonal sabzi, steamed rice, raita, and sweet alongside foundational coaching for slum children in Jaipur.",
+      "fullStory": "On Wednesday, September 9, 2026, Rise Up Help Initiative Foundation organized its scheduled Class 6 Slum Education & Nutrition Drive in Jaipur. Dedicated volunteer mentors conducted classroom lessons on whiteboard while distributing freshly prepared nutritious 5-compartment meal tiffins (₹75 per thali meal with poori, sabzi, steamed rice, boondi raita and sweet gulab jamun), bananas, and academic stationery supplies to children from underprivileged slum communities. Proper nutrition combined with free education ensures every child has the strength, focus, and dignity to study and build a brighter future.",
+      "impactMetrics": "100% wholesome hot 5-compartment tiffin meals (₹75/tiffin) & stationery delivered directly into children's hands.",
       "driveReferenceId": "school-bags"
     }
   ],
