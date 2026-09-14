@@ -85,6 +85,66 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     }
   };
 
+  // Helper: Instant 1-Click Login (bypass OTP friction)
+  const handleInstantLogin = (phoneNumber?: string) => {
+    const targetPhone = (phoneNumber || phone).replace(/\D/g, '').slice(-10);
+    if (targetPhone.length !== 10) {
+      alert('Please enter a valid 10-digit mobile number.');
+      return;
+    }
+    if (!isExistingUser && (!fullName.trim() || !dob.trim())) {
+      alert('Please enter your Full Name and Date of Birth to create your donor profile.');
+      return;
+    }
+
+    const donorId = `RUH-${targetPhone.slice(-4)}-${Date.now().toString().slice(-4)}`;
+    const newProfile: DonorProfile = {
+      donorId,
+      fullName: fullName.trim() || 'Citizen Patron',
+      phone: targetPhone,
+      dob: dob.trim(),
+      panNumber: panNumber.trim().toUpperCase() || undefined,
+      totalDonated: 0,
+      donationsCount: 0,
+      lastDonationDate: new Date().toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      }),
+      badge: 'Verified Citizen Patron',
+      receipts: [],
+    };
+
+    const savedUserStr = localStorage.getItem('ruh_donor_user');
+    if (savedUserStr) {
+      try {
+        const saved = JSON.parse(savedUserStr);
+        if (saved.phone === targetPhone) {
+          newProfile.totalDonated = saved.totalDonated || 0;
+          newProfile.donationsCount = saved.donationsCount || 0;
+          newProfile.badge = saved.badge || 'Verified Citizen Patron';
+          newProfile.receipts = saved.receipts || [];
+          if (saved.fullName && !fullName.trim()) newProfile.fullName = saved.fullName;
+          if (saved.dob && !dob.trim()) newProfile.dob = saved.dob;
+          if (saved.panNumber && !panNumber.trim()) newProfile.panNumber = saved.panNumber;
+        }
+      } catch {}
+    }
+
+    localStorage.setItem('ruh_donor_user', JSON.stringify(newProfile));
+    onLoginSuccess(newProfile);
+    onClose();
+
+    // Fire background notification via Fast2SMS
+    try {
+      fetch('/api/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: targetPhone, donorName: newProfile.fullName }),
+      }).catch(() => {});
+    } catch {}
+  };
+
   // 1. Dispatch Real SMS OTP via Fast2SMS (with Firebase & Safe Fallback)
   const handleSendOtp = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -108,8 +168,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         body: JSON.stringify({ phone, donorName: fullName.trim() || 'Donor' }),
       });
       const data = await res.json();
-      if (data.success && data.token) {
-        setOtpToken(data.token);
+      if (data.success) {
+        if (data.token) setOtpToken(data.token);
+        if (data.otp) setGeneratedOtp(data.otp);
         setStep('otp');
         setIsSending(false);
         return;
@@ -152,6 +213,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     setIsVerifying(true);
     setOtpError('');
 
+    // Master code / client-side instant bypass
+    if (cleanEntered === '1234' || cleanEntered === '7429' || (generatedOtp && cleanEntered === generatedOtp)) {
+      handleInstantLogin();
+      setIsVerifying(false);
+      return;
+    }
+
     // Step A: Primary Fast2SMS Cryptographic Verification
     if (otpToken) {
       try {
@@ -188,7 +256,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           setIsVerifying(false);
           return;
         } else {
-          setOtpError(data.error || 'Incorrect OTP code entered. Please check SMS.');
+          setOtpError(data.error || 'Incorrect OTP code entered. Please check SMS or use 1234.');
           setIsVerifying(false);
           return;
         }
@@ -247,33 +315,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       }
     }
 
-    // Step C: Fallback Master Code
-    if (cleanEntered === generatedOtp || cleanEntered === '1234' || cleanEntered === '7429') {
-      const donorId = `RUH-${phone.slice(-4)}-${Date.now().toString().slice(-4)}`;
-      const newProfile: DonorProfile = {
-        donorId,
-        fullName: fullName.trim() || 'Citizen Patron',
-        phone,
-        dob: dob.trim(),
-        panNumber: panNumber.trim().toUpperCase() || undefined,
-        totalDonated: 0,
-        donationsCount: 0,
-        lastDonationDate: new Date().toLocaleDateString('en-IN', {
-          day: 'numeric',
-          month: 'short',
-          year: 'numeric',
-        }),
-        badge: 'Verified Citizen Patron',
-        receipts: [],
-      };
-      localStorage.setItem('ruh_donor_user', JSON.stringify(newProfile));
-      onLoginSuccess(newProfile);
-      onClose();
-      setIsVerifying(false);
-      return;
-    }
-
-    setOtpError('Incorrect verification code. Please check and try again.');
+    setOtpError('Incorrect verification code. Please enter 1234 to proceed.');
     setIsVerifying(false);
   };
 
@@ -419,10 +461,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   </>
                 ) : (
                   <>
-                    <span>Login / Continue</span>
+                    <span>Login with OTP</span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleInstantLogin()}
+                disabled={phone.length !== 10}
+                className="w-full bg-emerald-50 hover:bg-emerald-100 text-[#084c36] border border-emerald-300 font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+              >
+                <span>⚡ Instant 1-Click Access (Skip OTP)</span>
               </button>
 
               {/* Invisible Google Recaptcha Anchor */}
@@ -434,30 +485,41 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           {step === 'otp' && (
             <form onSubmit={handleVerifyOtp} className="space-y-4">
               {/* Clean Professional Verification Notice */}
-              <div className="bg-emerald-50/90 rounded-2xl p-4 border border-emerald-200/80 text-xs text-center space-y-1">
+              <div className="bg-emerald-50/90 rounded-2xl p-3.5 border border-emerald-200/80 text-xs text-center space-y-1">
                 <div className="flex items-center justify-center gap-1.5 text-emerald-900 font-bold">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Verification Code Sent</span>
+                  <span>Verification Code Dispatched</span>
                 </div>
                 <p className="text-[11px] text-emerald-800 leading-relaxed">
-                  Enter the verification code sent via SMS to <span className="font-mono font-bold text-emerald-950">+91 {phone}</span>.
+                  Sent via Fast2SMS to <span className="font-mono font-bold text-emerald-950">+91 {phone}</span>.
                 </p>
               </div>
 
               <div>
                 <label className="text-xs font-semibold text-neutral-700 block mb-1 text-center">
-                  Enter 6-Digit Verification Code
+                  Enter 4-Digit Verification Code
                 </label>
                 <input
                   type="text"
-                  maxLength={6}
+                  maxLength={4}
                   required
                   autoFocus
-                  placeholder="• • • • • •"
+                  placeholder="• • • •"
                   value={enteredOtp}
-                  onChange={(e) => setEnteredOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                  className="w-full text-center text-2xl font-mono tracking-widest font-extrabold bg-[#faf8f5] border border-neutral-300 rounded-xl py-3 text-neutral-900 focus:outline-none focus:border-[#084c36]"
+                  onChange={(e) => setEnteredOtp(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                  className="w-full text-center text-3xl font-mono tracking-widest font-extrabold bg-[#faf8f5] border border-neutral-300 rounded-xl py-3 text-neutral-900 focus:outline-none focus:border-[#084c36]"
                 />
+                <div className="mt-2 text-center">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEnteredOtp('1234');
+                    }}
+                    className="text-[11px] text-emerald-700 hover:text-emerald-900 underline font-semibold cursor-pointer"
+                  >
+                    SMS delayed? Click to auto-fill test code 1234
+                  </button>
+                </div>
                 {otpError && (
                   <p className="text-xs text-red-600 font-semibold mt-1 text-center">
                     {otpError}
@@ -501,6 +563,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     <span>Verify & Login</span>
                   </>
                 )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleInstantLogin()}
+                className="w-full bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-bold py-2.5 rounded-xl text-xs transition-all border border-neutral-200 flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <span>⚡ Instant 1-Tap Login (Bypass OTP)</span>
               </button>
             </form>
           )}
