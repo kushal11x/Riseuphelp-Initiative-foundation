@@ -121,49 +121,128 @@ export const PreloaderIntro: React.FC<PreloaderIntroProps> = ({
   }, []);
 
   useEffect(() => {
-    // Snappy, smooth cinematic counter (~850ms)
-    const startTime = performance.now();
-    const duration = 850;
+    let isCancelled = false;
+    let current = 0;
+    let target = 25;
+    let rafId: number;
 
-    const updateCounter = (currentTime: number) => {
-      const elapsed = currentTime - startTime;
-      const progressRatio = Math.min(elapsed / duration, 1);
+    const criticalAssets = [
+      '/logo.png',
+      '/lower-bg-poster.jpg',
+      '/uploads/upload_1788854883643_e4a411d682.jpg',
+      '/uploads/upload_1788854883651_f76b88b4fe.jpg',
+    ];
 
-      const easeOut = 1 - Math.pow(1 - progressRatio, 2.2);
-      const currentProgress = Math.min(100, Math.floor(easeOut * 100));
-      setProgress(currentProgress);
-
-      if (progressRatio < 1) {
-        requestAnimationFrame(updateCounter);
-      } else {
-        setProgress(100);
-        if (isInaugurationMode) {
-          // Pause and let user cut ribbon in celebration
-          setIsReadyForCeremony(true);
-        } else {
-          // Fast auto-unveil
-          setTimeout(() => {
-            setIsFinished(true);
-            setTimeout(onComplete, 300);
-          }, 150);
+    const preloadImage = (src: string) => {
+      return new Promise<void>((resolve) => {
+        const img = new Image();
+        img.src = src;
+        if (img.complete) {
+          if ('decode' in img) {
+            img.decode().then(resolve).catch(resolve);
+          } else {
+            resolve();
+          }
+          return;
         }
-      }
+        img.onload = () => {
+          if ('decode' in img) {
+            img.decode().then(resolve).catch(resolve);
+          } else {
+            resolve();
+          }
+        };
+        img.onerror = () => resolve();
+      });
     };
 
-    const rafId = requestAnimationFrame(updateCounter);
+    const runLoader = async () => {
+      // 1. Initial DOM & React mount stage
+      target = Math.max(target, 30);
 
-    // Guaranteed fallback timer (only if not waiting for user ribbon-cut)
-    const maxSafetyTimer = setTimeout(() => {
-      if (!isInaugurationMode) {
+      // 2. Wait for Google fonts to be ready
+      try {
+        if (document.fonts && document.fonts.ready) {
+          await document.fonts.ready;
+        }
+      } catch {
+        // Fallback gracefully
+      }
+      if (isCancelled) return;
+      target = Math.max(target, 55);
+
+      // 3. Preload and decode critical media
+      await Promise.all(criticalAssets.map(preloadImage));
+      if (isCancelled) return;
+      target = Math.max(target, 85);
+
+      // 4. Wait for full window load (document.readyState === 'complete')
+      if (document.readyState !== 'complete') {
+        await new Promise<void>((resolve) => {
+          const onComplete = () => {
+            window.removeEventListener('load', onComplete);
+            resolve();
+          };
+          window.addEventListener('load', onComplete);
+          // Safety timeout for window load event
+          setTimeout(resolve, 3500);
+        });
+      }
+      if (isCancelled) return;
+      target = 100;
+    };
+
+    // Smooth RAF ticker for buttery progress line interpolation
+    const tick = () => {
+      if (isCancelled) return;
+
+      const diff = target - current;
+      if (diff > 0) {
+        // Smooth asymptotic ease-out toward target
+        const step = Math.max(0.35, diff * 0.08);
+        current = Math.min(target, current + step);
+        setProgress(Math.floor(current));
+      }
+
+      if (current >= 100 && target >= 100) {
         setProgress(100);
+        if (isInaugurationMode) {
+          setIsReadyForCeremony(true);
+        } else {
+          // Allow 280ms buffer for browser paint/compositing settling
+          setTimeout(() => {
+            if (isCancelled) return;
+            setIsFinished(true);
+            setTimeout(onComplete, 400);
+          }, 280);
+        }
+        return;
+      }
+
+      rafId = requestAnimationFrame(tick);
+    };
+
+    rafId = requestAnimationFrame(tick);
+    runLoader();
+
+    // Absolute safety fallback (6.5s) to prevent permanent hang on blocked networks
+    const fallbackTimer = setTimeout(() => {
+      if (isCancelled) return;
+      target = 100;
+      current = 100;
+      setProgress(100);
+      if (isInaugurationMode) {
+        setIsReadyForCeremony(true);
+      } else {
         setIsFinished(true);
         onComplete();
       }
-    }, 1400);
+    }, 6500);
 
     return () => {
+      isCancelled = true;
       cancelAnimationFrame(rafId);
-      clearTimeout(maxSafetyTimer);
+      clearTimeout(fallbackTimer);
     };
   }, [isInaugurationMode, onComplete]);
 
