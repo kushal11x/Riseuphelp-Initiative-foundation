@@ -147,7 +147,13 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [receiptId, setReceiptId] = useState('');
   const [paymentId, setPaymentId] = useState('');
   const [donorId, setDonorId] = useState('');
-  const [razorpayKey, setRazorpayKey] = useState('');
+  const [razorpayKey, setRazorpayKey] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const local = localStorage.getItem('ruh_razorpay_key_id');
+      if (local && !local.includes('...')) return local.trim();
+    }
+    return RAZORPAY_KEY_ID || 'rzp_live_TboRoORVhvBH1g';
+  });
 
   const timerRef = useRef<any>(null);
 
@@ -164,25 +170,35 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     if (initialPhone) setDonorPhone(initialPhone);
   }, [initialPhone]);
 
-  // Fetch Razorpay key once if not present
+  // Keep Razorpay key synchronized with Admin Portal & localStorage
   useEffect(() => {
-    if (!razorpayKey && isOpen) {
+    const handleKeyUpdate = (e: any) => {
+      const newKey = e.detail?.razorpayKeyId;
+      if (newKey && !newKey.includes('...')) {
+        setRazorpayKey(newKey.trim());
+      }
+    };
+    window.addEventListener('ruh-keys-updated', handleKeyUpdate);
+
+    if (isOpen) {
+      const local = localStorage.getItem('ruh_razorpay_key_id');
+      if (local && !local.includes('...')) {
+        setRazorpayKey(local.trim());
+      }
+
       fetch('/api/automation-status')
         .then((r) => r.json())
         .then((d) => {
-          if (d.success && d.razorpayKeyId) {
+          if (d.success && d.razorpayKeyId && !d.razorpayKeyId.includes('...')) {
             setRazorpayKey(d.razorpayKeyId.trim());
-          } else {
-            const fallback = localStorage.getItem('ruh_razorpay_key_id') || RAZORPAY_KEY_ID || '';
-            if (fallback) setRazorpayKey(fallback.trim());
+            localStorage.setItem('ruh_razorpay_key_id', d.razorpayKeyId.trim());
           }
         })
-        .catch(() => {
-          const fallback = localStorage.getItem('ruh_razorpay_key_id') || RAZORPAY_KEY_ID || '';
-          if (fallback) setRazorpayKey(fallback.trim());
-        });
+        .catch(() => {});
     }
-  }, [isOpen, razorpayKey]);
+
+    return () => window.removeEventListener('ruh-keys-updated', handleKeyUpdate);
+  }, [isOpen]);
 
   // Handle 5-minute countdown during processing phase
   useEffect(() => {

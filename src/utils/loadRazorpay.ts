@@ -20,4 +20,6 @@ export const loadRazorpayScript = (): Promise<boolean> => {
 };
 
 export const RAZORPAY_KEY_ID =
-  (import.meta as any).env?.VITE_RAZORPAY_KEY_ID || 'rzp_test_TaHhRgayAmojCu';
+  (import.meta as any).env?.VITE_RAZORPAY_KEY_ID ||
+  (typeof window !== 'undefined' ? localStorage.getItem('ruh_razorpay_key_id') : '') ||
+  'rzp_live_TboRoORVhvBH1g';
