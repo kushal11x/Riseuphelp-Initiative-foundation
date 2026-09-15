@@ -110,8 +110,8 @@ export const Hero: React.FC<HeroProps> = ({
           preload="auto"
           disableRemotePlayback
           poster={heroContent?.posterUrl || "https://images.unsplash.com/photo-1557683316-973673baf926?w=1600&q=60"}
-          className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0 brightness-[1.0] contrast-[1.02] gpu-layer"
-          style={{ transform: 'translate3d(0, 0, 0)', willChange: 'transform' }}
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0 gpu-layer"
+          style={{ transform: 'translate3d(0, 0, 0)' }}
         >
           <source
             src={heroContent?.videoUrl || "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260424_064411_9e9d7f84-9277-41f4-ab10-59172d89e6be.mp4"}

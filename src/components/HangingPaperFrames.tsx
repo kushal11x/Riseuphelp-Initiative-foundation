@@ -95,6 +95,16 @@ export const HangingPaperFrames: React.FC<HangingPaperFramesProps> = ({
     setRightIndex(0);
   }, [childRight?.image, childRight?.name, childRight?.title, childRight?.story]);
 
+  // Proactively pre-decode all warrior profile photos to eliminate black frames during rotation
+  useEffect(() => {
+    const allPhotos = [...leftList, ...rightList].map((p) => p.image).filter(Boolean);
+    allPhotos.forEach((src) => {
+      const img = new Image();
+      img.decoding = 'async';
+      img.src = src;
+    });
+  }, [leftList, rightList]);
+
   // Pause on hover states
   const [isPausedLeft, setIsPausedLeft] = useState(false);
   const [isPausedRight, setIsPausedRight] = useState(false);
@@ -246,7 +256,6 @@ export const HangingPaperFrames: React.FC<HangingPaperFramesProps> = ({
                 boxShadow:
                   '0 28px 45px -10px rgba(0, 0, 0, 0.3), 0 12px 22px -6px rgba(0, 0, 0, 0.18), 0 0 1px 1px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 1)',
                 transform: 'translate3d(0, 0, 0)',
-                willChange: 'transform',
                 backfaceVisibility: 'hidden',
               }}
               onClick={handleSelectLeft}
@@ -269,22 +278,26 @@ export const HangingPaperFrames: React.FC<HangingPaperFramesProps> = ({
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
 
-              {/* Inset Photo Window with AnimatePresence Smooth Fade */}
-              <div className="relative w-full aspect-[3/4] overflow-hidden rounded-xs border border-neutral-300/80 shadow-[inset_0_3px_6px_rgba(0,0,0,0.38)] bg-neutral-950">
-                <AnimatePresence mode="wait">
+              {/* Inset Photo Window with Seamless Cross-Fade (Never Flashes Black) */}
+              <div className="relative w-full aspect-[3/4] overflow-hidden rounded-xs border border-neutral-300/80 shadow-[inset_0_3px_6px_rgba(0,0,0,0.18)] bg-neutral-100">
+                <AnimatePresence mode="popLayout">
                   <motion.div
                     key={`${activeLeft.id}-${activeLeft.image}`}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.4, ease: 'easeOut' }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.35, ease: 'easeOut' }}
                     className="w-full h-full relative"
                   >
                     <img
                       src={activeLeft.image}
                       alt={activeLeft.name}
                       className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out pointer-events-none"
-                      loading="lazy"
+                      loading="eager"
+                      decoding="async"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = '/uploads/upload_1788854883629_8bda525a0f.jpg';
+                      }}
                     />
 
                     <div className="absolute inset-0 bg-gradient-to-tr from-black/50 via-transparent to-white/10 pointer-events-none" />
@@ -444,7 +457,6 @@ export const HangingPaperFrames: React.FC<HangingPaperFramesProps> = ({
                 boxShadow:
                   '0 28px 45px -10px rgba(0, 0, 0, 0.3), 0 12px 22px -6px rgba(0, 0, 0, 0.18), 0 0 1px 1px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 1)',
                 transform: 'translate3d(0, 0, 0)',
-                willChange: 'transform',
                 backfaceVisibility: 'hidden',
               }}
               onClick={handleSelectRight}
@@ -467,22 +479,26 @@ export const HangingPaperFrames: React.FC<HangingPaperFramesProps> = ({
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
 
-              {/* Inset Photo Window with AnimatePresence Smooth Fade */}
-              <div className="relative w-full aspect-[3/4] overflow-hidden rounded-xs border border-neutral-300/80 shadow-[inset_0_3px_6px_rgba(0,0,0,0.38)] bg-neutral-950">
-                <AnimatePresence mode="wait">
+              {/* Inset Photo Window with Seamless Cross-Fade (Never Flashes Black) */}
+              <div className="relative w-full aspect-[3/4] overflow-hidden rounded-xs border border-neutral-300/80 shadow-[inset_0_3px_6px_rgba(0,0,0,0.18)] bg-neutral-100">
+                <AnimatePresence mode="popLayout">
                   <motion.div
                     key={`${activeRight.id}-${activeRight.image}`}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.4, ease: 'easeOut' }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.35, ease: 'easeOut' }}
                     className="w-full h-full relative"
                   >
                     <img
                       src={activeRight.image}
                       alt={activeRight.name}
                       className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out pointer-events-none"
-                      loading="lazy"
+                      loading="eager"
+                      decoding="async"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = '/uploads/upload_1788854883630_6eb02e090b.jpg';
+                      }}
                     />
 
                     <div className="absolute inset-0 bg-gradient-to-tr from-black/50 via-transparent to-white/10 pointer-events-none" />
