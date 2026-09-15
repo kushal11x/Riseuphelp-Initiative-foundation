@@ -1,10 +1,12 @@
-﻿import crypto from 'node:crypto';
+import crypto from 'node:crypto';
 
 const SECRET = process.env.OTP_SECRET || 'riseuphelp_secret_otp_signing_2026';
 const META_TOKEN = process.env.WHATSAPP_ACCESS_TOKEN || process.env.META_WHATSAPP_TOKEN || '';
 const META_PHONE_ID = process.env.WHATSAPP_PHONE_NUMBER_ID || '';
 const GUPSHUP_KEY = process.env.GUPSHUP_API_KEY || '';
 const GUPSHUP_SRC = process.env.GUPSHUP_SRC_NAME || 'RiseUpHelp';
+const ULTRAMSG_INSTANCE = process.env.ULTRAMSG_INSTANCE_ID || '';
+const ULTRAMSG_TOKEN = process.env.ULTRAMSG_TOKEN || '';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -41,7 +43,34 @@ export default async function handler(req, res) {
     let whatsappDispatched = false;
     let providerUsed = 'none';
 
-    // 1. Dispatch via Official Meta WhatsApp Cloud API
+    // 1. Dispatch via UltraMsg (Direct WhatsApp Business QR Gateway)
+    if (ULTRAMSG_INSTANCE && ULTRAMSG_TOKEN) {
+      try {
+        const uParams = new URLSearchParams();
+        uParams.append('token', ULTRAMSG_TOKEN);
+        uParams.append('to', `+91${cleanPhone}`);
+        uParams.append(
+          'body',
+          `Namaste ${donorName || 'Donor'}! 🙏\n\nYour RiseUpHelp verification OTP is: *${otp}*\n\nValid for 10 minutes.\n\nRiseUpHelp Initiative Foundation\nJaipur Hospital Seva Node\nHelpline: wa.me/919828291119`
+        );
+
+        const uRes = await fetch(`https://api.ultramsg.com/${ULTRAMSG_INSTANCE}/messages/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: uParams.toString(),
+        });
+        const uData = await uRes.json();
+        console.log('[send-whatsapp-otp] UltraMsg response:', uData);
+        if (uData && (uData.sent === 'true' || uData.sent === true || uData.id)) {
+          whatsappDispatched = true;
+          providerUsed = 'ultramsg_whatsapp_business';
+        }
+      } catch (uErr) {
+        console.warn('[send-whatsapp-otp] UltraMsg error:', uErr);
+      }
+    }
+
+    // 2. Dispatch via Official Meta WhatsApp Cloud API
     if (META_TOKEN && META_PHONE_ID) {
       try {
         const metaRes = await fetch(
