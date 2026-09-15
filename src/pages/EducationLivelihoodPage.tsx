@@ -399,7 +399,7 @@ export const EducationLivelihoodPage: React.FC<EducationLivelihoodPageProps> = (
               {/* Real Image Header */}
               <div className="relative h-44 w-full overflow-hidden bg-neutral-900">
                 <img
-                  src={wheelchairItem?.image || "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=600&q=80"}
+                  src={wheelchairItem?.image || "/uploads/IMG_20260730_134705_1789320665801_679437e732.jpg"}
                   alt="Hospital Grade Foldable Wheelchair"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />

@@ -67,7 +67,7 @@ export const SponsorshipGrid: React.FC<SponsorshipGridProps> = ({
     delivered: card1Item.deliveredCount,
     target: card1Item.targetCount,
     badge: card1Item.badge,
-    image: card1Item.image || 'https://images.unsplash.com/photo-1525385133512-2f3bdd039054?w=600&q=80',
+    image: card1Item.image || '/uploads/nariyal_pani_fresh_coconut.jpg',
     alt: card1Item.name,
     description: card1Item.description,
   } : {
@@ -94,7 +94,7 @@ export const SponsorshipGrid: React.FC<SponsorshipGridProps> = ({
     delivered: card3MealItem.deliveredCount,
     target: card3MealItem.targetCount,
     badge: card3MealItem.badge,
-    image: card3MealItem.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80',
+    image: card3MealItem.image || '/uploads/slum_packed_thali_tiffin.jpg',
     alt: card3MealItem.name,
     description: card3MealItem.description,
   } : {

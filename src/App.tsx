@@ -989,6 +989,7 @@ export function App() {
         onClose={() => setCustomDateModalOpen(false)}
         onConfirmBundleCheckout={handleConfirmCustomBundle}
         currentUser={currentUser}
+        driveItems={driveItems}
       />
 
       {/* Master Admin Control Center Modal */}

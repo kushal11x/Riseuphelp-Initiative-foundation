@@ -36,6 +36,7 @@ interface CustomSevaDateBuilderModalProps {
     customBreakdown: string;
   }) => void;
   currentUser?: DonorProfile | null;
+  driveItems?: DriveItem[];
 }
 
 const generateBundleId = () => `custom-bundle-${Date.now()}`;
@@ -45,6 +46,7 @@ export const CustomSevaDateBuilderModal: React.FC<CustomSevaDateBuilderModalProp
   onClose,
   onConfirmBundleCheckout,
   currentUser,
+  driveItems,
 }) => {
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -68,7 +70,7 @@ export const CustomSevaDateBuilderModal: React.FC<CustomSevaDateBuilderModalProp
       unitLabel: 'Coconut',
       icon: '🥥',
       category: 'Hydration',
-      image: 'https://images.unsplash.com/photo-1525385133512-2f3bdd039054?w=600&q=80',
+      image: '/uploads/nariyal_pani_fresh_coconut.jpg',
     },
     {
       id: 'anar',
@@ -78,7 +80,7 @@ export const CustomSevaDateBuilderModal: React.FC<CustomSevaDateBuilderModalProp
       unitLabel: 'Bottle',
       icon: '🥤',
       category: 'Platelet Boost',
-      image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=600&q=80',
+      image: '/uploads/IMG_20260913_104140_1789287615105_e54f3a756c.jpg',
     },
     {
       id: 'beetroot',
@@ -88,7 +90,7 @@ export const CustomSevaDateBuilderModal: React.FC<CustomSevaDateBuilderModalProp
       unitLabel: 'Bottle',
       icon: '🧃',
       category: 'Hemoglobin Iron',
-      image: 'https://images.unsplash.com/photo-1613478223719-2ab802602423?w=600&q=80',
+      image: '/uploads/Gemini_Generated_Image_olkfeho_1789278370883_49a1ca3655.jpg',
     },
     {
       id: 'meal',
@@ -98,7 +100,7 @@ export const CustomSevaDateBuilderModal: React.FC<CustomSevaDateBuilderModalProp
       unitLabel: 'Meal Box',
       icon: '🍲',
       category: 'Nutrition',
-      image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80',
+      image: '/uploads/slum_packed_thali_tiffin.jpg',
     },
     {
       id: 'bags',
@@ -128,7 +130,7 @@ export const CustomSevaDateBuilderModal: React.FC<CustomSevaDateBuilderModalProp
       unitLabel: 'Machine & Kit',
       icon: '🧵',
       category: 'Livelihood',
-      image: 'https://images.unsplash.com/photo-1528698827591-e19ccd7bc23d?w=600&q=80',
+      image: '/uploads/ChatGPT_Image_Sep_13__2026__10_1789320630857_41143ed87d.jpg',
     },
     {
       id: 'wheelchair',
@@ -138,9 +140,33 @@ export const CustomSevaDateBuilderModal: React.FC<CustomSevaDateBuilderModalProp
       unitLabel: 'Wheelchair',
       icon: '🦽',
       category: 'Mobility',
-      image: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=600&q=80',
+      image: '/uploads/IMG_20260730_134705_1789320665801_679437e732.jpg',
     },
   ]);
+
+  // Dynamically sync photos if driveItems are updated from Admin Panel / Server
+  useEffect(() => {
+    if (driveItems && driveItems.length > 0) {
+      setItems((prevItems) =>
+        prevItems.map((item) => {
+          let matched: DriveItem | undefined;
+          if (item.id === 'coconut') matched = driveItems.find((d) => d.id === 'coconut-water');
+          else if (item.id === 'anar') matched = driveItems.find((d) => d.id === 'anar-juice');
+          else if (item.id === 'beetroot') matched = driveItems.find((d) => d.id === 'beetroot-juice');
+          else if (item.id === 'meal') matched = driveItems.find((d) => d.id === 'pomegranate-meal');
+          else if (item.id === 'bags') matched = driveItems.find((d) => d.id === 'school-bags');
+          else if (item.id === 'firstaid') matched = driveItems.find((d) => d.id === 'first-aid-kit');
+          else if (item.id === 'sewing') matched = driveItems.find((d) => d.id === 'sewing-machine');
+          else if (item.id === 'wheelchair') matched = driveItems.find((d) => d.id === 'hospital-wheelchair');
+
+          if (matched && matched.image) {
+            return { ...item, image: matched.image };
+          }
+          return item;
+        })
+      );
+    }
+  }, [driveItems]);
 
   // Date Selection State
   const todayStr = useMemo(() => new Date().toISOString().split('T')[0], []);

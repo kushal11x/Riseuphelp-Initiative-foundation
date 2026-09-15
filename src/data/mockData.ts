@@ -367,7 +367,7 @@ export const DRIVE_ITEMS: DriveItem[] = [
     percentage: 68,
     color: "#084c36",
     badge: "Active Metrics",
-    image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80",
+    image: "/uploads/slum_packed_thali_tiffin.jpg",
     description: "Freshly cooked hygienic high-protein meal box containing roti, sabzi, dal, rice and salad for patient attendants and recovering individuals.",
     impactMetrics: "34,000+ wholesome nutritious meals distributed across Jaipur government healthcare centers.",
     options: {
@@ -409,7 +409,7 @@ export const DRIVE_ITEMS: DriveItem[] = [
     percentage: 80,
     color: "#084c36",
     badge: "100% Pure Pomegranate",
-    image: "https://images.unsplash.com/photo-1541344999736-83eca272f6fc?w=600&q=80",
+    image: "/uploads/IMG_20260913_104140_1789287615105_e54f3a756c.jpg",
     description: "100% pure cold-pressed fresh pomegranate juice served bedside in government oncology and dialysis wards.",
     impactMetrics: "48,000+ bottles delivered to chemotherapy patients.",
     options: {
@@ -430,7 +430,7 @@ export const DRIVE_ITEMS: DriveItem[] = [
     percentage: 70,
     color: "#084c36",
     badge: "Natural Iron Boost",
-    image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=600&q=80",
+    image: "/uploads/Gemini_Generated_Image_olkfeho_1789278370883_49a1ca3655.jpg",
     description: "Fresh cold-pressed beetroot, carrot, and amla juice to help patients restore hemoglobin levels naturally during chemotherapy cycles.",
     impactMetrics: "28,000+ iron booster juices served across government cancer wards.",
     options: {
@@ -472,7 +472,7 @@ export const DRIVE_ITEMS: DriveItem[] = [
     percentage: 72,
     color: "#084c36",
     badge: "Clinical Standard",
-    image: "https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=600&q=80",
+    image: "/uploads/IMG_20260730_134705_1789320665801_679437e732.jpg",
     description: "Heavy-duty ISO certified foldable wheelchairs placed in government cancer OPDs and trauma wards to transport weak patients safely.",
     impactMetrics: "180+ hospital wheelchairs actively easing mobility for cancer fighters in government hospitals.",
     options: {
