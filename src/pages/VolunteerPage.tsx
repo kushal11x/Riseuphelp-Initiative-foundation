@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ArrowLeft, Users, CheckCircle2, Heart, Sparkles, Send } from 'lucide-react';
 import { Footer } from '../components/Footer';
 import type { VolunteerSubmission } from '../types';
+import { useLanguage } from '../context/LanguageContext';
 
 interface VolunteerPageProps {
   onBackToHome: () => void;
@@ -14,6 +15,7 @@ export const VolunteerPage: React.FC<VolunteerPageProps> = ({
   onOpenAdmin,
   onSubmitVolunteer,
 }) => {
+  const { t } = useLanguage();
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
@@ -72,12 +74,12 @@ export const VolunteerPage: React.FC<VolunteerPageProps> = ({
           className="inline-flex items-center gap-2 bg-white/90 hover:bg-white text-neutral-800 font-bold text-xs sm:text-sm px-4 py-2 rounded-full border border-neutral-200 shadow-xs hover:shadow-md transition-all cursor-pointer group"
         >
           <ArrowLeft className="w-4 h-4 text-[#084c36] group-hover:-translate-x-1 transition-transform" />
-          <span>← Back to Home</span>
+          <span>{t.volunteerBack}</span>
         </button>
 
         <div className="inline-flex items-center gap-1.5 bg-emerald-50 text-[#084c36] font-bold text-xs px-3 py-1.5 rounded-full border border-emerald-200">
           <Users className="w-3.5 h-3.5" />
-          <span>Frontline Changemaker Squad</span>
+          <span>{t.volunteerBadge}</span>
         </div>
       </div>
 
@@ -89,10 +91,10 @@ export const VolunteerPage: React.FC<VolunteerPageProps> = ({
               2,400+ Active Youth Volunteers
             </span>
             <h1 className="text-2xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">
-              Be a Volunteer: Hold Hands Where It Matters Most
+              {t.volunteerHeroTitle}
             </h1>
             <p className="text-xs sm:text-base text-emerald-100/90 leading-relaxed">
-              True service isn't done from behind a desk. Join our on-ground youth squad in Jaipur cutting fresh coconuts bedside at RUHS Cancer Hospital, mentoring slum children with digital tablets, and organizing emergency relief drives.
+              {t.volunteerHeroDesc}
             </p>
 
             <div className="pt-2 flex flex-wrap gap-2 text-xs font-semibold">

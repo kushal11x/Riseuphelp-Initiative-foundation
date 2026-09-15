@@ -4,6 +4,7 @@ import { SevaCalendarSchedule } from '../components/SevaCalendarSchedule';
 import { Footer } from '../components/Footer';
 import type { SevaScheduleEvent, DriveItem, HospitalNode } from '../types';
 import { PARTNER_HOSPITALS } from '../data/mockData';
+import { useLanguage } from '../context/LanguageContext';
 
 interface EkadashiPageProps {
   onBackToHome: () => void;
@@ -23,6 +24,8 @@ export const EkadashiPage: React.FC<EkadashiPageProps> = ({
   onOpenSponsorModal,
   onOpenAdmin,
 }) => {
+  const { t } = useLanguage();
+
   const handleSelectScheduleSlot = (event: SevaScheduleEvent, _customDate?: string) => {
     const scheduleDriveItem: DriveItem = {
       id: `slot-${event.id}`,
@@ -59,12 +62,12 @@ export const EkadashiPage: React.FC<EkadashiPageProps> = ({
           className="inline-flex items-center gap-2 bg-white/90 hover:bg-white text-neutral-800 font-bold text-xs sm:text-sm px-4 py-2 rounded-full border border-neutral-200 shadow-xs hover:shadow-md transition-all cursor-pointer group"
         >
           <ArrowLeft className="w-4 h-4 text-[#084c36] group-hover:-translate-x-1 transition-transform" />
-          <span>← Back to Home</span>
+          <span>{t.ekadashiBack}</span>
         </button>
 
         <div className="inline-flex items-center gap-1.5 bg-emerald-50 text-[#084c36] font-bold text-xs px-3 py-1.5 rounded-full border border-emerald-200">
           <Flame className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-          <span>Har Ekadashi Bedside Seva Vow</span>
+          <span>{t.ekadashiVowBadge}</span>
         </div>
       </div>
 
@@ -78,25 +81,25 @@ export const EkadashiPage: React.FC<EkadashiPageProps> = ({
             {/* Left Narrative Column */}
             <div className="lg:col-span-7 space-y-4 text-left">
               <span className="bg-[#FDB813] text-neutral-950 font-mono font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider inline-block">
-                Official Hospital Seva Registry
+                {t.ekadashiRegistryBadge}
               </span>
               <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
-                Har Ekadashi State Cancer Hospital (RUHS) Nariyal Pani Seva
+                {t.ekadashiHeroTitle}
               </h1>
               <p className="text-xs sm:text-base text-emerald-100/90 leading-relaxed">
-                Every Ekadashi without interruption, our seva volunteers procure farm-fresh green tender coconuts, transport them on-ground to State Cancer Medical College (RUHS) and SMS Hospitals, and cut them open live bedside for admitted cancer patients undergoing chemotherapy.
+                {t.ekadashiHeroDesc}
               </p>
 
               {/* Fast Summary Badges */}
               <div className="pt-1 flex flex-wrap gap-2 text-xs font-semibold">
                 <span className="bg-white/15 backdrop-blur-md px-3 py-1 rounded-lg border border-white/20">
-                  🥥 389,000+ Sourced & Cut Bedside
+                  {t.ekadashiBadge1}
                 </span>
                 <span className="bg-white/15 backdrop-blur-md px-3 py-1 rounded-lg border border-white/20">
-                  🏥 RUHS & SMS Cancer Hospital Wards
+                  {t.ekadashiBadge2}
                 </span>
                 <span className="bg-white/15 backdrop-blur-md px-3 py-1 rounded-lg border border-white/20">
-                  ⭐ 50% Tax Exemption (80G)
+                  {t.ekadashiBadge3}
                 </span>
               </div>
 
@@ -129,7 +132,7 @@ export const EkadashiPage: React.FC<EkadashiPageProps> = ({
                   }}
                   className="bg-[#FDB813] hover:bg-amber-400 text-neutral-950 font-extrabold text-xs sm:text-sm px-6 py-3 rounded-full transition-all duration-300 shadow-md hover:shadow-lg active:scale-95 cursor-pointer inline-flex items-center gap-2"
                 >
-                  <span>🥥 Sponsor Bedside Coconuts (₹65/pc)</span>
+                  <span>{t.ekadashiSponsorBtn}</span>
                 </button>
               </div>
             </div>

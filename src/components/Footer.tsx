@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ShieldCheck, Phone, MapPin, ArrowUp } from 'lucide-react';
 import { OFFICIAL_INFO } from '../data/mockData';
 import { PolicyModal, type PolicyTab } from './PolicyModal';
+import { useLanguage } from '../context/LanguageContext';
 
 interface FooterProps {
   onOpenAdmin?: () => void;
@@ -9,6 +10,7 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenPolicy }) => {
+  const { language, t } = useLanguage();
   const [localPolicyOpen, setLocalPolicyOpen] = useState(false);
   const [localPolicyTab, setLocalPolicyTab] = useState<PolicyTab>('privacy');
 
@@ -50,10 +52,10 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenPolicy }) => 
           </div>
 
           <p className="text-sm text-emerald-100/90 leading-relaxed font-serif italic">
-            "{OFFICIAL_INFO.tagline}"
+            "{t.footerTagline}"
           </p>
           <p className="text-xs text-emerald-200/80 leading-relaxed">
-            Registered Section 8 Non-Profit Foundation operating under the Ministry of Corporate Affairs, Govt of India. 80G & 12A Certified for 50% income tax exemption.
+            {t.footerDescription}
           </p>
 
           <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-[#FDB813]">
@@ -67,27 +69,27 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenPolicy }) => 
         {/* Col 2: Hospital & Education Links */}
         <div className="lg:col-span-3 flex flex-col gap-3">
           <h4 className="text-xs font-bold uppercase tracking-widest text-[#FDB813]">
-            Verified Impact Tracks
+            {t.footerVerifiedTracks}
           </h4>
           <ul className="space-y-2 text-xs text-emerald-100/90">
             <li>
               <a href="#sponsorship-grid" className="hover:text-white transition-colors">
-                • Tender Coconut Water Seva (RUHS)
+                {t.footerTrack1}
               </a>
             </li>
             <li>
               <a href="#sponsorship-grid" className="hover:text-white transition-colors">
-                • Pomegranate Hospital Drives (SMS)
+                {t.footerTrack2}
               </a>
             </li>
             <li>
               <a href="#sponsorship-grid" className="hover:text-white transition-colors">
-                • Girl Child School Bags (Chhoti Chaupar)
+                {t.footerTrack3}
               </a>
             </li>
             <li>
               <a href="#sponsorship-grid" className="hover:text-white transition-colors">
-                • Cancer Warriors Lifeline Care
+                {t.footerTrack4}
               </a>
             </li>
           </ul>
@@ -96,7 +98,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenPolicy }) => 
         {/* Col 3: Direct UPI & Contact */}
         <div className="lg:col-span-4 flex flex-col gap-3">
           <h4 className="text-xs font-bold uppercase tracking-widest text-[#FDB813]">
-            Official Registry Node
+            {t.footerRegistryTitle}
           </h4>
           <div className="space-y-2 text-xs">
             <div className="flex items-center gap-2 text-emerald-200">
@@ -146,7 +148,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenPolicy }) => 
             onClick={() => handleOpenTab('privacy')}
             className="hover:text-white underline cursor-pointer"
           >
-            Privacy Policy
+            {t.footerPrivacy}
           </button>
           <span>•</span>
           <button
@@ -154,7 +156,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenPolicy }) => 
             onClick={() => handleOpenTab('terms')}
             className="hover:text-white underline cursor-pointer"
           >
-            Terms & Conditions
+            {t.footerTerms}
           </button>
           <span>•</span>
           <button
@@ -162,7 +164,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenPolicy }) => 
             onClick={() => handleOpenTab('refund')}
             className="hover:text-white underline cursor-pointer"
           >
-            Refund Policy
+            {t.footerRefund}
           </button>
           <span>•</span>
           <button
@@ -170,7 +172,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenPolicy }) => 
             onClick={() => handleOpenTab('contact')}
             className="hover:text-white underline cursor-pointer"
           >
-            Contact Us
+            {t.footerContact}
           </button>
           <span>•</span>
           <button
@@ -187,7 +189,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin, onOpenPolicy }) => 
           onClick={scrollToTop}
           className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-full transition-colors cursor-pointer text-xs font-medium"
         >
-          <span>Back to top</span>
+          <span>{language === 'hi' ? 'वापस ऊपर जाएं' : language === 'hinglish' ? 'Back To Top' : 'Back to top'}</span>
           <ArrowUp className="w-3.5 h-3.5" />
         </button>
       </div>

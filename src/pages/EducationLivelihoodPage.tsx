@@ -3,6 +3,7 @@ import { ArrowLeft, BookOpen, ShoppingBag, Sparkles, Award, HeartHandshake, Chec
 import { Footer } from '../components/Footer';
 import type { DriveItem } from '../types';
 import { DRIVE_ITEMS } from '../data/mockData';
+import { useLanguage } from '../context/LanguageContext';
 
 interface EducationLivelihoodPageProps {
   onBackToHome: () => void;
@@ -20,6 +21,7 @@ export const EducationLivelihoodPage: React.FC<EducationLivelihoodPageProps> = (
   onOpenAdmin,
   driveItems,
 }) => {
+  const { t } = useLanguage();
   const currentDrives = driveItems && driveItems.length > 0 ? driveItems : DRIVE_ITEMS;
   const schoolBagItem = currentDrives.find((d) => d.id === 'school-bags') || DRIVE_ITEMS[2];
   const sewingItem = currentDrives.find((d) => d.id === 'sewing-machine');
@@ -71,12 +73,12 @@ export const EducationLivelihoodPage: React.FC<EducationLivelihoodPageProps> = (
           className="inline-flex items-center gap-2 bg-white/90 hover:bg-white text-neutral-800 font-bold text-xs sm:text-sm px-4 py-2 rounded-full border border-neutral-200 shadow-xs hover:shadow-md transition-all cursor-pointer group"
         >
           <ArrowLeft className="w-4 h-4 text-[#084c36] group-hover:-translate-x-1 transition-transform" />
-          <span>← Back to Home</span>
+          <span>{t.educationBack}</span>
         </button>
 
         <div className="inline-flex items-center gap-1.5 bg-amber-50 text-amber-900 font-bold text-xs px-3 py-1.5 rounded-full border border-amber-200">
           <BookOpen className="w-3.5 h-3.5 text-amber-700" />
-          <span>All Children Education & Livelihoods</span>
+          <span>{t.educationBadge}</span>
         </div>
       </div>
 
@@ -88,10 +90,10 @@ export const EducationLivelihoodPage: React.FC<EducationLivelihoodPageProps> = (
               Academic Dignity & Vocational Hub
             </span>
             <h1 className="text-2xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">
-              All Children School Bags & Livelihood Hub
+              {t.educationHeroTitle}
             </h1>
             <p className="text-xs sm:text-base text-emerald-100/90 leading-relaxed">
-              Equipping all underprivileged children (both boys and girls) across Jaipur slum clusters with durable waterproof school bags, notebooks, STEM kits, and foundational tablet learning to eliminate dropouts and ensure real educational dignity.
+              {t.educationHeroDesc}
             </p>
 
             <div className="pt-2 flex flex-wrap gap-2 text-xs font-semibold">

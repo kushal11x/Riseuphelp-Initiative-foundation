@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, ShoppingBag, ShieldCheck, ArrowRight } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface ImpactSimulatorProps {
   onSponsorAmount: (amount: number, itemTitle: string) => void;
 }
 
 export const ImpactSimulator: React.FC<ImpactSimulatorProps> = ({ onSponsorAmount }) => {
+  const { language, t } = useLanguage();
   const [donationValue, setDonationValue] = useState(2500);
 
   const coconutCount = Math.floor(donationValue / 65);
@@ -32,16 +34,16 @@ export const ImpactSimulator: React.FC<ImpactSimulatorProps> = ({ onSponsorAmoun
           <div>
             <div className="inline-flex items-center gap-2 bg-[#084c36]/10 text-[#084c36] font-bold text-[11px] uppercase tracking-wider px-3 py-1 rounded-full mb-1.5 border border-[#084c36]/20">
               <Sparkles className="w-3.5 h-3.5 text-[#FDB813]" />
-              <span>Interactive Impact Simulator</span>
+              <span>{t.simulatorBadge}</span>
             </div>
             <h3 className="text-xl sm:text-2xl font-bold text-neutral-950 tracking-tight">
-              See Your Tangible On-Ground Change in Jaipur
+              {t.simulatorTitle}
             </h3>
           </div>
 
           <div className="flex items-center gap-2 text-xs font-mono text-[#084c36] bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200">
             <ShieldCheck className="w-4 h-4" />
-            <span>100% Direct Bedside Seva</span>
+            <span>{t.simulatorTag}</span>
           </div>
         </div>
 
@@ -49,7 +51,7 @@ export const ImpactSimulator: React.FC<ImpactSimulatorProps> = ({ onSponsorAmoun
         <div className="my-8 relative z-10">
           <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-4">
             <span className="text-xs sm:text-sm font-semibold text-neutral-700">
-              Enter or Select Any Contribution Amount (No Upper Limit):
+              {t.simulatorLabel}
             </span>
             <div className="flex items-center gap-1.5">
               <span className="text-2xl sm:text-3xl font-extrabold text-[#084c36]">₹</span>
@@ -75,14 +77,16 @@ export const ImpactSimulator: React.FC<ImpactSimulatorProps> = ({ onSponsorAmoun
           />
 
           <div className="flex justify-between text-[11px] font-mono text-neutral-500 mt-2">
-            <span>₹200 (Bedside Pack)</span>
-            <span>₹25,000 (~28 Bag & Stationery Kits)</span>
-            <span>₹1,00,000+ (Full Ward Sponsor)</span>
+            <span>{t.simulatorPack200}</span>
+            <span>{t.simulatorPack25k}</span>
+            <span>{t.simulatorPack100k}</span>
           </div>
 
           {/* Quick Preset Chips */}
           <div className="mt-4 flex flex-wrap gap-2 items-center">
-            <span className="text-xs text-neutral-500 font-medium mr-1">Quick Select:</span>
+            <span className="text-xs text-neutral-500 font-medium mr-1">
+              {language === 'hi' ? 'त्वरित चयन:' : language === 'hinglish' ? 'Quick Select:' : 'Quick Select:'}
+            </span>
             {presets.map((amt) => (
               <button
                 key={amt}
@@ -112,14 +116,22 @@ export const ImpactSimulator: React.FC<ImpactSimulatorProps> = ({ onSponsorAmoun
                 RUHS Cancer Hospital
               </span>
               <div className="text-2xl sm:text-3xl font-extrabold text-neutral-900 mt-1">
-                {coconutCount.toLocaleString('en-IN')} Coconuts
+                {language === 'hi'
+                  ? `${coconutCount.toLocaleString('en-IN')} ताजे नारियल`
+                  : language === 'hinglish'
+                  ? `${coconutCount.toLocaleString('en-IN')} Fresh Nariyal`
+                  : `${coconutCount.toLocaleString('en-IN')} Coconuts`}
               </div>
               <p className="text-xs text-neutral-600 mt-1">
-                Whole green coconuts cut live bedside for oncology chemotherapy fighters.
+                {language === 'hi'
+                  ? 'कीमोथेरेपी कैंसर मरीजों के बेड पर ताजा काटकर स्वच्छ स्ट्रॉ से पिलाने हेतु।'
+                  : language === 'hinglish'
+                  ? 'Chemo cancer patients ke bed par live cut karke fresh pilane ke liye.'
+                  : 'Whole green coconuts cut live bedside for oncology chemotherapy fighters.'}
               </p>
             </div>
             <span className="text-[11px] font-mono text-emerald-800 font-semibold mt-3 pt-2 border-t border-neutral-200">
-              @ ₹65 / Fresh Coconut
+              @ ₹65 / {language === 'hi' ? 'ताजा नारियल' : language === 'hinglish' ? 'Fresh Nariyal' : 'Fresh Coconut'}
             </span>
           </motion.div>
 
@@ -132,14 +144,22 @@ export const ImpactSimulator: React.FC<ImpactSimulatorProps> = ({ onSponsorAmoun
                 SMS Hospital Recovery
               </span>
               <div className="text-2xl sm:text-3xl font-extrabold text-neutral-900 mt-1">
-                {mealsProvided.toLocaleString('en-IN')} Meals
+                {language === 'hi'
+                  ? `${mealsProvided.toLocaleString('en-IN')} भोजन पैकेट`
+                  : language === 'hinglish'
+                  ? `${mealsProvided.toLocaleString('en-IN')} Meal Packs`
+                  : `${mealsProvided.toLocaleString('en-IN')} Meals`}
               </div>
               <p className="text-xs text-neutral-600 mt-1">
-                Wholesome protein meal boxes & cold-pressed pomegranate juice.
+                {language === 'hi'
+                  ? 'मरीजों व उनके परिजनों हेतु पौष्टिक भोजन व अनार का ताजा जूस।'
+                  : language === 'hinglish'
+                  ? 'Patients aur unke attendants ke liye poshtik khana & pomegranate juice.'
+                  : 'Wholesome protein meal boxes & cold-pressed pomegranate juice.'}
               </p>
             </div>
             <span className="text-[11px] font-mono text-amber-900 font-semibold mt-3 pt-2 border-t border-amber-200">
-              @ ₹70 / Meal Unit
+              @ ₹70 / {language === 'hi' ? 'भोजन यूनिट' : language === 'hinglish' ? 'Meal Unit' : 'Meal Unit'}
             </span>
           </motion.div>
 
@@ -149,17 +169,25 @@ export const ImpactSimulator: React.FC<ImpactSimulatorProps> = ({ onSponsorAmoun
           >
             <div>
               <span className="text-[10px] font-bold text-emerald-900 uppercase tracking-wider block">
-                Chhoti Chaupar Girls School
+                Chhoti Chaupar Education
               </span>
               <div className="text-2xl sm:text-3xl font-extrabold text-neutral-900 mt-1">
-                {schoolBags.toLocaleString('en-IN')} Full Kits
+                {language === 'hi'
+                  ? `${schoolBags.toLocaleString('en-IN')} स्कूल बैग किट`
+                  : language === 'hinglish'
+                  ? `${schoolBags.toLocaleString('en-IN')} School Kits`
+                  : `${schoolBags.toLocaleString('en-IN')} Full Kits`}
               </div>
               <p className="text-xs text-neutral-600 mt-1">
-                Waterproof bags + 6 notebooks + DOMS colors + pens + bottle + lunch box.
+                {language === 'hi'
+                  ? 'वाटरप्रूफ बैग + 6 कॉपियां + DOMS रंग + पेन + बोतल।'
+                  : language === 'hinglish'
+                  ? 'Waterproof school bag + 6 notebooks + DOMS colors + pens + bottle.'
+                  : 'Waterproof bags + 6 notebooks + DOMS colors + pens + bottle + lunch box.'}
               </p>
             </div>
             <span className="text-[11px] font-mono text-emerald-900 font-semibold mt-3 pt-2 border-t border-emerald-200">
-              @ ₹899 / Bag & Stationery Kit
+              @ ₹899 / {language === 'hi' ? 'बैग व स्टेशनरी किट' : language === 'hinglish' ? 'Bag & Stationery Kit' : 'Bag & Stationery Kit'}
             </span>
           </motion.div>
 
@@ -168,7 +196,13 @@ export const ImpactSimulator: React.FC<ImpactSimulatorProps> = ({ onSponsorAmoun
         {/* Action Button */}
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-neutral-100 relative z-10">
           <div className="text-xs text-neutral-500 text-center sm:text-left">
-            <span>Instant 80G tax exemption certificate generated for ₹{donationValue.toLocaleString('en-IN')}.</span>
+            <span>
+              {language === 'hi'
+                ? `₹${donationValue.toLocaleString('en-IN')} के लिए तत्काल 80G टैक्स छूट प्रमाण पत्र उपलब्ध।`
+                : language === 'hinglish'
+                ? `₹${donationValue.toLocaleString('en-IN')} ke liye instant 80G tax exemption receipt available.`
+                : `Instant 80G tax exemption certificate generated for ₹${donationValue.toLocaleString('en-IN')}.`}
+            </span>
           </div>
 
           <motion.button
@@ -178,7 +212,13 @@ export const ImpactSimulator: React.FC<ImpactSimulatorProps> = ({ onSponsorAmoun
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-[#084c36] hover:bg-[#063b2a] text-white px-7 py-3 rounded-full text-xs sm:text-sm font-semibold transition-all shadow-md hover:shadow-lg cursor-pointer"
           >
             <ShoppingBag className="w-4 h-4 text-[#FDB813]" />
-            <span>Sponsor ₹{donationValue.toLocaleString('en-IN')} Now</span>
+            <span>
+              {language === 'hi'
+                ? `अभी ₹${donationValue.toLocaleString('en-IN')} प्रायोजित करें`
+                : language === 'hinglish'
+                ? `Abhi ₹${donationValue.toLocaleString('en-IN')} Sponsor Karein`
+                : `Sponsor ₹${donationValue.toLocaleString('en-IN')} Now`}
+            </span>
             <ArrowRight className="w-4 h-4" />
           </motion.button>
         </div>

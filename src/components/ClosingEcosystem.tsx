@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HeartHandshake, Briefcase, ArrowUpRight, CheckCircle2, ShieldCheck, Mail, Globe, ExternalLink, X, Send } from 'lucide-react';
 import { OFFICIAL_INFO } from '../data/mockData';
+import { useLanguage } from '../context/LanguageContext';
 
 interface ClosingEcosystemProps {
   onOpenSponsorModal?: () => void;
 }
 
 export const ClosingEcosystem: React.FC<ClosingEcosystemProps> = () => {
+  const { t } = useLanguage();
   const [emailInput, setEmailInput] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [activeModal, setActiveModal] = useState<'volunteer' | 'career' | null>(null);
@@ -122,20 +124,20 @@ export const ClosingEcosystem: React.FC<ClosingEcosystemProps> = () => {
         <div className="max-w-xl">
           <div className="inline-flex items-center gap-2 bg-black/40 backdrop-blur-md text-[#FDB813] font-semibold text-xs rounded-full px-3.5 py-1 mb-3 border border-white/20">
             <span className="w-2 h-2 rounded-full bg-[#FDB813]" />
-            <span>JAIPUR GROUND RELIEF MISSION</span>
+            <span>{t.closingBadge}</span>
           </div>
 
           <h2
             style={{
-              fontSize: 'clamp(32px, 6vw, 56px)',
-              lineHeight: 1.1,
-              fontWeight: 500,
+              fontSize: 'clamp(28px, 5.5vw, 52px)',
+              lineHeight: 1.15,
+              fontWeight: 600,
               color: '#FFFFFF',
-              letterSpacing: '-0.03em',
+              letterSpacing: '-0.02em',
             }}
             className="font-sans tracking-tight text-white drop-shadow-md text-balance"
           >
-            Shaping local lives with transparent vision and direct action.
+            {t.closingTitle}
           </h2>
 
           {/* Pristine White Email Subscription Input Row */}

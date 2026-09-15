@@ -19,7 +19,7 @@ import { CancerWarriorsPage } from './pages/CancerWarriorsPage';
 import { EducationLivelihoodPage } from './pages/EducationLivelihoodPage';
 import { VolunteerPage } from './pages/VolunteerPage';
 import { Navbar, type AppView } from './components/Navbar';
-import type { LanguageMode } from './data/translations';
+import { useLanguage } from './context/LanguageContext';
 import { safeLocalStorageSet } from './utils/imageUtils';
 import {
   fetchServerState,
@@ -184,16 +184,8 @@ export function App() {
   const [customDateModalOpen, setCustomDateModalOpen] = useState(false);
   const [selectedChildSpotlight, setSelectedChildSpotlight] = useState<ChildSpotlightProfile | null>(null);
 
-  // Multi-Language Switcher State ('en' | 'hi' | 'hinglish')
-  const [language, setLanguage] = useState<LanguageMode>(() => {
-    const s = localStorage.getItem('ruh_lang') as LanguageMode;
-    return s || 'en';
-  });
-
-  const handleLanguageChange = (lang: LanguageMode) => {
-    setLanguage(lang);
-    localStorage.setItem('ruh_lang', lang);
-  };
+  // Multi-Language Switcher State ('en' | 'hi' | 'hinglish') via Unified Context
+  const { language, setLanguage: handleLanguageChange } = useLanguage();
 
   // Live Donation Notifications Ticker Toggle (Controlled via Admin Portal - Default OFF)
   const [showDonationTicker, setShowDonationTicker] = useState<boolean>(() => {

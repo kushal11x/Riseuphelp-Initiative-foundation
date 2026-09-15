@@ -3,39 +3,42 @@ import { motion } from 'framer-motion';
 import { Activity, HeartHandshake, MapPin } from 'lucide-react';
 import { OFFICIAL_INFO } from '../data/mockData';
 import { AnimatedCounter } from './AnimatedCounter';
+import { useLanguage } from '../context/LanguageContext';
 
 export const ImpactLedger: React.FC = () => {
+  const { language, t } = useLanguage();
+
   const telemetryNodes = [
     {
       hospital: 'RUHS State Cancer Hospital',
       location: 'Pratap Nagar, Jaipur',
       metric: '194,700+ Coconuts',
-      status: 'Live Seva Drive',
-      frequency: 'Every Ekadashi & Sunday',
+      status: language === 'hi' ? 'लाइव सेवा अभियान' : language === 'hinglish' ? 'Live Seva Drive' : 'Live Seva Drive',
+      frequency: language === 'hi' ? 'हर एकादशी व रविवार' : language === 'hinglish' ? 'Har Ekadashi & Sunday' : 'Every Ekadashi & Sunday',
       color: 'bg-emerald-50 text-emerald-800 border-emerald-200',
     },
     {
       hospital: 'SMS Medical College & Hospital',
       location: 'Jawahar Lal Nehru Marg, Jaipur',
       metric: '34,000+ Meal Boxes',
-      status: 'Daily Nutrition Track',
-      frequency: 'Daily Bedside Distribution',
+      status: language === 'hi' ? 'दैनिक पोषण सेवा' : language === 'hinglish' ? 'Daily Nutrition Seva' : 'Daily Nutrition Track',
+      frequency: language === 'hi' ? 'प्रतिदिन बेडसाइड वितरण' : language === 'hinglish' ? 'Rozana Bedside Distribution' : 'Daily Bedside Distribution',
       color: 'bg-amber-50 text-amber-800 border-amber-200',
     },
     {
       hospital: 'All Slum Children Education Cells',
       location: 'Jaipur Slum Clusters',
       metric: '6,400+ School Kits',
-      status: 'Active Academic Drive',
-      frequency: 'Continuous Academic Support',
+      status: language === 'hi' ? 'सक्रिय बाल शिक्षा अभियान' : language === 'hinglish' ? 'Active Education Drive' : 'Active Academic Drive',
+      frequency: language === 'hi' ? 'निरंतर शिक्षा सहायता' : language === 'hinglish' ? 'Continuous Education Support' : 'Continuous Academic Support',
       color: 'bg-blue-50 text-blue-800 border-blue-200',
     },
     {
       hospital: 'Government Cancer Oncology Wards',
       location: '5 Partner Govt Hospitals, Jaipur',
       metric: '100+ Active Volunteers',
-      status: '20 Volunteers Per Hospital',
-      frequency: 'Every Ekadashi & Weekend',
+      status: language === 'hi' ? '20 स्वयंसेवक प्रति अस्पताल' : language === 'hinglish' ? '20 Volunteers Per Hospital' : '20 Volunteers Per Hospital',
+      frequency: language === 'hi' ? 'हर एकादशी व वीकेंड' : language === 'hinglish' ? 'Har Ekadashi & Weekend' : 'Every Ekadashi & Weekend',
       color: 'bg-purple-50 text-purple-800 border-purple-200',
     },
   ];
@@ -45,29 +48,29 @@ export const ImpactLedger: React.FC = () => {
       id: '1',
       rawNumber: 194700,
       suffix: '+',
-      label: 'Fresh Coconuts Cut Bedside',
-      subtext: 'Served at RUHS State Cancer Hospital & SMS Medical College',
+      label: t.impactCoconuts,
+      subtext: t.impactCoconutsSub,
     },
     {
       id: '2',
       rawNumber: 6400,
       suffix: '+',
-      label: 'School Bags Provided',
-      subtext: 'Empowering all underprivileged children across Jaipur slum cells',
+      label: t.impactBags,
+      subtext: t.impactBagsSub,
     },
     {
       id: '3',
       rawNumber: 34000,
       suffix: '+',
-      label: 'Nutritious Meal Boxes',
-      subtext: 'Antioxidant juice and wholesome food packs for patient attendants',
+      label: t.impactMeals,
+      subtext: t.impactMealsSub,
     },
     {
       id: '4',
       rawNumber: 100,
       suffix: '+',
-      label: 'Active Seva Volunteers',
-      subtext: 'Dedicated team of 20 volunteers in each of the 5 Govt Hospitals',
+      label: t.impactVolunteers,
+      subtext: t.impactVolunteersSub,
     },
   ];
 
@@ -83,16 +86,16 @@ export const ImpactLedger: React.FC = () => {
       >
         <div className="inline-flex items-center gap-2 bg-emerald-50 text-[#084c36] font-semibold text-xs rounded-full px-3.5 py-1 mb-3 border border-emerald-200">
           <Activity className="w-3.5 h-3.5 animate-pulse" />
-          <span>REAL-TIME AUDIT & VERIFIED TELEMETRY</span>
+          <span>{t.impactBadge}</span>
         </div>
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-neutral-950 tracking-tight">
-          Jaipur Impact Telemetry & <br className="hidden sm:inline" />
+          {t.impactTitle} <br className="hidden sm:inline" />
           <span style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400 }} className="text-[#084c36]">
-            Public Relief Ledger
+            {t.impactHighlight}
           </span>
         </h2>
         <p className="mt-3 text-sm sm:text-base text-neutral-600">
-          We maintain absolute transparency. Explore the live distribution milestones recorded across hospitals and educational cells in Jaipur.
+          {t.impactDesc}
         </p>
       </motion.div>
 

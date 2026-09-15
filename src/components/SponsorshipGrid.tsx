@@ -4,6 +4,7 @@ import { HeartHandshake, ArrowUpRight, X, Sparkles, Plus, Minus } from 'lucide-r
 import { Gauge } from './Gauge';
 import { DRIVE_ITEMS } from '../data/mockData';
 import type { DriveItem } from '../types';
+import { useLanguage } from '../context/LanguageContext';
 
 interface SponsorshipGridProps {
   onTriggerCheckout: (item?: DriveItem, initialData?: { name: string; phone: string; quantity: number }) => void;
@@ -18,6 +19,7 @@ export const SponsorshipGrid: React.FC<SponsorshipGridProps> = ({
   onOpenCustomDateModal,
   driveItems,
 }) => {
+  const { language } = useLanguage();
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   // State for Card 1 toggle pill (Coconut vs Immunity Packs)
@@ -257,7 +259,7 @@ export const SponsorshipGrid: React.FC<SponsorshipGridProps> = ({
                     : 'hover:text-neutral-900 text-neutral-700'
                 }`}
               >
-                🥥 Fresh Coconut
+                {language === 'hi' ? '🥥 ताजा नारियल' : language === 'hinglish' ? '🥥 Fresh Nariyal' : '🥥 Fresh Coconut'}
               </button>
               <button
                 type="button"
@@ -268,7 +270,7 @@ export const SponsorshipGrid: React.FC<SponsorshipGridProps> = ({
                     : 'hover:text-neutral-900 text-neutral-700'
                 }`}
               >
-                🍊 Immunity Packs
+                {language === 'hi' ? '🍊 इम्युनिटी पैक' : language === 'hinglish' ? '🍊 Immunity Packs' : '🍊 Immunity Packs'}
               </button>
             </div>
 
@@ -281,7 +283,7 @@ export const SponsorshipGrid: React.FC<SponsorshipGridProps> = ({
                 title="Direct Sponsor 20 Units"
               >
                 <HeartHandshake className="w-3.5 h-3.5" />
-                <span>Sponsor 20 Units</span>
+                <span>{language === 'hi' ? '20 यूनिट दान करें' : language === 'hinglish' ? '20 Units Sponsor' : 'Sponsor 20 Units'}</span>
               </button>
 
               <button
@@ -290,7 +292,7 @@ export const SponsorshipGrid: React.FC<SponsorshipGridProps> = ({
                 className="flex items-center justify-center gap-1 bg-emerald-50 hover:bg-emerald-100 text-[#084c36] border border-emerald-200 rounded-xl py-2 px-1 text-xs font-bold transition-colors cursor-pointer"
                 title="Change Quantity"
               >
-                <span>Custom Qty</span>
+                <span>{language === 'hi' ? 'अन्य मात्रा' : language === 'hinglish' ? 'Custom Qty' : 'Custom Qty'}</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -315,11 +317,11 @@ export const SponsorshipGrid: React.FC<SponsorshipGridProps> = ({
                     <div className="flex items-center gap-1.5">
                       <span className="w-2 h-2 rounded-full bg-[#084c36] animate-pulse" />
                       <h3 className="font-bold text-neutral-900 text-sm">
-                        Fast Sponsor Node
+                        {language === 'hi' ? 'त्वरित सेवा केंद्र' : language === 'hinglish' ? 'Fast Seva Node' : 'Fast Sponsor Node'}
                       </h3>
                     </div>
                     <span className="text-[10px] bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-full font-mono font-bold">
-                      Avg 20 Units ⭐
+                      {language === 'hi' ? 'औसत 20 यूनिट्स ⭐' : 'Avg 20 Units ⭐'}
                     </span>
                   </div>
 
@@ -334,21 +336,25 @@ export const SponsorshipGrid: React.FC<SponsorshipGridProps> = ({
                     </div>
 
                     <h4 className="font-extrabold text-neutral-900 text-sm leading-tight">
-                      Average 20 Bedside Seva Units
+                      {language === 'hi' ? 'औसत 20 बेडसाइड सेवा यूनिट्स' : language === 'hinglish' ? 'Average 20 Bedside Seva Units' : 'Average 20 Bedside Seva Units'}
                     </h4>
                     <p className="text-xs text-neutral-600 mt-1 leading-relaxed">
-                      Sponsor fresh green coconuts, cold-pressed juice, or school kits. Adjust quantity freely without limit.
+                      {language === 'hi'
+                        ? 'ताजा हरा नारियल, कोल्ड-प्रेस्ड जूस या स्कूल किट दान करें। मात्रा अपनी इच्छानुसार बदलें।'
+                        : language === 'hinglish'
+                        ? 'Fresh green nariyal, cold-pressed juice ya school kits sponsor karein. Qty freely adjust karein.'
+                        : 'Sponsor fresh green coconuts, cold-pressed juice, or school kits. Adjust quantity freely without limit.'}
                     </p>
                   </div>
 
                   <div className="mt-3 space-y-1.5 text-[11px] text-neutral-700 bg-[#f5f2ee] rounded-xl p-2.5 border border-neutral-200/70">
                     <div className="flex items-center justify-between">
-                      <span className="text-neutral-500">RUHS Oncology:</span>
-                      <span className="font-semibold text-emerald-800">Fresh Bedside Cut</span>
+                      <span className="text-neutral-500">{language === 'hi' ? 'RUHS ऑन्कोलॉजी:' : 'RUHS Oncology:'}</span>
+                      <span className="font-semibold text-emerald-800">{language === 'hi' ? 'लाइव बेडसाइड वितरण' : language === 'hinglish' ? 'Fresh Bedside Cut' : 'Fresh Bedside Cut'}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-neutral-500">Default Average:</span>
-                      <span className="font-bold text-[#084c36]">20 Bedside Seva Units</span>
+                      <span className="text-neutral-500">{language === 'hi' ? 'सामान्य औसत:' : 'Default Average:'}</span>
+                      <span className="font-bold text-[#084c36]">{language === 'hi' ? '20 बेडसाइड सेवा यूनिट्स' : '20 Bedside Seva Units'}</span>
                     </div>
                   </div>
                 </div>
@@ -360,7 +366,7 @@ export const SponsorshipGrid: React.FC<SponsorshipGridProps> = ({
                     className="w-full bg-[#084c36] hover:bg-[#063b2a] text-white rounded-xl py-2.5 px-3 text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer"
                   >
                     <Sparkles className="w-3.5 h-3.5 text-[#FDB813]" />
-                    <span>Quick Sponsor 20 Units</span>
+                    <span>{language === 'hi' ? 'त्वरित दान 20 यूनिट्स' : language === 'hinglish' ? 'Quick Sponsor 20 Units' : 'Quick Sponsor 20 Units'}</span>
                   </button>
 
                   {onOpenCustomDateModal && (
@@ -370,7 +376,7 @@ export const SponsorshipGrid: React.FC<SponsorshipGridProps> = ({
                       className="w-full bg-amber-400 hover:bg-amber-300 text-neutral-950 rounded-xl py-2.5 px-3 text-xs font-extrabold flex items-center justify-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer border border-amber-500/50"
                     >
                       <span>📅</span>
-                      <span>Mix Basket & Date (Nariyal + Anar + Beetroot)</span>
+                      <span>{language === 'hi' ? 'मिक्स बास्केट व तिथि (नारियल + अनार + चुकंदर)' : language === 'hinglish' ? 'Mix Basket & Date (Nariyal + Anar + Beetroot)' : 'Mix Basket & Date (Nariyal + Anar + Beetroot)'}</span>
                     </button>
                   )}
 
@@ -379,7 +385,7 @@ export const SponsorshipGrid: React.FC<SponsorshipGridProps> = ({
                     onClick={() => handleOpenForm(card1Item, 'Fresh Whole Tender Coconut (RUHS Bedside)')}
                     className="w-full bg-neutral-100 hover:bg-neutral-200 text-neutral-800 rounded-xl py-2 px-3 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                   >
-                    <span>Single Item Stepper (+ / -)</span>
+                    <span>{language === 'hi' ? 'मात्रा चयन (+ / -)' : language === 'hinglish' ? 'Single Item Stepper (+ / -)' : 'Single Item Stepper (+ / -)'}</span>
                     <ArrowUpRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -405,7 +411,7 @@ export const SponsorshipGrid: React.FC<SponsorshipGridProps> = ({
                     <div className="flex items-center gap-1.5">
                       <span className="w-2 h-2 rounded-full bg-[#084c36] animate-ping" />
                       <h3 className="font-bold text-neutral-900 text-sm">
-                        Custom Sponsor Form
+                        {language === 'hi' ? 'कस्टम दान फॉर्म' : language === 'hinglish' ? 'Custom Sponsor Form' : 'Custom Sponsor Form'}
                       </h3>
                     </div>
                     <button
@@ -422,7 +428,7 @@ export const SponsorshipGrid: React.FC<SponsorshipGridProps> = ({
                     {/* Cause Drive selection */}
                     <div>
                       <label className="text-[11px] font-semibold text-neutral-600 block mb-1">
-                        Select Cause Drive
+                        {language === 'hi' ? 'सेवा अभियान चुनें' : language === 'hinglish' ? 'Seva Drive Chunein' : 'Select Cause Drive'}
                       </label>
                       <select
                         value={card2ItemType}
@@ -452,7 +458,7 @@ export const SponsorshipGrid: React.FC<SponsorshipGridProps> = ({
                     <div>
                       <div className="flex items-center justify-between mb-1">
                         <label className="text-[11px] font-semibold text-neutral-700">
-                          Sponsorship Quantity
+                          {language === 'hi' ? 'दान मात्रा' : language === 'hinglish' ? 'Sponsorship Quantity' : 'Sponsorship Quantity'}
                         </label>
                         <span className="text-[10px] text-emerald-800 font-mono font-bold bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
                           {card2Quantity} units
@@ -511,11 +517,11 @@ export const SponsorshipGrid: React.FC<SponsorshipGridProps> = ({
                     <div className="grid grid-cols-2 gap-2">
                       <div>
                         <label className="text-[10px] font-semibold text-neutral-600 block mb-0.5">
-                          Donor Name
+                          {language === 'hi' ? 'दाता का नाम' : language === 'hinglish' ? 'Donor Ka Naam' : 'Donor Name'}
                         </label>
                         <input
                           type="text"
-                          placeholder="Your Name"
+                          placeholder={language === 'hi' ? 'आपका नाम' : language === 'hinglish' ? 'Aapka Naam' : 'Your Name'}
                           value={donorName}
                           onChange={(e) => setDonorName(e.target.value)}
                           className="w-full text-xs bg-neutral-50 border border-neutral-200 rounded-lg px-2 py-1.5 text-neutral-800 placeholder:text-neutral-400 focus:bg-white focus:border-emerald-800 focus:outline-none"
@@ -523,7 +529,7 @@ export const SponsorshipGrid: React.FC<SponsorshipGridProps> = ({
                       </div>
                       <div>
                         <label className="text-[10px] font-semibold text-neutral-600 block mb-0.5">
-                          Phone Number
+                          {language === 'hi' ? 'फ़ोन नंबर' : 'Phone Number'}
                         </label>
                         <input
                           type="tel"
@@ -542,7 +548,9 @@ export const SponsorshipGrid: React.FC<SponsorshipGridProps> = ({
 
                     {/* Calculated Total */}
                     <div className="bg-amber-50/90 border border-amber-200/80 rounded-lg px-2.5 py-1.5 flex items-center justify-between text-xs">
-                      <span className="text-amber-900 font-medium">Grand Total:</span>
+                      <span className="text-amber-900 font-medium">
+                        {language === 'hi' ? 'कुल राशि:' : 'Grand Total:'}
+                      </span>
                       <span className="text-amber-950 font-extrabold text-[14px]">
                         ₹{(getUnitPrice() * card2Quantity).toLocaleString('en-IN')}
                       </span>
@@ -554,14 +562,14 @@ export const SponsorshipGrid: React.FC<SponsorshipGridProps> = ({
                         type="submit"
                         className="flex-1 bg-[#084c36] hover:bg-[#063b2a] text-white text-xs font-bold rounded-lg px-3 py-2 transition-all shadow-sm active:scale-95 cursor-pointer text-center"
                       >
-                        Confirm & Proceed
+                        {language === 'hi' ? 'स्वीकार करें व आगे बढ़ें' : language === 'hinglish' ? 'Confirm & Proceed' : 'Confirm & Proceed'}
                       </button>
                       <button
                         type="button"
                         onClick={handleCloseForm}
                         className="text-xs text-neutral-500 underline hover:text-neutral-800 cursor-pointer px-1"
                       >
-                        Cancel
+                        {language === 'hi' ? 'रद्द करें' : 'Cancel'}
                       </button>
                     </div>
                   </form>
@@ -626,7 +634,7 @@ export const SponsorshipGrid: React.FC<SponsorshipGridProps> = ({
                     : 'hover:text-neutral-900 text-neutral-700'
                 }`}
               >
-                🍲 Meal Box
+                {language === 'hi' ? '🍲 पौष्टिक आहार' : language === 'hinglish' ? '🍲 Meal Box' : '🍲 Meal Box'}
               </button>
               <button
                 type="button"
@@ -637,7 +645,7 @@ export const SponsorshipGrid: React.FC<SponsorshipGridProps> = ({
                     : 'hover:text-neutral-900 text-neutral-700'
                 }`}
               >
-                🥤 Anar Juice
+                {language === 'hi' ? '🥤 अनार जूस' : language === 'hinglish' ? '🥤 Anar Juice' : '🥤 Anar Juice'}
               </button>
             </div>
 
@@ -650,7 +658,7 @@ export const SponsorshipGrid: React.FC<SponsorshipGridProps> = ({
                 title="Direct Sponsor 20 Units"
               >
                 <HeartHandshake className="w-3.5 h-3.5" />
-                <span>Sponsor 20 Units</span>
+                <span>{language === 'hi' ? '20 यूनिट दान करें' : language === 'hinglish' ? '20 Units Sponsor' : 'Sponsor 20 Units'}</span>
               </button>
 
               <button
@@ -659,7 +667,7 @@ export const SponsorshipGrid: React.FC<SponsorshipGridProps> = ({
                 className="flex items-center justify-center gap-1 bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 rounded-xl py-2 px-1 text-xs font-bold transition-colors cursor-pointer"
                 title="Change Quantity"
               >
-                <span>Custom Qty</span>
+                <span>{language === 'hi' ? 'अन्य मात्रा' : language === 'hinglish' ? 'Custom Qty' : 'Custom Qty'}</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />
               </button>
             </div>

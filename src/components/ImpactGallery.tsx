@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { GALLERY_ITEMS, DRIVE_ITEMS } from '../data/mockData';
 import type { GalleryItem, DriveItem } from '../types';
+import { useLanguage } from '../context/LanguageContext';
 
 interface ImpactGalleryProps {
   onBackToHome: () => void;
@@ -48,85 +49,57 @@ const getCategoryMeta = (categoryName: string): CategoryMeta => {
       icon: '🥥',
       nameEn: 'Har Ekadashi Nariyal Pani & Hospital Seva',
       nameHi: 'हर एकादशी नारियल पानी एवं हॉस्पिटल सेवा',
-      desc: 'Whole tender green coconuts cut live and served fresh to oncology wards and underprivileged patients across SMS & RUHS hospitals.',
-      badge: 'Bedside Oncology Seva',
+      desc: 'Farm-fresh green coconuts cut bedside at RUHS Cancer Hospital and SMS Hospital oncology wards for chemotherapy fighters.',
+      badge: 'Hospital Bedside Seva',
       accentBg: 'from-emerald-950 via-[#084c36] to-emerald-900',
-      borderCol: 'border-emerald-700/40',
-      badgeBg: 'bg-emerald-800 text-emerald-100',
+      borderCol: 'border-emerald-600/40',
+      badgeBg: 'bg-emerald-900 text-emerald-100',
     };
   }
-  if (
-    lower.includes('slum') ||
-    lower.includes('education') ||
-    lower.includes('school') ||
-    lower.includes('child')
-  ) {
+  if (lower.includes('education') || lower.includes('bag') || lower.includes('school')) {
     return {
-      key: 'slum',
-      icon: '🏫',
-      nameEn: 'Slum Education & Child Kit Distribution Drives',
-      nameHi: 'स्लम शिक्षा एवं बाल किट वितरण सेवा',
-      desc: 'Equipping underprivileged children across Jaipur slums with school bags, notebooks, geometry kits, and digital coding classes.',
-      badge: 'Slum Welfare & Literacy',
-      accentBg: 'from-amber-950 via-amber-900 to-amber-950',
-      borderCol: 'border-amber-700/40',
-      badgeBg: 'bg-amber-800 text-amber-100',
+      key: 'education',
+      icon: '🎒',
+      nameEn: 'Slum Children School Bags & Mentoring',
+      nameHi: 'कच्ची बस्ती बाल शिक्षा एवं स्कूल बैग वितरण',
+      desc: 'Durable waterproof school backpacks, 6 notebooks, DOMS colors, pens, geometry boxes, and educational mentorship across slum clusters.',
+      badge: 'Slum Education Drive',
+      accentBg: 'from-amber-950 via-amber-900 to-yellow-950',
+      borderCol: 'border-amber-600/40',
+      badgeBg: 'bg-amber-900 text-amber-100',
     };
   }
-  if (
-    lower.includes('sewing') ||
-    lower.includes('silai') ||
-    lower.includes('women') ||
-    lower.includes('mahila')
-  ) {
+  if (lower.includes('silai') || lower.includes('sewing') || lower.includes('women') || lower.includes('livelihood')) {
     return {
-      key: 'sewing',
+      key: 'livelihood',
       icon: '🧵',
-      nameEn: 'Women Sewing & Livelihood Training Cells',
-      nameHi: 'सिलाई मशीन एवं महिला स्वावलंबन',
-      desc: 'Heavy-duty industrial sewing machines and certified tailoring training centers empowering widowed and low-income women.',
-      badge: 'Women Livelihood',
-      accentBg: 'from-rose-950 via-rose-900 to-rose-950',
-      borderCol: 'border-rose-700/40',
-      badgeBg: 'bg-rose-800 text-rose-100',
+      nameEn: 'Women Tailoring & Sewing Machines (Rozgar)',
+      nameHi: 'महिला स्वरोजगार सिलाई मशीन सेवा',
+      desc: 'Free commercial sewing machine distribution and 3-month certified stitching courses to make underprivileged mothers financially self-reliant.',
+      badge: 'Women Livelihood Drive',
+      accentBg: 'from-rose-950 via-rose-900 to-pink-950',
+      borderCol: 'border-rose-600/40',
+      badgeBg: 'bg-rose-900 text-rose-100',
     };
   }
-  if (lower.includes('cancer') || lower.includes('warrior')) {
+  if (lower.includes('wheelchair') || lower.includes('divyang') || lower.includes('disability') || lower.includes('relief')) {
     return {
-      key: 'cancer',
-      icon: '🎗️',
-      nameEn: 'Childhood Cancer Warriors & Bedside Seva',
-      nameHi: 'कैंसर योद्धा बच्चे एवं हॉस्पिटल सेवा',
-      desc: 'Dedicated clinical chemotherapy, sterile coconut hydration, and bedside care for Lovekush, Aru, Pari, and Rocky Singh at RUHS.',
-      badge: 'Pediatric Oncology Lifeline',
-      accentBg: 'from-rose-950 via-[#084c36] to-emerald-950',
-      borderCol: 'border-emerald-700/40',
-      badgeBg: 'bg-rose-800 text-rose-100',
-    };
-  }
-  if (
-    lower.includes('disabled') ||
-    lower.includes('divyang') ||
-    lower.includes('mobility') ||
-    lower.includes('wheelchair')
-  ) {
-    return {
-      key: 'disabled',
-      icon: '♿',
-      nameEn: 'Divyangjan Mobility & Special Livelihoods',
-      nameHi: 'दिव्यांगजन स्वावलंबन एवं मोबिलिटी',
-      desc: 'Customized wheelchairs, tricycles, and self-employment toolkits helping differently-abled individuals live with proud independence.',
-      badge: 'Divyang Empowerment',
-      accentBg: 'from-indigo-950 via-indigo-900 to-indigo-950',
-      borderCol: 'border-indigo-700/40',
-      badgeBg: 'bg-indigo-800 text-indigo-100',
+      key: 'divyang',
+      icon: '🦽',
+      nameEn: 'Divyangjan Mobility & Hospital Wheelchairs',
+      nameHi: 'दिव्यांगजन गतिशीलता एवं हॉस्पिटल व्हीलचेयर',
+      desc: 'Heavy-duty medical wheelchairs, tricycles, and walking calipers donated directly to patients in need and govt hospital emergency gates.',
+      badge: 'Mobility & Relief Drive',
+      accentBg: 'from-purple-950 via-purple-900 to-indigo-950',
+      borderCol: 'border-purple-600/40',
+      badgeBg: 'bg-purple-900 text-purple-100',
     };
   }
   return {
-    key: 'custom',
+    key: 'general',
     icon: '✨',
-    nameEn: categoryName || 'Ground Seva Mission',
-    nameHi: 'प्रत्यक्ष सेवा कार्य',
+    nameEn: 'General Ground Seva & Emergency Relief',
+    nameHi: 'सामान्य धरातल सेवा एवं आपातकालीन सहायता',
     desc: 'Verified on-ground humanitarian drives organized and executed by Rise Up (Humanity Foundation).',
     badge: 'Verified Mission',
     accentBg: 'from-neutral-900 via-neutral-800 to-neutral-900',
@@ -141,6 +114,7 @@ export const ImpactGallery: React.FC<ImpactGalleryProps> = ({
   onOpenRecruitment,
   galleryItems,
 }) => {
+  const { language, t } = useLanguage();
   const [activeTab, setActiveTab] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeLightboxItem, setActiveLightboxItem] = useState<GalleryItem | null>(null);
@@ -264,7 +238,7 @@ export const ImpactGallery: React.FC<ImpactGalleryProps> = ({
           className="group inline-flex items-center gap-2 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer shadow-xs active:scale-95"
         >
           <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
-          <span>Back to Main Hub</span>
+          <span>{t.galleryBack}</span>
         </button>
 
         {/* Brand Title */}
@@ -274,13 +248,13 @@ export const ImpactGallery: React.FC<ImpactGalleryProps> = ({
           </div>
           <div className="hidden sm:block leading-tight text-left">
             <div className="text-sm font-bold text-neutral-950 flex items-center gap-1.5">
-              <span>Live Seva Truth Engine</span>
+              <span>{language === 'hi' ? 'लाइव सेवा गैलरी' : language === 'hinglish' ? 'Live Seva Gallery' : 'Live Seva Truth Engine'}</span>
               <span className="bg-emerald-100 text-emerald-800 text-[10px] px-2 py-0.2 rounded-full font-mono font-bold">
                 100% Ground Verified
               </span>
             </div>
             <div className="text-[10px] text-emerald-800 font-mono">
-              Visual Transparency & Direct Photo Feeds
+              {language === 'hi' ? 'वास्तविक धरातल की तस्वीरें' : language === 'hinglish' ? 'Real Ground Photos' : 'Visual Transparency & Direct Photo Feeds'}
             </div>
           </div>
         </div>
@@ -291,7 +265,7 @@ export const ImpactGallery: React.FC<ImpactGalleryProps> = ({
           className="bg-[#084c36] hover:bg-[#063b2a] text-white text-xs font-semibold px-4 py-2 rounded-full transition-all shadow-md cursor-pointer flex items-center gap-1.5"
         >
           <HeartHandshake className="w-3.5 h-3.5 text-[#FDB813]" />
-          <span>Sponsor Seva</span>
+          <span>{t.sponsorNow}</span>
         </button>
       </header>
 
@@ -299,21 +273,15 @@ export const ImpactGallery: React.FC<ImpactGalleryProps> = ({
       <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12 pb-6 text-center">
         <div className="inline-flex items-center gap-2 bg-[#084c36]/10 text-[#084c36] font-semibold text-xs rounded-full px-4 py-1.5 mb-3 border border-[#084c36]/20">
           <Sparkles className="w-3.5 h-3.5 text-[#FDB813]" />
-          <span>EVERY SMILE & DRIVE HAS COMPLETE PHOTOGRAPHIC PROOF</span>
+          <span>{t.galleryBadge}</span>
         </div>
 
         <h1 className="text-3xl sm:text-5xl font-bold text-neutral-950 tracking-tight">
-          Ground Impact Gallery.{' '}
-          <span
-            style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400 }}
-            className="text-[#084c36]"
-          >
-            Scroll through live photos.
-          </span>
+          {t.galleryHeroTitle}
         </h1>
 
         <p className="mt-3 text-xs sm:text-sm lg:text-base text-neutral-600 max-w-2xl mx-auto leading-relaxed">
-          Neeche scroll karein aur har seva (Nariyal Pani, Slum Education, Silai Machine, Divyangjan) ki sabhi live ground photos dekhein. Kisi bhi photo par tap karke full high-res view kholein.
+          {t.galleryHeroDesc}
         </p>
 
         {/* Search Bar */}

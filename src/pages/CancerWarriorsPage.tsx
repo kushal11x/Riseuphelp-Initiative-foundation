@@ -4,6 +4,7 @@ import { ArrowLeft, Sparkles, Heart, MapPin, Activity, CheckCircle2, Award, Mail
 import { Footer } from '../components/Footer';
 import type { PatientProfile, LeaderboardDonor, DriveItem } from '../types';
 import { PATIENT_PROFILES, INITIAL_LEADERBOARD_DONORS } from '../data/mockData';
+import { useLanguage } from '../context/LanguageContext';
 
 interface CancerWarriorsPageProps {
   onBackToHome: () => void;
@@ -20,6 +21,8 @@ export const CancerWarriorsPage: React.FC<CancerWarriorsPageProps> = ({
   onSponsorPatient,
   onOpenAdmin,
 }) => {
+  const { t } = useLanguage();
+
   const handleAdoptPatient = (patient: PatientProfile, fullLifeline: boolean = true) => {
     const dummyDriveItem: DriveItem = {
       id: `patient-care-${patient.id}`,
@@ -32,15 +35,15 @@ export const CancerWarriorsPage: React.FC<CancerWarriorsPageProps> = ({
       deliveredCount: `₹${patient.fundedAmount.toLocaleString('en-IN')} Funded`,
       percentage: patient.fundingPercentage,
       color: '#084c36',
-      badge: 'Critical Cancer Lifeline',
+      badge: 'Urgent Care Patient',
+      image: patient.image,
       description: patient.story,
-      impactMetrics: patient.medicalNeeds.join('; '),
+      impactMetrics: `Direct coverage of chemotherapy ampoules & recovery at ${patient.hospitalWard}`,
       options: {
-        primary: 'Full Month Unit (₹15,000)',
-        secondary: 'Chemo Share (₹7,500)',
+        primary: 'Full Month Lifeline Unit (₹15,000)',
+        secondary: 'Half Chemo Cycle Share (₹7,500)',
       },
     };
-
     onSponsorPatient(dummyDriveItem, {
       name: '',
       phone: '',
@@ -57,12 +60,12 @@ export const CancerWarriorsPage: React.FC<CancerWarriorsPageProps> = ({
           className="inline-flex items-center gap-2 bg-white/90 hover:bg-white text-neutral-800 font-bold text-xs sm:text-sm px-4 py-2 rounded-full border border-neutral-200 shadow-xs hover:shadow-md transition-all cursor-pointer group"
         >
           <ArrowLeft className="w-4 h-4 text-[#084c36] group-hover:-translate-x-1 transition-transform" />
-          <span>← Back to Home</span>
+          <span>{t.warriorsBack}</span>
         </button>
 
         <div className="inline-flex items-center gap-1.5 bg-rose-50 text-rose-800 font-bold text-xs px-3 py-1.5 rounded-full border border-rose-200">
           <Heart className="w-3.5 h-3.5 text-rose-600 fill-rose-600" />
-          <span>RUHS & SMS Chemotherapy Relief</span>
+          <span>{t.warriorsVowBadge}</span>
         </div>
       </div>
 
@@ -74,10 +77,10 @@ export const CancerWarriorsPage: React.FC<CancerWarriorsPageProps> = ({
               100% Direct Oncology Support
             </span>
             <h1 className="text-2xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">
-              Adopt a Cancer Warrior: Chemotherapy & Lifeline Care
+              {t.warriorsHeroTitle}
             </h1>
             <p className="text-xs sm:text-base text-emerald-100/90 leading-relaxed">
-              In government cancer wards, families from rural Rajasthan exhaust all lifetime savings on basic diagnostics. By adopting a patient for ₹15,000/month, you cover their targeted chemotherapy ampoules, single-donor platelet kits, and supportive bedside care.
+              {t.warriorsHeroDesc}
             </p>
 
             <div className="pt-2 flex flex-wrap gap-2 text-xs font-semibold">
