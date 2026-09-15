@@ -149,8 +149,43 @@ export const HangingPaperFrames: React.FC<HangingPaperFramesProps> = ({
     };
   }, [autoRotate, isPausedRight, rightList.length]);
 
+  // Unified list for single mobile spotlight frame (combining left and right profiles)
+  const mobileList = React.useMemo(() => {
+    const list: ChildSpotlightProfile[] = [];
+    const max = Math.max(leftList.length, rightList.length);
+    for (let i = 0; i < max; i++) {
+      if (i < leftList.length) list.push(leftList[i]);
+      if (i < rightList.length && !leftList.some((l) => l.id === rightList[i].id)) {
+        list.push(rightList[i]);
+      }
+    }
+    return list.length > 0 ? list : leftList;
+  }, [leftList, rightList]);
+
+  const [mobileIndex, setMobileIndex] = useState(0);
+
+  // Mobile auto-rotation every 5.5s
+  useEffect(() => {
+    if (autoRotate === false || isPausedLeft || mobileList.length <= 1) return;
+    const interval = setInterval(() => {
+      setMobileIndex((prev) => (prev + 1) % mobileList.length);
+    }, 5500);
+    return () => clearInterval(interval);
+  }, [autoRotate, isPausedLeft, mobileList.length]);
+
+  const handlePrevMobile = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setMobileIndex((prev) => (prev - 1 + mobileList.length) % mobileList.length);
+  };
+
+  const handleNextMobile = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setMobileIndex((prev) => (prev + 1) % mobileList.length);
+  };
+
   const activeLeft = leftList[leftIndex] || leftList[0] || childLeft;
   const activeRight = rightList[rightIndex] || rightList[0] || childRight;
+  const activeMobile = mobileList[mobileIndex % mobileList.length] || activeLeft;
 
   const handlePrevLeft = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -598,97 +633,95 @@ export const HangingPaperFrames: React.FC<HangingPaperFramesProps> = ({
 
       {/* =========================================================================
           3. MOBILE & TABLET AUTO-ROTATING SPOTLIGHT (Visible on Screen < lg)
+             Single neat centered hanging frame (Clean, non-cramped mobile layout)
           ========================================================================= */}
-      <div className="lg:hidden w-full px-3 pt-2 pb-1 relative z-30 pointer-events-auto">
-        <div className="flex items-center justify-between mb-2 px-1">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-800 flex items-center gap-1">
-            <Sparkles className="w-3 h-3 text-[#FDB813]" />
-            <span>Rotating Beneficiary Spotlights</span>
-          </span>
-          <span className="text-[9px] font-mono text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 font-bold flex items-center gap-1">
-            <RotateCw className="w-2.5 h-2.5 animate-spin" />
-            <span>Auto-Changing</span>
-          </span>
-        </div>
-
-        <div className="grid grid-cols-2 gap-2.5">
-          {/* Mobile Left Frame (Healthcare / Cancer Warriors) */}
-          <div
-            onClick={handleSelectLeft}
-            className="bg-white p-2.5 rounded-2xl border border-neutral-200 shadow-md flex flex-col cursor-pointer active:scale-95 transition-transform relative overflow-hidden"
-          >
-            <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-neutral-950 mb-1.5">
-              <AnimatePresence mode="wait">
-                <motion.img
-                  key={activeLeft.id}
-                  src={activeLeft.image}
-                  alt={activeLeft.name}
-                  initial={{ opacity: 0, scale: 0.94 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.94 }}
-                  transition={{ duration: 0.35 }}
-                  className="w-full h-full object-cover"
-                />
-              </AnimatePresence>
-              <span className="absolute top-1 left-1 bg-[#084c36] text-white text-[8px] font-bold px-1.5 py-0.5 rounded font-mono">
-                {activeLeft.bedNumber || activeLeft.category}
-              </span>
-              <span className="absolute bottom-1 right-1 bg-black/60 text-[#FDB813] text-[8px] font-mono px-1 rounded">
-                {leftIndex + 1}/{leftList.length}
-              </span>
-            </div>
-
-            <strong className="text-[11px] font-bold text-neutral-900 truncate">
-              {activeLeft.name} ({activeLeft.age}y)
-            </strong>
-            <span className="text-[9px] text-neutral-500 truncate">
-              {activeLeft.title}
-            </span>
-            <div className="text-[10px] font-bold text-[#084c36] mt-0.5">
-              ₹{(activeLeft.monthlyNeed || activeLeft.suggestedDonation).toLocaleString('en-IN')}/mo
-            </div>
-            <div className="mt-1 bg-emerald-50 hover:bg-[#084c36] hover:text-white text-[#084c36] text-[9px] font-bold py-1 text-center rounded-lg border border-emerald-200 transition-colors">
-              Sponsor Now
-            </div>
+      <div className="lg:hidden w-full px-4 pt-1 pb-3 relative z-30 pointer-events-auto">
+        <div className="max-w-[280px] sm:max-w-xs mx-auto">
+          {/* Subtle hanging wire and wooden pin at top */}
+          <div className="flex flex-col items-center mb-1 select-none">
+            <div className="w-8 h-2 bg-neutral-200 border-x border-t border-neutral-300 rounded-t-sm" />
+            <div className="w-2.5 h-2.5 rounded-full bg-[#084c36] border-2 border-white shadow-xs -mt-1 z-10" />
           </div>
 
-          {/* Mobile Right Frame (Education / Livelihood / Luv Kush) */}
+          {/* Clean Single Hanging Card */}
           <div
-            onClick={handleSelectRight}
-            className="bg-white p-2.5 rounded-2xl border border-neutral-200 shadow-md flex flex-col cursor-pointer active:scale-95 transition-transform relative overflow-hidden"
+            onClick={() => onSelectChild && onSelectChild(activeMobile)}
+            className="bg-white p-3 rounded-2xl border border-neutral-200/90 shadow-md flex flex-col cursor-pointer active:scale-[0.98] transition-all relative overflow-hidden group"
           >
-            <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-neutral-950 mb-1.5">
+            {/* Beneficiary Photo */}
+            <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-neutral-100 mb-2 shadow-inner">
               <AnimatePresence mode="wait">
                 <motion.img
-                  key={activeRight.id}
-                  src={activeRight.image}
-                  alt={activeRight.name}
-                  initial={{ opacity: 0, scale: 0.94 }}
+                  key={activeMobile.id}
+                  src={activeMobile.image}
+                  alt={activeMobile.name}
+                  initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.94 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.35 }}
                   className="w-full h-full object-cover"
                 />
               </AnimatePresence>
-              <span className="absolute top-1 left-1 bg-[#0e6245] text-white text-[8px] font-bold px-1.5 py-0.5 rounded font-mono">
-                {activeRight.bedNumber || activeRight.category}
+
+              {/* Tag / Category Badge */}
+              <span className="absolute top-2 left-2 bg-[#084c36]/90 backdrop-blur-xs text-white text-[9px] font-bold px-2 py-0.5 rounded font-mono shadow-xs">
+                {activeMobile.bedNumber || activeMobile.category}
               </span>
-              <span className="absolute bottom-1 right-1 bg-black/60 text-[#FDB813] text-[8px] font-mono px-1 rounded">
-                {rightIndex + 1}/{rightList.length}
+
+              {/* Counter Badge */}
+              <span className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-xs text-[#FDB813] text-[9px] font-mono px-1.5 py-0.5 rounded shadow-xs">
+                {(mobileIndex % mobileList.length) + 1}/{mobileList.length}
+              </span>
+
+              {/* Bedside Verified pill */}
+              <span className="absolute bottom-2 left-2 bg-white/95 backdrop-blur-xs text-[#084c36] text-[8px] font-bold px-1.5 py-0.5 rounded shadow-xs flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Bedside Verified</span>
               </span>
             </div>
 
-            <strong className="text-[11px] font-bold text-neutral-900 truncate">
-              {activeRight.name} ({activeRight.age}y)
-            </strong>
-            <span className="text-[9px] text-neutral-500 truncate">
-              {activeRight.title}
-            </span>
-            <div className="text-[10px] font-bold text-[#084c36] mt-0.5">
-              ₹{(activeRight.monthlyNeed || activeRight.suggestedDonation).toLocaleString('en-IN')}/mo
+            {/* Profile Info */}
+            <div className="flex items-start justify-between gap-1 mb-1">
+              <div className="min-w-0 pr-1">
+                <strong className="text-xs sm:text-sm font-extrabold text-neutral-900 truncate block">
+                  {activeMobile.name} ({activeMobile.age} yrs)
+                </strong>
+                <span className="text-[10px] sm:text-[11px] text-neutral-500 truncate block">
+                  {activeMobile.title}
+                </span>
+              </div>
+              <div className="text-right shrink-0">
+                <div className="text-[11px] sm:text-xs font-black text-[#084c36]">
+                  ₹{(activeMobile.monthlyNeed || activeMobile.suggestedDonation).toLocaleString('en-IN')}
+                </div>
+                <span className="text-[8px] text-neutral-400 block -mt-0.5">per month</span>
+              </div>
             </div>
-            <div className="mt-1 bg-emerald-50 hover:bg-[#084c36] hover:text-white text-[#084c36] text-[9px] font-bold py-1 text-center rounded-lg border border-emerald-200 transition-colors">
-              Sponsor Now
+
+            {/* Action Bar & Controls */}
+            <div className="mt-1.5 pt-2 border-t border-neutral-100 flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handlePrevMobile}
+                className="w-7 h-7 rounded-lg bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-neutral-600 transition-colors shrink-0 cursor-pointer active:scale-95"
+                aria-label="Previous child"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+
+              <div className="flex-1 bg-emerald-50 group-hover:bg-[#084c36] group-hover:text-white text-[#084c36] text-[10px] sm:text-xs font-bold py-1.5 text-center rounded-lg border border-emerald-200 transition-all flex items-center justify-center gap-1">
+                <Heart className="w-3 h-3 fill-rose-500 text-rose-500 shrink-0 group-hover:fill-white group-hover:text-white transition-colors" />
+                <span>View Story & Sponsor</span>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleNextMobile}
+                className="w-7 h-7 rounded-lg bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-neutral-600 transition-colors shrink-0 cursor-pointer active:scale-95"
+                aria-label="Next child"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
             </div>
           </div>
         </div>

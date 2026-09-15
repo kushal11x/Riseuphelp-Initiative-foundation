@@ -2,12 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShieldCheck, Phone, User, Calendar, FileText, CheckCircle2, RefreshCw } from 'lucide-react';
 import type { DonorProfile } from '../types';
-import {
-  auth,
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
-  type ConfirmationResult,
-} from '../utils/firebase';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -30,14 +24,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [isExistingUser, setIsExistingUser] = useState(false);
 
   // OTP states
-  const [generatedOtp, setGeneratedOtp] = useState('');
   const [enteredOtp, setEnteredOtp] = useState('');
-  const [otpToken, setOtpToken] = useState('');
   const [otpError, setOtpError] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
-  const [deliveryChannel, setDeliveryChannel] = useState<'sms' | 'whatsapp'>('sms');
-  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
 
   // Ensure MSG91 multi-channel OTP widget SDK is initialized
   useEffect(() => {
@@ -90,26 +80,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     }
   };
 
-  // Recaptcha verifier helper
-  const getRecaptchaVerifier = () => {
-    if (typeof window === 'undefined') return null;
-    try {
-      if ((window as any).ruhRecaptchaVerifier) {
-        return (window as any).ruhRecaptchaVerifier as RecaptchaVerifier;
-      }
-      const verifier = new RecaptchaVerifier(auth, 'recaptcha-anchor', {
-        size: 'invisible',
-        callback: () => {
-          // reCAPTCHA solved
-        },
-      });
-      (window as any).ruhRecaptchaVerifier = verifier;
-      return verifier;
-    } catch (e) {
-      console.warn('[Recaptcha Init Error]', e);
-      return null;
-    }
-  };
 
   // Helper: Instant 1-Click Login (bypass OTP friction)
   const handleInstantLogin = (phoneNumber?: string) => {
@@ -160,15 +130,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     localStorage.setItem('ruh_donor_user', JSON.stringify(newProfile));
     onLoginSuccess(newProfile);
     onClose();
-
-    // Fire background notification via Fast2SMS
-    try {
-      fetch('/api/send-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: targetPhone, donorName: newProfile.fullName }),
-      }).catch(() => {});
-    } catch {}
   };
 
   // 1. Dispatch Real SMS OTP via MSG91 + Fast2SMS Safe Fallback
@@ -185,7 +146,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     setIsSending(true);
     setOtpError('');
-    setDeliveryChannel('sms');
 
     // Step A: Primary MSG91 Client-Side Web SDK Dispatch
     if (typeof (window as any).sendOtp === 'function') {
@@ -208,45 +168,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       }
     }
 
-    // Step B: Secondary Fast2SMS Real OTP Dispatch via serverless API
-    try {
-      const res = await fetch('/api/send-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, donorName: fullName.trim() || 'Donor' }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        if (data.token) setOtpToken(data.token);
-        if (data.otp) setGeneratedOtp(data.otp);
-        setStep('otp');
-        setIsSending(false);
-        return;
-      }
-    } catch (apiErr) {
-      console.warn('[Fast2SMS API dispatch warning, checking secondary]', apiErr);
-    }
-
-    // Step C: Tertiary Firebase Phone Auth (if verifier ready)
-    try {
-      const verifier = getRecaptchaVerifier();
-      if (verifier) {
-        const fullPhone = `+91${phone}`;
-        const confirmation = await signInWithPhoneNumber(auth, fullPhone, verifier);
-        setConfirmationResult(confirmation);
-        setStep('otp');
-        setIsSending(false);
-        return;
-      }
-    } catch (err: any) {
-      console.warn('[Firebase Phone Auth Warning]', err);
-    }
-
-    // Step D: Guaranteed Direct Fallback
-    const fallbackOtp = '1234';
-    setGeneratedOtp(fallbackOtp);
     setStep('otp');
     setIsSending(false);
+    return;
+
   };
 
 
@@ -263,7 +188,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     setOtpError('');
 
     // Master code / client-side instant bypass
-    if (cleanEntered === '1234' || cleanEntered === '7429' || (generatedOtp && cleanEntered === generatedOtp)) {
+    if (cleanEntered === '1234' || cleanEntered === '7429') {
       handleInstantLogin();
       setIsVerifying(false);
       return;
@@ -296,102 +221,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       }
     }
 
-    // Step B: Cryptographic Fast2SMS / Serverless Verification
-    if (otpToken) {
-      try {
-        const res = await fetch('/api/verify-otp', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            phone,
-            otp: cleanEntered,
-            token: otpToken,
-            fullName,
-            dob,
-            panNumber,
-          }),
-        });
-        const data = await res.json();
-        if (data.success && data.profile) {
-          const profile: DonorProfile = data.profile;
-          const savedUserStr = localStorage.getItem('ruh_donor_user');
-          if (savedUserStr) {
-            try {
-              const saved = JSON.parse(savedUserStr);
-              if (saved.phone === phone) {
-                profile.totalDonated = saved.totalDonated || 0;
-                profile.donationsCount = saved.donationsCount || 0;
-                profile.badge = saved.badge || profile.badge;
-                profile.receipts = saved.receipts || [];
-              }
-            } catch {}
-          }
-          localStorage.setItem('ruh_donor_user', JSON.stringify(profile));
-          onLoginSuccess(profile);
-          onClose();
-          setIsVerifying(false);
-          return;
-        } else {
-          setOtpError(data.error || 'Incorrect OTP code entered. Please check SMS/WhatsApp or use 1234.');
-          setIsVerifying(false);
-          return;
-        }
-      } catch (vErr) {
-        console.warn('[verify-otp API error, checking secondary]', vErr);
-      }
-    }
-
-    // Step C: Secondary Firebase Confirmation
-    if (confirmationResult) {
-      try {
-        const userCredential = await confirmationResult.confirm(cleanEntered);
-        if (userCredential?.user) {
-          const donorId = `RUH-${phone.slice(-4)}-${Date.now().toString().slice(-4)}`;
-          const newProfile: DonorProfile = {
-            donorId,
-            fullName: fullName.trim() || 'Citizen Patron',
-            phone,
-            dob: dob.trim(),
-            panNumber: panNumber.trim().toUpperCase() || undefined,
-            totalDonated: 0,
-            donationsCount: 0,
-            lastDonationDate: new Date().toLocaleDateString('en-IN', {
-              day: 'numeric',
-              month: 'short',
-              year: 'numeric',
-            }),
-            badge: 'Verified Citizen Patron',
-            receipts: [],
-          };
-
-          const savedUserStr = localStorage.getItem('ruh_donor_user');
-          if (savedUserStr) {
-            try {
-              const saved = JSON.parse(savedUserStr);
-              if (saved.phone === phone) {
-                newProfile.totalDonated = saved.totalDonated || 0;
-                newProfile.donationsCount = saved.donationsCount || 0;
-                newProfile.badge = saved.badge || 'Verified Citizen Patron';
-                newProfile.receipts = saved.receipts || [];
-                if (panNumber.trim()) newProfile.panNumber = panNumber.trim().toUpperCase();
-              }
-            } catch {}
-          }
-
-          localStorage.setItem('ruh_donor_user', JSON.stringify(newProfile));
-          onLoginSuccess(newProfile);
-          onClose();
-          setIsVerifying(false);
-          return;
-        }
-      } catch (fbErr: any) {
-        setOtpError('Invalid code. Please re-enter or request a new OTP.');
-        setIsVerifying(false);
-        return;
-      }
-    }
-
-    setOtpError('Incorrect verification code. Please enter 1234 to proceed.');
+    setOtpError('Incorrect verification code. Please check your phone or enter 1234 to proceed.');
     setIsVerifying(false);
   };
 
@@ -555,13 +385,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               <div className="bg-emerald-50/90 rounded-2xl p-3.5 border border-emerald-200/80 text-xs text-center space-y-1">
                 <div className="flex items-center justify-center gap-1.5 text-emerald-900 font-bold">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>
-                    {deliveryChannel === 'whatsapp' ? 'WhatsApp Verification Dispatched' : 'SMS Verification Code Dispatched'}
-                  </span>
+                  <span>Verification Code Dispatched</span>
                 </div>
                 <p className="text-[11px] text-emerald-800 leading-relaxed">
-                  Sent via {deliveryChannel === 'whatsapp' ? 'Official WhatsApp' : 'Direct SMS'} to{' '}
-                  <span className="font-mono font-bold text-emerald-950">+91 {phone}</span>.
+                  Sent to <span className="font-mono font-bold text-emerald-950">+91 {phone}</span>.
                 </p>
               </div>
 

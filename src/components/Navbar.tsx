@@ -119,7 +119,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </span>
                 <span className="w-1.5 h-1.5 rounded-full bg-[#084c36] animate-pulse" />
               </div>
-              <span className="hidden sm:block text-[9px] sm:text-[10px] text-neutral-500 font-mono uppercase tracking-wider font-semibold">
+              <span className="block text-[8px] sm:text-[10px] text-neutral-500 font-mono uppercase tracking-wider font-semibold leading-none mt-0.5">
                 Initiative Foundation
               </span>
             </div>
@@ -230,7 +230,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
             <button
               onClick={() => onChangeLanguage && onChangeLanguage('hinglish')}
-              className={`hidden md:block px-2 py-1 rounded-full text-[10px] font-bold transition-all cursor-pointer ${
+              className={`px-1.5 sm:px-2 py-1 rounded-full text-[10px] sm:text-xs font-bold transition-all cursor-pointer ${
                 language === 'hinglish'
                   ? 'bg-[#084c36] text-white shadow-xs'
                   : 'text-neutral-500 hover:text-neutral-950'

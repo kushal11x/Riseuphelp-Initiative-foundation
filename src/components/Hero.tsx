@@ -208,18 +208,18 @@ export const Hero: React.FC<HeroProps> = ({
       {/* 4. Foreground Content with Kinetic Typography (pointer-events-none on container so side frame clicks pass cleanly) */}
       <div className="relative z-30 flex flex-col justify-between flex-grow pointer-events-none">
         {/* Global Slow Aesthetic Reveal Hero Content */}
-        <div className="flex flex-col items-center px-4 pt-4 sm:pt-8 pb-6 sm:pb-8 text-center max-w-5xl mx-auto pointer-events-auto">
+        <div className="flex flex-col items-center px-3 sm:px-4 pt-2 sm:pt-8 pb-4 sm:pb-8 text-center max-w-5xl mx-auto pointer-events-auto">
           
           {/* 1. Verification Node Badge (Smooth Glide Down) */}
           <motion.div
             initial={{ opacity: 0, y: -18 }}
             animate={isIntroReady ? { opacity: 1, y: 0 } : { opacity: 0, y: -18 }}
             transition={{ duration: 0.9, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 rounded-full bg-white/80 backdrop-blur-md border border-neutral-300/80 shadow-xs mb-5 sm:mb-6"
+            className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-white/80 backdrop-blur-md border border-neutral-300/80 shadow-xs mb-3 sm:mb-6"
           >
             <div className="w-2 h-2 rounded-full bg-[#084c36] animate-pulse" />
-            <span className="text-[10px] sm:text-xs font-mono font-bold text-neutral-800 tracking-wider uppercase flex items-center gap-1.5">
-              <span>{heroContent?.badgeText || t.heroBadge}</span>
+            <span className="text-[9px] sm:text-xs font-mono font-bold text-neutral-800 tracking-wider uppercase flex items-center gap-1.5">
+              <span>{language !== 'en' ? t.heroBadge : (heroContent?.badgeText || t.heroBadge)}</span>
             </span>
             <ShieldCheck className="w-3.5 h-3.5 text-[#084c36]" />
           </motion.div>
@@ -230,9 +230,9 @@ export const Hero: React.FC<HeroProps> = ({
               fontFamily: "'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
               letterSpacing: '-0.03em',
             }}
-            className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-extrabold text-neutral-950 tracking-tight leading-[1.1] sm:leading-[1.06] text-balance max-w-4xl"
+            className="text-2xl xs:text-3xl sm:text-5xl md:text-6xl font-extrabold text-neutral-950 tracking-tight leading-[1.15] sm:leading-[1.06] text-balance max-w-4xl"
           >
-            <span className="inline-block overflow-hidden pb-1">
+            <span className="inline-block overflow-hidden pb-0.5 sm:pb-1">
               <motion.span
                 custom={0}
                 initial="hidden"
@@ -240,10 +240,10 @@ export const Hero: React.FC<HeroProps> = ({
                 variants={wordAnimationVariants}
                 className="inline-block"
               >
-                {heroContent?.title1 || t.heroTitle1}
+                {language !== 'en' ? t.heroTitle1 : (heroContent?.title1 || t.heroTitle1)}
               </motion.span>
             </span>{' '}
-            <span className="inline-block overflow-hidden pb-1">
+            <span className="inline-block overflow-hidden pb-0.5 sm:pb-1">
               <motion.span
                 custom={1}
                 initial="hidden"
@@ -251,10 +251,10 @@ export const Hero: React.FC<HeroProps> = ({
                 variants={wordAnimationVariants}
                 className="inline-block text-[#084c36]"
               >
-                {heroContent?.title2 || t.heroTitle2}
+                {language !== 'en' ? t.heroTitle2 : (heroContent?.title2 || t.heroTitle2)}
               </motion.span>
             </span>{' '}
-            <span className="inline-block overflow-hidden pb-1">
+            <span className="inline-block overflow-hidden pb-0.5 sm:pb-1">
               <motion.span
                 custom={2}
                 initial="hidden"
@@ -262,7 +262,7 @@ export const Hero: React.FC<HeroProps> = ({
                 variants={wordAnimationVariants}
                 className="inline-block"
               >
-                {heroContent?.title3 || t.heroTitle3}
+                {language !== 'en' ? t.heroTitle3 : (heroContent?.title3 || t.heroTitle3)}
               </motion.span>
             </span>
           </h1>
@@ -272,12 +272,9 @@ export const Hero: React.FC<HeroProps> = ({
             initial={{ opacity: 0, y: 18 }}
             animate={isIntroReady ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
             transition={{ duration: 0.9, delay: 0.95, ease: [0.16, 1, 0.3, 1] }}
-            style={{
-              fontSize: 'clamp(13px, 3.5vw, 15px)',
-            }}
-            className="mt-4 sm:mt-5 text-neutral-700 max-w-2xl px-2 font-normal leading-relaxed text-balance"
+            className="mt-2.5 sm:mt-5 text-neutral-700 max-w-2xl px-2 font-normal text-xs sm:text-sm md:text-base leading-relaxed text-balance"
           >
-            {heroContent?.subtitle || t.heroSubtitle}
+            {language !== 'en' ? t.heroSubtitle : (heroContent?.subtitle || t.heroSubtitle)}
           </motion.p>
 
           {/* 4. Action Buttons Row */}
@@ -289,25 +286,25 @@ export const Hero: React.FC<HeroProps> = ({
                 : { opacity: 0, y: 22, scale: 0.94 }
             }
             transition={{ duration: 0.9, delay: 1.1, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-[14px]"
+            className="mt-4 sm:mt-8 flex flex-wrap items-center justify-center gap-2.5 sm:gap-4 text-xs sm:text-sm"
           >
             {/* Button A: Sponsor a Drive */}
             <button
               onClick={handleSponsorClick}
-              className="group inline-flex items-center gap-3 bg-[#084c36] hover:bg-[#063b2a] text-white rounded-full pl-6 sm:pl-7 pr-2 py-2 sm:py-2.5 font-bold transition-all duration-300 shadow-md hover:shadow-lg active:scale-95 cursor-pointer"
+              className="group inline-flex items-center gap-2.5 sm:gap-3 bg-[#084c36] hover:bg-[#063b2a] text-white rounded-full pl-5 sm:pl-7 pr-2 py-2 sm:py-2.5 font-bold transition-all duration-300 shadow-md hover:shadow-lg active:scale-95 cursor-pointer text-xs sm:text-sm"
             >
               <span>{t.heroSponsorBtn}</span>
-              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/20 flex items-center justify-center group-hover:translate-x-1 transition-transform">
-                <ChevronRight className="w-4 h-4 text-white" />
+              <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white/20 flex items-center justify-center group-hover:translate-x-1 transition-transform">
+                <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
               </div>
             </button>
 
             {/* Button B: Explore Story */}
             <button
               onClick={() => onNavigateView('ekadashi')}
-              className="liquid-glass border border-white/40 hover:border-neutral-300 text-neutral-900 bg-white/90 hover:bg-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-full font-bold transition-all duration-300 shadow-sm hover:shadow active:scale-95 cursor-pointer inline-flex items-center gap-2 text-xs sm:text-sm"
+              className="liquid-glass border border-white/40 hover:border-neutral-300 text-neutral-900 bg-white/90 hover:bg-white px-4 sm:px-6 py-2 sm:py-2.5 rounded-full font-bold transition-all duration-300 shadow-sm hover:shadow active:scale-95 cursor-pointer inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm"
             >
-              <Sparkles className="w-4 h-4 text-[#FDB813]" />
+              <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#FDB813]" />
               <span>{t.heroCalendarBtn}</span>
             </button>
           </motion.div>

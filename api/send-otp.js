@@ -38,60 +38,8 @@ export default async function handler(req, res) {
     let smsDispatched = false;
     let isKycPending = false;
 
-    // Send real SMS via Fast2SMS (dedicated OTP route with Quick route fallback)
-    try {
-      // 1. Try dedicated OTP route
-      try {
-        const otpRes = await fetch('https://www.fast2sms.com/dev/bulkV2', {
-          method: 'POST',
-          headers: {
-            authorization: FAST2SMS_KEY,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            variables_values: String(otp),
-            route: 'otp',
-            numbers: cleanPhone,
-          }),
-        });
-        const otpData = await otpRes.json();
-        console.log('[send-otp] Fast2SMS otp route response:', otpData);
-        if (otpData && (otpData.return === true || otpData.status_code === 200)) {
-          smsDispatched = true;
-        } else if (otpData && otpData.status_code === 996) {
-          isKycPending = true;
-        }
-      } catch (e) {
-        console.warn('[send-otp] Fast2SMS otp route warning:', e);
-      }
-
-      // 2. Fallback to Quick Route ('q')
-      if (!smsDispatched) {
-        const smsMessage = `Namaste ${donorName || 'Donor'}! Your RiseUpHelp verification OTP is ${otp}. Valid for 10 minutes.`;
-        const fRes = await fetch('https://www.fast2sms.com/dev/bulkV2', {
-          method: 'POST',
-          headers: {
-            authorization: FAST2SMS_KEY,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            route: 'q',
-            message: smsMessage,
-            language: 'english',
-            flash: 0,
-            numbers: cleanPhone,
-          }),
-        });
-
-        const fData = await fRes.json();
-        console.log('[send-otp] Fast2SMS q route response:', fData);
-        if (fData && (fData.return === true || fData.status_code === 200)) {
-          smsDispatched = true;
-        }
-      }
-    } catch (smsErr) {
-      console.error('[send-otp] Fast2SMS dispatch error:', smsErr);
-    }
+    // Fast2SMS has been disabled as requested by user. Primary provider is MSG91.
+    smsDispatched = false;
 
     return res.status(200).json({
       success: true,
