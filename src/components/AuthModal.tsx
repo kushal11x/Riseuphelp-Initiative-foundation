@@ -277,7 +277,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     type="tel"
                     required
                     maxLength={10}
-                    placeholder="9828291119"
+                    placeholder=""
                     value={phone}
                     onChange={(e) => handlePhoneChange(e.target.value)}
                     className="w-full text-xs font-mono font-bold bg-[#faf8f5] border border-neutral-300 rounded-xl pl-12 pr-3 py-2.5 text-neutral-900 focus:outline-none focus:border-[#084c36]"
