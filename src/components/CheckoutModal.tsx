@@ -261,7 +261,98 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   };
 
   const handlePrintReceipt = () => {
-    window.print();
+    const receiptElement = document.getElementById('tax-receipt-container');
+    if (!receiptElement) {
+      window.print();
+      return;
+    }
+
+    // Clean up previous print iframe if present
+    const existingFrame = document.getElementById('ruh-print-receipt-iframe');
+    if (existingFrame) {
+      existingFrame.remove();
+    }
+
+    const printFrame = document.createElement('iframe');
+    printFrame.id = 'ruh-print-receipt-iframe';
+    printFrame.setAttribute(
+      'style',
+      'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;border:none;opacity:0;pointer-events:none;'
+    );
+    document.body.appendChild(printFrame);
+
+    const frameDoc = printFrame.contentWindow?.document;
+    if (!frameDoc) {
+      window.print();
+      return;
+    }
+
+    // Collect all stylesheets from main application
+    const styleTags = Array.from(document.querySelectorAll('link[rel="stylesheet"], style'))
+      .map((tag) => tag.outerHTML)
+      .join('\n');
+
+    frameDoc.open();
+    frameDoc.write(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Official 80G Receipt - ${receiptId}</title>
+  ${styleTags}
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 10mm 12mm;
+    }
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      box-sizing: border-box;
+    }
+    html, body {
+      margin: 0 !important;
+      padding: 0 !important;
+      background: #ffffff !important;
+      color: #000000 !important;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .print-voucher-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 auto !important;
+      padding: 24px !important;
+      background: #fcfbf9 !important;
+      border: 2px solid #084c36 !important;
+      border-radius: 16px !important;
+      box-shadow: none !important;
+    }
+    .no-print {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="print-voucher-wrapper">
+    ${receiptElement.innerHTML}
+  </div>
+</body>
+</html>`);
+    frameDoc.close();
+
+    setTimeout(() => {
+      try {
+        printFrame.contentWindow?.focus();
+        printFrame.contentWindow?.print();
+      } catch (err) {
+        console.warn('Iframe print error, falling back to window.print():', err);
+        window.print();
+      }
+      setTimeout(() => {
+        try {
+          printFrame.remove();
+        } catch {}
+      }, 3000);
+    }, 450);
   };
 
   // Finalize payment: trigger confetti, dispatch Fast2SMS & 80G email, update leaderboard
@@ -341,6 +432,15 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         panNumber: panNumber ? panNumber.toUpperCase() : currentUser?.panNumber,
         dob: currentUser?.dob,
       };
+      // Ensure localStorage has this donation immediately
+      try {
+        const stored = localStorage.getItem('ruh_donors_v3');
+        const parsed = stored ? JSON.parse(stored) : [];
+        const updated = [newDonorEntry, ...parsed.filter((d: any) => d.id !== newDonorEntry.id && d.receiptNumber !== newDonorEntry.receiptNumber)];
+        localStorage.setItem('ruh_donors_v3', JSON.stringify(updated));
+      } catch (err) {
+        console.warn('LocalStorage donor save error:', err);
+      }
       onDonationSuccess(newDonorEntry);
     }
   };

@@ -630,6 +630,19 @@ export const PATIENT_PROFILES: PatientProfile[] = [
 
 export const INITIAL_LEADERBOARD_DONORS: LeaderboardDonor[] = [
   {
+    id: "donor-1789372800000",
+    name: "Mr Vishnu Vajpayee",
+    batchCode: "RUH-BATCH-2026-X65",
+    patientAdopted: "Fresh Whole Tender Coconut (RUHS Bedside) (1 Units)",
+    amount: 65,
+    isVerified: true,
+    timestamp: "14 Sept 2026",
+    city: "Jaipur",
+    receiptNumber: "RUH-80G-2026-632393",
+    donorId: "RUH-DONOR-9828291119",
+    phone: "9828291119",
+  },
+  {
     id: "lb-1",
     name: "Vikramaditya Singhania",
     batchCode: "RUH-BATCH-2026-X88",

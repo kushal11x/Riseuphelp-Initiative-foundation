@@ -548,7 +548,15 @@ export function App() {
             setPatientProfiles(cleanP);
             safeLocalStorageSet('ruh_patients_v3', cleanP);
           }
-          if (d.leaderboardDonors) setLeaderboardDonors(d.leaderboardDonors);
+          if (d.leaderboardDonors) {
+            setLeaderboardDonors((prev) => {
+              const serverReceipts = new Set(d.leaderboardDonors.map((x: any) => x.receiptNumber));
+              const pendingLocal = prev.filter((x: any) => !serverReceipts.has(x.receiptNumber));
+              const merged = [...pendingLocal, ...d.leaderboardDonors];
+              safeLocalStorageSet('ruh_donors_v3', merged);
+              return merged;
+            });
+          }
           if (d.childSpotlights) {
             const cleanSpot = sanitizeSpotlights(d.childSpotlights);
             setChildSpotlights(cleanSpot);
@@ -624,7 +632,13 @@ export function App() {
             setPatientProfiles(cleanP);
             safeLocalStorageSet('ruh_patients_v3', cleanP);
           }
-          if (d.leaderboardDonors) setLeaderboardDonors(d.leaderboardDonors);
+          if (d.leaderboardDonors) {
+            setLeaderboardDonors((prev) => {
+              const serverReceipts = new Set(d.leaderboardDonors.map((x: any) => x.receiptNumber));
+              const pendingLocal = prev.filter((x: any) => !serverReceipts.has(x.receiptNumber));
+              return [...pendingLocal, ...d.leaderboardDonors];
+            });
+          }
           if (d.childSpotlights) {
             const cleanSpot = sanitizeSpotlights(d.childSpotlights);
             setChildSpotlights(cleanSpot);
@@ -811,7 +825,11 @@ export function App() {
 
   // Real-time Leaderboard Dispatch on Donation Success
   const handleDonationSuccess = (newDonor: LeaderboardDonor) => {
-    setLeaderboardDonors((prev) => [newDonor, ...prev]);
+    setLeaderboardDonors((prev) => {
+      const updated = [newDonor, ...prev.filter((d) => d.id !== newDonor.id && d.receiptNumber !== newDonor.receiptNumber)];
+      safeLocalStorageSet('ruh_donors_v3', updated);
+      return updated;
+    });
   };
 
   // Child Spotlight Sponsor Action
