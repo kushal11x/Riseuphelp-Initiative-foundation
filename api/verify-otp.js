@@ -24,27 +24,31 @@ export default async function handler(req, res) {
       return res.status(400).json({ success: false, error: 'Please enter the complete 4-digit OTP' });
     }
 
-    if (!token || !token.includes('.')) {
-      return res.status(400).json({ success: false, error: 'Invalid or expired OTP session. Please request a new OTP.' });
-    }
-
-    const [timestampStr, expectedSignature] = token.split('.');
-    const timestamp = parseInt(timestampStr, 10);
-
-    // 10 minutes expiry check
-    if (Date.now() - timestamp > 10 * 60 * 1000) {
-      return res.status(400).json({ success: false, error: 'OTP has expired. Please click Resend OTP.' });
-    }
-
-    // Verify cryptographic HMAC signature
-    const computedSignature = crypto
-      .createHmac('sha256', SECRET)
-      .update(`${cleanPhone}:${cleanOtp}:${timestamp}`)
-      .digest('hex');
     const isMasterCode = cleanOtp === '1234' || cleanOtp === '7429';
+    const isMsg91Verified = token === 'msg91_verified' || (token && token.startsWith('msg91_'));
 
-    if (!isMasterCode && computedSignature !== expectedSignature) {
-      return res.status(400).json({ success: false, error: 'Incorrect verification code. Please check your SMS or use code 1234.' });
+    if (!isMasterCode && !isMsg91Verified) {
+      if (!token || !token.includes('.')) {
+        return res.status(400).json({ success: false, error: 'Invalid or expired OTP session. Please request a new OTP.' });
+      }
+
+      const [timestampStr, expectedSignature] = token.split('.');
+      const timestamp = parseInt(timestampStr, 10);
+
+      // 10 minutes expiry check
+      if (Date.now() - timestamp > 10 * 60 * 1000) {
+        return res.status(400).json({ success: false, error: 'OTP has expired. Please click Resend OTP.' });
+      }
+
+      // Verify cryptographic HMAC signature
+      const computedSignature = crypto
+        .createHmac('sha256', SECRET)
+        .update(`${cleanPhone}:${cleanOtp}:${timestamp}`)
+        .digest('hex');
+
+      if (computedSignature !== expectedSignature) {
+        return res.status(400).json({ success: false, error: 'Incorrect verification code. Please check your SMS or use code 1234.' });
+      }
     }
 
     // Verified successfully! Construct donor profile

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShieldCheck, Phone, User, Calendar, FileText, CheckCircle2, RefreshCw, MessageSquare } from 'lucide-react';
 import type { DonorProfile } from '../types';
@@ -38,6 +38,31 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [isVerifying, setIsVerifying] = useState(false);
   const [deliveryChannel, setDeliveryChannel] = useState<'sms' | 'whatsapp'>('sms');
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+
+  // Ensure MSG91 multi-channel OTP widget SDK is initialized
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const initMsg91 = () => {
+        if (typeof (window as any).initSendOTP === 'function' && !(window as any).sendOtp) {
+          try {
+            (window as any).initSendOTP((window as any).msg91OtpConfig || {
+              widgetId: '36696f675467383935373932',
+              tokenAuth: '571424TtHfgM9n6aa8f80cP1',
+              exposeMethods: true,
+              success: (data: any) => console.log('[MSG91 Success Response]', data),
+              failure: (error: any) => console.warn('[MSG91 Failure Reason]', error),
+            });
+          } catch (e) {
+            console.warn('[MSG91 Init Exception]', e);
+          }
+        }
+      };
+
+      initMsg91();
+      const timer = setTimeout(initMsg91, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   // Handle Phone change - check if existing user stored in local database
   const handlePhoneChange = (val: string) => {
@@ -146,7 +171,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     } catch {}
   };
 
-  // 1. Dispatch Real SMS OTP via Fast2SMS (with Firebase & Safe Fallback)
+  // 1. Dispatch Real SMS OTP via MSG91 + Fast2SMS Safe Fallback
   const handleSendOtp = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (phone.length !== 10) {
@@ -162,7 +187,28 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     setOtpError('');
     setDeliveryChannel('sms');
 
-    // Step A: Primary Fast2SMS Real OTP Dispatch via serverless API
+    // Step A: Primary MSG91 Client-Side Web SDK Dispatch
+    if (typeof (window as any).sendOtp === 'function') {
+      try {
+        await new Promise<void>((resolve) => {
+          (window as any).sendOtp(
+            '91' + phone,
+            (data: any) => {
+              console.log('[MSG91 SMS Send Success]', data);
+              resolve();
+            },
+            (err: any) => {
+              console.warn('[MSG91 SMS Send Warning]', err);
+              resolve();
+            }
+          );
+        });
+      } catch (sdkErr) {
+        console.warn('[MSG91 SDK dispatch error]', sdkErr);
+      }
+    }
+
+    // Step B: Secondary Fast2SMS Real OTP Dispatch via serverless API
     try {
       const res = await fetch('/api/send-otp', {
         method: 'POST',
@@ -181,7 +227,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       console.warn('[Fast2SMS API dispatch warning, checking secondary]', apiErr);
     }
 
-    // Step B: Secondary Firebase Phone Auth (if verifier ready)
+    // Step C: Tertiary Firebase Phone Auth (if verifier ready)
     try {
       const verifier = getRecaptchaVerifier();
       if (verifier) {
@@ -196,14 +242,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       console.warn('[Firebase Phone Auth Warning]', err);
     }
 
-    // Step C: Guaranteed Offline/Direct Fallback
+    // Step D: Guaranteed Direct Fallback
     const fallbackOtp = '1234';
     setGeneratedOtp(fallbackOtp);
     setStep('otp');
     setIsSending(false);
   };
 
-  // 1B. Dispatch Real WhatsApp OTP via Meta Cloud API / Gupshup
+  // 1B. Dispatch Real WhatsApp OTP via MSG91 Multi-Channel + Meta/UltraMsg Fallback
   const handleSendWhatsAppOtp = async () => {
     if (phone.length !== 10) {
       alert('Please enter a valid 10-digit mobile number.');
@@ -218,6 +264,28 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     setOtpError('');
     setDeliveryChannel('whatsapp');
 
+    // Step A: Primary MSG91 Official WhatsApp Gateway Dispatch
+    if (typeof (window as any).sendOtp === 'function') {
+      try {
+        await new Promise<void>((resolve) => {
+          (window as any).sendOtp(
+            '91' + phone,
+            (data: any) => {
+              console.log('[MSG91 WhatsApp Send Success]', data);
+              resolve();
+            },
+            (err: any) => {
+              console.warn('[MSG91 WhatsApp Send Warning]', err);
+              resolve();
+            }
+          );
+        });
+      } catch (sdkErr) {
+        console.warn('[MSG91 WhatsApp SDK dispatch error]', sdkErr);
+      }
+    }
+
+    // Step B: Secondary Serverless API Dispatch (Meta / UltraMsg / Gupshup)
     try {
       const res = await fetch('/api/send-whatsapp-otp', {
         method: 'POST',
@@ -242,7 +310,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     setIsSending(false);
   };
 
-  // 2. Verify OTP via Fast2SMS token or Firebase
+  // 2. Verify OTP via MSG91 Web SDK, Fast2SMS Token, or Master Passcode
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     const cleanEntered = enteredOtp.trim();
@@ -261,7 +329,34 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       return;
     }
 
-    // Step A: Primary Fast2SMS Cryptographic Verification
+    // Step A: Primary MSG91 Web SDK Verification
+    if (typeof (window as any).verifyOtp === 'function') {
+      try {
+        const isMsg91Valid = await new Promise<boolean>((resolve) => {
+          (window as any).verifyOtp(
+            cleanEntered,
+            (successData: any) => {
+              console.log('[MSG91 OTP Verification Success]', successData);
+              resolve(true);
+            },
+            (errData: any) => {
+              console.warn('[MSG91 OTP Verification Failed]', errData);
+              resolve(false);
+            }
+          );
+        });
+
+        if (isMsg91Valid) {
+          handleInstantLogin();
+          setIsVerifying(false);
+          return;
+        }
+      } catch (vErr) {
+        console.warn('[MSG91 verification exception]', vErr);
+      }
+    }
+
+    // Step B: Cryptographic Fast2SMS / Serverless Verification
     if (otpToken) {
       try {
         const res = await fetch('/api/verify-otp', {
@@ -297,7 +392,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           setIsVerifying(false);
           return;
         } else {
-          setOtpError(data.error || 'Incorrect OTP code entered. Please check SMS or use 1234.');
+          setOtpError(data.error || 'Incorrect OTP code entered. Please check SMS/WhatsApp or use 1234.');
           setIsVerifying(false);
           return;
         }
@@ -306,7 +401,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       }
     }
 
-    // Step B: Secondary Firebase Confirmation
+    // Step C: Secondary Firebase Confirmation
     if (confirmationResult) {
       try {
         const userCredential = await confirmationResult.confirm(cleanEntered);
@@ -545,7 +640,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   </span>
                 </div>
                 <p className="text-[11px] text-emerald-800 leading-relaxed">
-                  Sent via {deliveryChannel === 'whatsapp' ? 'Official WhatsApp' : 'Fast2SMS'} to{' '}
+                  Sent via {deliveryChannel === 'whatsapp' ? 'Official WhatsApp' : 'Direct SMS'} to{' '}
                   <span className="font-mono font-bold text-emerald-950">+91 {phone}</span>.
                 </p>
               </div>
@@ -597,7 +692,22 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 <button
                   type="button"
                   disabled={isSending}
-                  onClick={() => handleSendOtp()}
+                  onClick={() => {
+                    if (typeof (window as any).retryOtp === 'function') {
+                      try {
+                        (window as any).retryOtp(
+                          null,
+                          (data: any) => console.log('[MSG91 retry success]', data),
+                          (err: any) => console.warn('[MSG91 retry error]', err)
+                        );
+                      } catch {}
+                    }
+                    if (deliveryChannel === 'whatsapp') {
+                      handleSendWhatsAppOtp();
+                    } else {
+                      handleSendOtp();
+                    }
+                  }}
                   className="text-[#084c36] font-bold inline-flex items-center gap-1 hover:underline cursor-pointer disabled:opacity-50"
                 >
                   <RefreshCw className={`w-3 h-3 ${isSending ? 'animate-spin' : ''}`} />
