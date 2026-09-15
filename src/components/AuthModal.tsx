@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ShieldCheck, Phone, User, Calendar, FileText, CheckCircle2, RefreshCw, MessageSquare } from 'lucide-react';
+import { X, ShieldCheck, Phone, User, Calendar, FileText, CheckCircle2, RefreshCw } from 'lucide-react';
 import type { DonorProfile } from '../types';
 import {
   auth,
@@ -249,66 +249,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     setIsSending(false);
   };
 
-  // 1B. Dispatch Real WhatsApp OTP via MSG91 Multi-Channel + Meta/UltraMsg Fallback
-  const handleSendWhatsAppOtp = async () => {
-    if (phone.length !== 10) {
-      alert('Please enter a valid 10-digit mobile number.');
-      return;
-    }
-    if (!isExistingUser && (!fullName.trim() || !dob.trim())) {
-      alert('Please enter your Full Name and Date of Birth to create your donor profile.');
-      return;
-    }
-
-    setIsSending(true);
-    setOtpError('');
-    setDeliveryChannel('whatsapp');
-
-    // Step A: Primary MSG91 Official WhatsApp Gateway Dispatch
-    if (typeof (window as any).sendOtp === 'function') {
-      try {
-        await new Promise<void>((resolve) => {
-          (window as any).sendOtp(
-            '91' + phone,
-            (data: any) => {
-              console.log('[MSG91 WhatsApp Send Success]', data);
-              resolve();
-            },
-            (err: any) => {
-              console.warn('[MSG91 WhatsApp Send Warning]', err);
-              resolve();
-            }
-          );
-        });
-      } catch (sdkErr) {
-        console.warn('[MSG91 WhatsApp SDK dispatch error]', sdkErr);
-      }
-    }
-
-    // Step B: Secondary Serverless API Dispatch (Meta / UltraMsg / Gupshup)
-    try {
-      const res = await fetch('/api/send-whatsapp-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, donorName: fullName.trim() || 'Donor' }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        if (data.token) setOtpToken(data.token);
-        if (data.otp) setGeneratedOtp(data.otp);
-        setStep('otp');
-        setIsSending(false);
-        return;
-      }
-    } catch (waErr) {
-      console.warn('[WhatsApp OTP Dispatch Warning]', waErr);
-    }
-
-    const fallbackOtp = '1234';
-    setGeneratedOtp(fallbackOtp);
-    setStep('otp');
-    setIsSending(false);
-  };
 
   // 2. Verify OTP via MSG91 Web SDK, Fast2SMS Token, or Master Passcode
   const handleVerifyOtp = async (e: React.FormEvent) => {
@@ -585,42 +525,22 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 </div>
               )}
 
-              <div className="grid grid-cols-2 gap-2 mt-3">
-                <button
-                  type="submit"
-                  disabled={phone.length !== 10 || isSending}
-                  className="bg-[#084c36] hover:bg-[#063b2a] disabled:bg-neutral-300 text-white font-bold py-2.5 px-2 rounded-xl text-xs transition-all shadow-md active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer"
-                >
-                  {isSending && deliveryChannel === 'sms' ? (
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin text-white" />
-                  ) : (
-                    <Phone className="w-3.5 h-3.5" />
-                  )}
-                  <span>SMS OTP</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleSendWhatsAppOtp}
-                  disabled={phone.length !== 10 || isSending}
-                  className="bg-[#25D366] hover:bg-[#20bd5a] disabled:bg-neutral-300 text-white font-bold py-2.5 px-2 rounded-xl text-xs transition-all shadow-md active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer"
-                >
-                  {isSending && deliveryChannel === 'whatsapp' ? (
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin text-white" />
-                  ) : (
-                    <MessageSquare className="w-3.5 h-3.5" />
-                  )}
-                  <span>WhatsApp OTP</span>
-                </button>
-              </div>
-
               <button
-                type="button"
-                onClick={() => handleInstantLogin()}
-                disabled={phone.length !== 10}
-                className="w-full bg-emerald-50 hover:bg-emerald-100 text-[#084c36] border border-emerald-300 font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                type="submit"
+                disabled={phone.length !== 10 || isSending}
+                className="w-full bg-[#084c36] hover:bg-[#063b2a] disabled:bg-neutral-300 text-white font-bold py-3 rounded-xl text-xs transition-all shadow-md active:scale-95 flex items-center justify-center gap-2 cursor-pointer mt-3"
               >
-                <span>⚡ Instant 1-Click Access (Skip OTP)</span>
+                {isSending ? (
+                  <>
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin text-white" />
+                    <span>Sending Verification OTP...</span>
+                  </>
+                ) : (
+                  <>
+                    <ShieldCheck className="w-4 h-4 text-[#FDB813]" />
+                    <span>Send Verification OTP</span>
+                  </>
+                )}
               </button>
 
               {/* Invisible Google Recaptcha Anchor */}
@@ -659,17 +579,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   onChange={(e) => setEnteredOtp(e.target.value.replace(/\D/g, '').slice(0, 4))}
                   className="w-full text-center text-3xl font-mono tracking-widest font-extrabold bg-[#faf8f5] border border-neutral-300 rounded-xl py-3 text-neutral-900 focus:outline-none focus:border-[#084c36]"
                 />
-                <div className="mt-2 text-center">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setEnteredOtp('1234');
-                    }}
-                    className="text-[11px] text-emerald-700 hover:text-emerald-900 underline font-semibold cursor-pointer"
-                  >
-                    SMS delayed? Click to auto-fill test code 1234
-                  </button>
-                </div>
                 {otpError && (
                   <p className="text-xs text-red-600 font-semibold mt-1 text-center">
                     {otpError}
@@ -702,11 +611,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                         );
                       } catch {}
                     }
-                    if (deliveryChannel === 'whatsapp') {
-                      handleSendWhatsAppOtp();
-                    } else {
-                      handleSendOtp();
-                    }
+                    handleSendOtp();
                   }}
                   className="text-[#084c36] font-bold inline-flex items-center gap-1 hover:underline cursor-pointer disabled:opacity-50"
                 >
@@ -728,14 +633,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     <span>Verify & Login</span>
                   </>
                 )}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleInstantLogin()}
-                className="w-full bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-bold py-2.5 rounded-xl text-xs transition-all border border-neutral-200 flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                <span>⚡ Instant 1-Tap Login (Bypass OTP)</span>
               </button>
             </form>
           )}
