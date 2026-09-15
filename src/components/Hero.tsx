@@ -61,11 +61,55 @@ export const Hero: React.FC<HeroProps> = ({
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
   const videoRef = React.useRef<HTMLVideoElement>(null);
 
-  // Keep background video playing smoothly and continuously
+  // Smart Viewport Video Autopause:
+  // Pauses video when user scrolls down out of view to eliminate GPU/CPU decoding load
+  // Resumes smoothly when user scrolls back up into view
   React.useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
+
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+
+    // Start playing if in viewport
     video.play().catch(() => {});
+
+    // IntersectionObserver to auto-pause when scrolled down/out of viewport
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          video.play().catch(() => {});
+        } else {
+          video.pause();
+        }
+      },
+      {
+        threshold: 0.05,
+        rootMargin: '50px 0px',
+      }
+    );
+
+    observer.observe(video);
+
+    // Also pause on tab switch/hidden state to save CPU and battery
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        video.pause();
+      } else {
+        const rect = video.getBoundingClientRect();
+        if (rect.bottom > 0 && rect.top < window.innerHeight) {
+          video.play().catch(() => {});
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   const handleSponsorClick = () => {

@@ -80,10 +80,9 @@ export const ClosingEcosystem: React.FC<ClosingEcosystemProps> = () => {
         preload="none"
         disableRemotePlayback
         poster="/lower-bg-poster.jpg"
-        className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0 brightness-[1.02] contrast-[1.03] gpu-layer"
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0 gpu-layer"
         style={{
           transform: 'translate3d(0, 0, 0)',
-          willChange: 'transform',
         }}
       >
         <source src="/lower-bg.mp4" type="video/mp4" />
