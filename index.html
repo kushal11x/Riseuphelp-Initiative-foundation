@@ -2,10 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=2" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=2" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2" />
+    <!-- Favicon & Touch Icons for Google Search, Mobile, and Desktop Browsers -->
+    <link rel="icon" href="/favicon.ico" sizes="48x48 32x32 16x16" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512x512.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#084c36" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="google-site-verification" content="jjhWEEIC5hM4aFsGA3-tZPf1M6WEnOMziWo6Nz3pnNM" />
     <meta name="google-site-verification" content="JWe6Uj-4JRimKH5livsSdmoJRuYm0F_d58uiix1CqTI" />
@@ -16,16 +23,16 @@
     <meta name="keywords" content="RiseUpHelp, RiseUpHelp Initiative Foundation, Jaipur NGO, Har Ekadashi Seva, RUHS Jaipur, SMS Hospital Seva, Cancer Warriors Jaipur, Section 8 NGO Jaipur, 80G tax exemption donation, pediatric cancer relief" />
     <meta name="author" content="RiseUpHelp Initiative Foundation" />
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-    <link rel="canonical" href="https://www.riseuphelp.org/" />
+    <link rel="canonical" href="https://riseuphelp.org/" />
 
     <!-- Open Graph / Facebook / WhatsApp Preview Meta Tags -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://www.riseuphelp.org/" />
+    <meta property="og:url" content="https://riseuphelp.org/" />
     <meta property="og:title" content="RiseUpHelp Initiative Foundation" />
-    <meta property="og:site_name" content="RiseUpHelp Initiative Foundation" />
+    <meta property="og:site_name" content="RiseUpHelp" />
     <meta property="og:description" content="RiseUpHelp Initiative Foundation is a registered Section 8 non-profit organization in Jaipur. Supporting pediatric cancer warriors, bedside nutrition drives across RUHS & SMS hospitals, and child education with 80G tax exemption." />
-    <meta property="og:image" content="https://www.riseuphelp.org/logo.png" />
-    <meta property="og:image:secure_url" content="https://www.riseuphelp.org/logo.png" />
+    <meta property="og:image" content="https://riseuphelp.org/logo.png" />
+    <meta property="og:image:secure_url" content="https://riseuphelp.org/logo.png" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -34,36 +41,60 @@
 
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://www.riseuphelp.org/" />
+    <meta name="twitter:url" content="https://riseuphelp.org/" />
     <meta name="twitter:title" content="RiseUpHelp Initiative Foundation" />
     <meta name="twitter:description" content="RiseUpHelp Initiative Foundation is a registered Section 8 non-profit organization in Jaipur. Supporting pediatric cancer warriors, bedside nutrition drives across RUHS & SMS hospitals, and child education with 80G tax exemption." />
-    <meta name="twitter:image" content="https://www.riseuphelp.org/logo.png" />
+    <meta name="twitter:image" content="https://riseuphelp.org/logo.png" />
 
-    <!-- Schema.org JSON-LD Structured Data for Google Rich Results -->
+    <!-- Schema.org JSON-LD Structured Data for Google Search Site Name & Rich Results -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "NGO",
-      "name": "RiseUpHelp Initiative Foundation",
-      "alternateName": "RiseUpHelp",
-      "url": "https://www.riseuphelp.org",
-      "logo": "https://www.riseuphelp.org/logo.png",
-      "description": "Section 8 non-profit initiative foundation providing direct pediatric cancer care, bedside nutrition at SMS and RUHS hospitals, and slum children education in Jaipur, Rajasthan.",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Jaipur",
-        "addressRegion": "Rajasthan",
-        "addressCountry": "IN"
-      },
-      "sameAs": [
-        "https://instagram.com/riseuphelp"
-      ],
-      "knowsAbout": [
-        "Pediatric Oncology Relief",
-        "Hospital Bedside Nutrition",
-        "Har Ekadashi Annadan",
-        "Slum Education Drives",
-        "80G Tax Exemption"
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://riseuphelp.org/#website",
+          "url": "https://riseuphelp.org/",
+          "name": "RiseUpHelp",
+          "alternateName": [
+            "RiseUpHelp Initiative Foundation",
+            "RiseUpHelp Foundation",
+            "RiseUp Help"
+          ],
+          "publisher": {
+            "@id": "https://riseuphelp.org/#organization"
+          }
+        },
+        {
+          "@type": "NGO",
+          "@id": "https://riseuphelp.org/#organization",
+          "name": "RiseUpHelp Initiative Foundation",
+          "alternateName": "RiseUpHelp",
+          "url": "https://riseuphelp.org/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://riseuphelp.org/logo.png",
+            "caption": "RiseUpHelp Initiative Foundation"
+          },
+          "image": "https://riseuphelp.org/logo.png",
+          "description": "Section 8 non-profit initiative foundation providing direct pediatric cancer care, bedside nutrition at SMS and RUHS hospitals, and slum children education in Jaipur, Rajasthan.",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Jaipur",
+            "addressRegion": "Rajasthan",
+            "addressCountry": "IN"
+          },
+          "sameAs": [
+            "https://instagram.com/riseuphelp"
+          ],
+          "knowsAbout": [
+            "Pediatric Oncology Relief",
+            "Hospital Bedside Nutrition",
+            "Har Ekadashi Annadan",
+            "Slum Education Drives",
+            "80G Tax Exemption"
+          ]
+        }
       ]
     }
     </script>
