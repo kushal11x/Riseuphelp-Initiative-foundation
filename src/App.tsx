@@ -293,19 +293,25 @@ export function App() {
     if (s) {
       try {
         const parsed = JSON.parse(s);
-        if (parsed.some((e: any) => e.id === 'seva-ekadashi-parsva')) {
-          return parsed.map((e: any) =>
-            e.id === 'seva-ekadashi-parsva'
-              ? {
-                  ...e,
-                  targetCoconuts: 3000,
-                  sponsoredCoconuts: 150,
-                  status: 'upcoming',
-                  timing: '12:00 PM - 04:00 PM',
-                  description: 'Next immediate bedside tender coconut delivery and electrolyte hydration drive for chemotherapy cancer patients across RUHS wards. Timing: 12:00 PM - 04:00 PM.',
-                }
-              : e
-          );
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          // Ensure Radha Ashtami is active today and Jaljhulani Ekadashi is upcoming
+          if (!parsed.some((e: any) => e.id === 'seva-radha-ashtami')) {
+            const radhaEvent = INITIAL_SEVA_SCHEDULE[0];
+            return [
+              radhaEvent,
+              ...parsed.map((e: any) =>
+                e.id === 'seva-ekadashi-parsva'
+                  ? {
+                      ...e,
+                      title: 'Upcoming Jaljhulani Ekadashi Hospital Drive',
+                      tithi: 'Jaljhulani (Parivartini) Ekadashi (Bhadrapada Shukla)',
+                      status: 'upcoming',
+                    }
+                  : e
+              ),
+            ];
+          }
+          return parsed;
         }
       } catch {
         // ignore
@@ -562,20 +568,9 @@ export function App() {
           if (d.mediaPhotosRow1) setMediaPhotosRow1(d.mediaPhotosRow1);
           if (d.mediaPhotosRow2) setMediaPhotosRow2(d.mediaPhotosRow2);
           if (d.foundationStats) setFoundationStats(d.foundationStats);
-          if (d.scheduleEvents) {
-            const cleanEvents = d.scheduleEvents.map((e: any) =>
-              e.id === 'seva-ekadashi-parsva'
-                ? {
-                    ...e,
-                    targetCoconuts: 3000,
-                    sponsoredCoconuts: 150,
-                    status: 'upcoming',
-                    timing: '12:00 PM - 04:00 PM',
-                    description: 'Next immediate bedside tender coconut delivery and electrolyte hydration drive for chemotherapy cancer patients across RUHS wards. Timing: 12:00 PM - 04:00 PM.',
-                  }
-                : e
-            );
-            setScheduleEvents(cleanEvents);
+          if (d.scheduleEvents && Array.isArray(d.scheduleEvents)) {
+            setScheduleEvents(d.scheduleEvents);
+            safeLocalStorageSet('ruh_schedule_v3', d.scheduleEvents);
           }
           if (d.galleryItems && Array.isArray(d.galleryItems)) {
             const cleanG = sanitizeGalleryItems(d.galleryItems);

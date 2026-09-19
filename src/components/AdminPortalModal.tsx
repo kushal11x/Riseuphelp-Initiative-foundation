@@ -39,6 +39,7 @@ import {
   Images,
   Star,
   Flame,
+  Pencil,
 } from 'lucide-react';
 import type {
   DriveItem,
@@ -55,7 +56,7 @@ import type {
   VolunteerSubmission,
   InaugurationConfig,
 } from '../types';
-import { compressImageFile } from '../utils/imageUtils';
+import { compressImageFile, safeLocalStorageSet } from '../utils/imageUtils';
 import { uploadImageToServer, pushServerState, type ReceiptConfig, type SiteStatePayload } from '../utils/serverSync';
 import { RUHS_CHILDREN_WARD_PROFILES } from '../data/mockData';
 
@@ -345,6 +346,10 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
   const [newEventHospital, setNewEventHospital] = useState('State Cancer Medical College (RUHS), Jaipur');
   const [newEventTarget, setNewEventTarget] = useState<number>(3500);
   const [newEventDesc, setNewEventDesc] = useState('');
+
+  // State for editing any listed schedule event (current or upcoming)
+  const [editingScheduleId, setEditingScheduleId] = useState<string | null>(null);
+  const [editEventForm, setEditEventForm] = useState<SevaScheduleEvent | null>(null);
 
   const showToast = (msg: string) => {
     setSaveToast(msg);
@@ -997,17 +1002,45 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
       description: newEventDesc || 'Bedside fresh tender coconut hydration drive for cancer patients.',
     };
     if (setScheduleEvents && scheduleEvents) {
-      setScheduleEvents([...scheduleEvents, newEv]);
+      const updated = [...scheduleEvents, newEv];
+      setScheduleEvents(updated);
+      safeLocalStorageSet('ruh_schedule_v3', updated);
+      if (onSyncToServer) onSyncToServer({ scheduleEvents: updated });
     }
     setNewEventTitle('');
     setNewEventDate('');
     setNewEventDesc('');
-    showToast('New Ekadashi Seva Event Scheduled!');
+    showToast('New Ekadashi Seva Event Scheduled & Synced Live!');
+  };
+
+  const handleStartEditSchedule = (ev: SevaScheduleEvent) => {
+    setEditingScheduleId(ev.id);
+    setEditEventForm({ ...ev });
+  };
+
+  const handleCancelEditSchedule = () => {
+    setEditingScheduleId(null);
+    setEditEventForm(null);
+  };
+
+  const handleSaveEditSchedule = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!editEventForm || !setScheduleEvents || !scheduleEvents) return;
+    const updated = scheduleEvents.map((ev) => (ev.id === editEventForm.id ? editEventForm : ev));
+    setScheduleEvents(updated);
+    safeLocalStorageSet('ruh_schedule_v3', updated);
+    if (onSyncToServer) onSyncToServer({ scheduleEvents: updated });
+    setEditingScheduleId(null);
+    setEditEventForm(null);
+    showToast(`✅ Successfully saved & broadcasted "${editEventForm.title}" live!`);
   };
 
   const handleDeleteScheduleEvent = (id: string) => {
     if (setScheduleEvents && scheduleEvents) {
-      setScheduleEvents(scheduleEvents.filter((ev) => ev.id !== id));
+      const updated = scheduleEvents.filter((ev) => ev.id !== id);
+      setScheduleEvents(updated);
+      safeLocalStorageSet('ruh_schedule_v3', updated);
+      if (onSyncToServer) onSyncToServer({ scheduleEvents: updated });
       showToast('Event removed from schedule');
     }
   };
@@ -6870,136 +6903,372 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                         Current Listed Ekadashi & Hospital Events:
                       </h4>
 
-                      {scheduleEvents.map((ev, idx) => (
-                        <div
-                          key={ev.id}
-                          className="p-4 bg-white rounded-2xl border border-neutral-200 flex flex-col gap-3 shadow-xs"
-                        >
-                          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                            <div className="space-y-1">
-                              <div className="flex items-center gap-2">
-                                <span
-                                  className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded-full ${
-                                    ev.status === 'active_today'
-                                      ? 'bg-red-100 text-red-700 animate-pulse'
-                                      : 'bg-amber-50 text-amber-900 border border-amber-200'
-                                  }`}
-                                >
-                                  {ev.status === 'active_today' ? '🔴 Active Today' : ev.tithi}
-                                </span>
-                                <strong className="text-xs sm:text-sm text-neutral-900 font-bold">
-                                  {ev.title}
-                                </strong>
-                              </div>
-                              <p className="text-[11px] text-neutral-500 flex flex-wrap items-center gap-2 font-medium">
-                                <span>📅 {ev.date}</span>
-                                <span>•</span>
-                                <span>🏥 {ev.hospital}</span>
-                                <span>•</span>
-                                <span>⏰ {ev.timing || '12:00 PM - 04:00 PM'}</span>
-                                <span>•</span>
-                                <span className="text-emerald-800 font-bold font-mono">
-                                  {ev.sponsoredCoconuts} / {ev.targetCoconuts} Coconuts
-                                </span>
-                              </p>
-                            </div>
+                      {scheduleEvents.map((ev, idx) => {
+                        const isEditingThis = editingScheduleId === ev.id && editEventForm;
 
-                            <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
-                              {ev.status === 'active_today' ? (
-                                <button
-                                  onClick={() => {
-                                    const updated = scheduleEvents.map((item, i) => ({
-                                      ...item,
-                                      status: i === idx ? ('upcoming' as const) : item.status,
-                                    }));
-                                    setScheduleEvents(updated);
-                                    showToast(`Set "${ev.title}" back to Upcoming`);
-                                  }}
-                                  className="text-[10px] bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold px-2.5 py-1.5 rounded-lg border border-amber-300 transition-colors cursor-pointer"
-                                >
-                                  Set as Upcoming ⚪
-                                </button>
-                              ) : (
-                                <button
-                                  onClick={() => {
-                                    const updated = scheduleEvents.map((item, i) => ({
-                                      ...item,
-                                      status: i === idx ? ('active_today' as const) : ('upcoming' as const),
-                                    }));
-                                    setScheduleEvents(updated);
-                                    showToast(`Set "${ev.title}" as Active Today!`);
-                                  }}
-                                  className="text-[10px] bg-emerald-50 hover:bg-emerald-100 text-[#084c36] font-bold px-2.5 py-1.5 rounded-lg border border-emerald-200 transition-colors cursor-pointer"
-                                >
-                                  Set as Live Today 🔴
-                                </button>
-                              )}
+                        return (
+                          <div
+                            key={ev.id}
+                            className={`p-4 rounded-2xl border transition-all ${
+                              isEditingThis
+                                ? 'bg-emerald-50/50 border-2 border-emerald-500 shadow-md'
+                                : ev.status === 'active_today'
+                                ? 'bg-white border-red-300 ring-2 ring-red-100 shadow-xs'
+                                : 'bg-white border-neutral-200 shadow-xs'
+                            } flex flex-col gap-3`}
+                          >
+                            {isEditingThis ? (
+                              /* FULL INLINE EDIT FORM FOR THIS EVENT */
+                              <form onSubmit={handleSaveEditSchedule} className="space-y-3">
+                                <div className="flex items-center justify-between pb-2 border-b border-emerald-200">
+                                  <div className="flex items-center gap-2">
+                                    <span className="p-1.5 rounded-lg bg-emerald-600 text-white">
+                                      <Pencil className="w-3.5 h-3.5" />
+                                    </span>
+                                    <strong className="text-xs sm:text-sm font-bold text-neutral-900">
+                                      Edit Ekadashi / Hospital Event
+                                    </strong>
+                                  </div>
+                                  <span className="text-[10px] font-mono bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded-md">
+                                    ID: {ev.id}
+                                  </span>
+                                </div>
 
-                              <button
-                                onClick={() => handleDeleteScheduleEvent(ev.id)}
-                                className="p-1.5 text-neutral-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors cursor-pointer"
-                                title="Delete Event"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                                  <div>
+                                    <label className="text-[10px] font-bold text-neutral-700 block mb-1">
+                                      Event Title *
+                                    </label>
+                                    <input
+                                      type="text"
+                                      required
+                                      value={editEventForm.title}
+                                      onChange={(e) =>
+                                        setEditEventForm({ ...editEventForm, title: e.target.value })
+                                      }
+                                      className="w-full bg-white border border-neutral-300 rounded-lg p-2 font-bold text-neutral-900 focus:outline-none focus:border-emerald-600 shadow-2xs"
+                                      placeholder="e.g. Radha Ashtami State Cancer Hospital Nariyal Pani Seva"
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <label className="text-[10px] font-bold text-neutral-700 block mb-1">
+                                      Tithi / Occasion Tag
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={editEventForm.tithi || ''}
+                                      onChange={(e) =>
+                                        setEditEventForm({ ...editEventForm, tithi: e.target.value })
+                                      }
+                                      className="w-full bg-white border border-neutral-300 rounded-lg p-2 font-medium text-neutral-900 focus:outline-none focus:border-emerald-600 shadow-2xs"
+                                      placeholder="e.g. Radha Ashtami Mahotsav Seva"
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <label className="text-[10px] font-bold text-neutral-700 block mb-1">
+                                      Scheduled Date *
+                                    </label>
+                                    <input
+                                      type="text"
+                                      required
+                                      value={editEventForm.date}
+                                      onChange={(e) =>
+                                        setEditEventForm({ ...editEventForm, date: e.target.value })
+                                      }
+                                      className="w-full bg-white border border-neutral-300 rounded-lg p-2 font-mono font-bold text-neutral-900 focus:outline-none focus:border-emerald-600 shadow-2xs"
+                                      placeholder="Sep 19, 2026"
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <label className="text-[10px] font-bold text-neutral-700 block mb-1">
+                                      Partner Hospital Node
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={editEventForm.hospital}
+                                      onChange={(e) =>
+                                        setEditEventForm({ ...editEventForm, hospital: e.target.value })
+                                      }
+                                      className="w-full bg-white border border-neutral-300 rounded-lg p-2 font-medium text-neutral-900 focus:outline-none focus:border-emerald-600 shadow-2xs"
+                                      placeholder="State Cancer Medical College (RUHS), Jaipur"
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <label className="text-[10px] font-bold text-neutral-700 block mb-1">
+                                      Timing (Activity Hours)
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={editEventForm.timing || '12:00 PM - 04:00 PM'}
+                                      onChange={(e) =>
+                                        setEditEventForm({ ...editEventForm, timing: e.target.value })
+                                      }
+                                      className="w-full bg-white border border-neutral-300 rounded-lg p-2 font-mono font-medium text-neutral-900 focus:outline-none focus:border-emerald-600 shadow-2xs"
+                                      placeholder="12:00 PM - 04:00 PM"
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <label className="text-[10px] font-bold text-neutral-700 block mb-1">
+                                      Broadcast Status
+                                    </label>
+                                    <select
+                                      value={editEventForm.status}
+                                      onChange={(e) =>
+                                        setEditEventForm({
+                                          ...editEventForm,
+                                          status: e.target.value as 'upcoming' | 'active_today' | 'completed',
+                                        })
+                                      }
+                                      className="w-full bg-white border border-neutral-300 rounded-lg p-2 font-bold text-neutral-900 focus:outline-none focus:border-emerald-600 shadow-2xs"
+                                    >
+                                      <option value="active_today">🔴 Active Today (Live On-Ground Broadcast)</option>
+                                      <option value="upcoming">⚪ Upcoming Calendar Event</option>
+                                      <option value="completed">✅ Completed Seva Drive</option>
+                                    </select>
+                                  </div>
+
+                                  <div>
+                                    <label className="text-[10px] font-bold text-neutral-700 block mb-1">
+                                      Target Coconuts (Goal)
+                                    </label>
+                                    <input
+                                      type="number"
+                                      min="1"
+                                      value={editEventForm.targetCoconuts}
+                                      onChange={(e) =>
+                                        setEditEventForm({
+                                          ...editEventForm,
+                                          targetCoconuts: Math.max(1, parseInt(e.target.value) || 1),
+                                        })
+                                      }
+                                      className="w-full bg-white border border-neutral-300 rounded-lg p-2 font-mono font-bold text-neutral-900 focus:outline-none focus:border-emerald-600 shadow-2xs"
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <label className="text-[10px] font-bold text-neutral-700 block mb-1">
+                                      Sponsored / Completed Coconuts
+                                    </label>
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      value={editEventForm.sponsoredCoconuts}
+                                      onChange={(e) =>
+                                        setEditEventForm({
+                                          ...editEventForm,
+                                          sponsoredCoconuts: Math.max(0, parseInt(e.target.value) || 0),
+                                        })
+                                      }
+                                      className="w-full bg-white border border-neutral-300 rounded-lg p-2 font-mono font-bold text-emerald-800 focus:outline-none focus:border-emerald-600 shadow-2xs"
+                                    />
+                                  </div>
+                                </div>
+
+                                <div>
+                                  <label className="text-[10px] font-bold text-neutral-700 block mb-1">
+                                    Description & Ward Details
+                                  </label>
+                                  <textarea
+                                    rows={2}
+                                    value={editEventForm.description || ''}
+                                    onChange={(e) =>
+                                      setEditEventForm({ ...editEventForm, description: e.target.value })
+                                    }
+                                    className="w-full bg-white border border-neutral-300 rounded-lg p-2 text-xs text-neutral-900 focus:outline-none focus:border-emerald-600 shadow-2xs"
+                                    placeholder="Bedside tender coconut distribution details..."
+                                  />
+                                </div>
+
+                                <div className="flex items-center justify-end gap-2 pt-2 border-t border-emerald-200">
+                                  <button
+                                    type="button"
+                                    onClick={handleCancelEditSchedule}
+                                    className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-neutral-200 hover:bg-neutral-300 text-neutral-800 transition-colors cursor-pointer"
+                                  >
+                                    Cancel ✕
+                                  </button>
+                                  <button
+                                    type="submit"
+                                    className="px-4 py-1.5 rounded-lg text-xs font-bold bg-[#084c36] hover:bg-[#063b2a] text-white shadow-sm flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                                  >
+                                    <Save className="w-3.5 h-3.5" />
+                                    <span>Save & Broadcast Live 💾</span>
+                                  </button>
+                                </div>
+                              </form>
+                            ) : (
+                              /* NORMAL CARD VIEW WITH EDIT & QUICK CONTROLS */
+                              <>
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                                  <div className="space-y-1">
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                      <span
+                                        className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded-full ${
+                                          ev.status === 'active_today'
+                                            ? 'bg-red-100 text-red-700 animate-pulse border border-red-300'
+                                            : ev.status === 'completed'
+                                            ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
+                                            : 'bg-amber-50 text-amber-900 border border-amber-200'
+                                        }`}
+                                      >
+                                        {ev.status === 'active_today'
+                                          ? '🔴 Active Today'
+                                          : ev.status === 'completed'
+                                          ? '✅ Completed'
+                                          : ev.tithi}
+                                      </span>
+                                      <strong className="text-xs sm:text-sm text-neutral-900 font-bold">
+                                        {ev.title}
+                                      </strong>
+                                    </div>
+                                    <p className="text-[11px] text-neutral-500 flex flex-wrap items-center gap-2 font-medium">
+                                      <span>📅 {ev.date}</span>
+                                      <span>•</span>
+                                      <span>🏥 {ev.hospital}</span>
+                                      <span>•</span>
+                                      <span>⏰ {ev.timing || '12:00 PM - 04:00 PM'}</span>
+                                      <span>•</span>
+                                      <span className="text-emerald-800 font-bold font-mono">
+                                        {ev.sponsoredCoconuts} / {ev.targetCoconuts} Coconuts
+                                      </span>
+                                    </p>
+                                    {ev.description && (
+                                      <p className="text-[11px] text-neutral-600 line-clamp-1 italic">
+                                        "{ev.description}"
+                                      </p>
+                                    )}
+                                  </div>
+
+                                  <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-center">
+                                    {/* Edit Button */}
+                                    <button
+                                      type="button"
+                                      onClick={() => handleStartEditSchedule(ev)}
+                                      className="text-[11px] bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-2.5 py-1.5 rounded-lg flex items-center gap-1 shadow-2xs transition-all cursor-pointer active:scale-95"
+                                      title="Edit all details of this Ekadashi / Hospital event"
+                                    >
+                                      <Pencil className="w-3 h-3" />
+                                      <span>Edit ✏️</span>
+                                    </button>
+
+                                    {/* Status Toggle Button */}
+                                    {ev.status === 'active_today' ? (
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          const updated = scheduleEvents.map((item, i) => ({
+                                            ...item,
+                                            status: i === idx ? ('upcoming' as const) : item.status,
+                                          }));
+                                          setScheduleEvents(updated);
+                                          safeLocalStorageSet('ruh_schedule_v3', updated);
+                                          if (onSyncToServer) onSyncToServer({ scheduleEvents: updated });
+                                          showToast(`Set "${ev.title}" back to Upcoming`);
+                                        }}
+                                        className="text-[10px] bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold px-2.5 py-1.5 rounded-lg border border-amber-300 transition-colors cursor-pointer"
+                                      >
+                                        Set as Upcoming ⚪
+                                      </button>
+                                    ) : (
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          const updated = scheduleEvents.map((item, i) => ({
+                                            ...item,
+                                            status: i === idx ? ('active_today' as const) : ('upcoming' as const),
+                                          }));
+                                          setScheduleEvents(updated);
+                                          safeLocalStorageSet('ruh_schedule_v3', updated);
+                                          if (onSyncToServer) onSyncToServer({ scheduleEvents: updated });
+                                          showToast(`Set "${ev.title}" as Active Today!`);
+                                        }}
+                                        className="text-[10px] bg-emerald-50 hover:bg-emerald-100 text-[#084c36] font-bold px-2.5 py-1.5 rounded-lg border border-emerald-200 transition-colors cursor-pointer"
+                                      >
+                                        Set as Live Today 🔴
+                                      </button>
+                                    )}
+
+                                    {/* Delete Button */}
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeleteScheduleEvent(ev.id)}
+                                      className="p-1.5 text-neutral-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors cursor-pointer"
+                                      title="Delete Event"
+                                    >
+                                      <Trash2 className="w-4 h-4" />
+                                    </button>
+                                  </div>
+                                </div>
+
+                                {/* Quick Coconut Count & Timing Customizer */}
+                                <div className="pt-2 border-t border-neutral-100 flex flex-wrap items-center justify-between gap-3 text-xs bg-neutral-50/70 p-2.5 rounded-xl border border-neutral-200/80">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-[11px] font-bold text-neutral-700">🥥 Quick Coconut Count:</span>
+                                    <div className="flex items-center gap-1">
+                                      <input
+                                        type="number"
+                                        min="0"
+                                        value={ev.sponsoredCoconuts}
+                                        onChange={(e) => {
+                                          const val = Math.max(0, parseInt(e.target.value) || 0);
+                                          const updated = scheduleEvents.map((item, i) =>
+                                            i === idx ? { ...item, sponsoredCoconuts: val } : item
+                                          );
+                                          setScheduleEvents(updated);
+                                          safeLocalStorageSet('ruh_schedule_v3', updated);
+                                          if (onSyncToServer) onSyncToServer({ scheduleEvents: updated });
+                                        }}
+                                        className="w-20 px-2 py-1 text-xs font-mono font-bold bg-white border border-neutral-300 rounded-lg text-center text-emerald-800 focus:outline-none focus:border-emerald-700"
+                                        title="Completed / Sponsored Coconuts"
+                                      />
+                                      <span className="text-neutral-400 font-bold">/</span>
+                                      <input
+                                        type="number"
+                                        min="1"
+                                        value={ev.targetCoconuts}
+                                        onChange={(e) => {
+                                          const val = Math.max(1, parseInt(e.target.value) || 1);
+                                          const updated = scheduleEvents.map((item, i) =>
+                                            i === idx ? { ...item, targetCoconuts: val } : item
+                                          );
+                                          setScheduleEvents(updated);
+                                          safeLocalStorageSet('ruh_schedule_v3', updated);
+                                          if (onSyncToServer) onSyncToServer({ scheduleEvents: updated });
+                                        }}
+                                        className="w-20 px-2 py-1 text-xs font-mono font-bold bg-white border border-neutral-300 rounded-lg text-center text-neutral-900 focus:outline-none focus:border-emerald-700"
+                                        title="Target Goal Coconuts"
+                                      />
+                                      <span className="text-[10px] text-neutral-500 font-medium">Target</span>
+                                    </div>
+                                  </div>
+
+                                  <div className="flex items-center gap-1.5 text-[11px] text-neutral-600">
+                                    <span>⏰ Timing:</span>
+                                    <input
+                                      type="text"
+                                      value={ev.timing || '12:00 PM - 04:00 PM'}
+                                      onChange={(e) => {
+                                        const updated = scheduleEvents.map((item, i) =>
+                                          i === idx ? { ...item, timing: e.target.value } : item
+                                        );
+                                        setScheduleEvents(updated);
+                                        safeLocalStorageSet('ruh_schedule_v3', updated);
+                                        if (onSyncToServer) onSyncToServer({ scheduleEvents: updated });
+                                      }}
+                                      className="w-36 px-2 py-1 text-xs font-mono bg-white border border-neutral-300 rounded-lg text-neutral-800 focus:outline-none focus:border-emerald-700"
+                                    />
+                                  </div>
+                                </div>
+                              </>
+                            )}
                           </div>
-
-                          {/* Coconut Count & Timing Customizer (Admin Feature) */}
-                          <div className="pt-2 border-t border-neutral-100 flex flex-wrap items-center justify-between gap-3 text-xs bg-neutral-50/70 p-2.5 rounded-xl border border-neutral-200/80">
-                            <div className="flex items-center gap-2">
-                              <span className="text-[11px] font-bold text-neutral-700">🥥 Customize Coconut Count:</span>
-                              <div className="flex items-center gap-1">
-                                <input
-                                  type="number"
-                                  min="0"
-                                  value={ev.sponsoredCoconuts}
-                                  onChange={(e) => {
-                                    const val = Math.max(0, parseInt(e.target.value) || 0);
-                                    const updated = scheduleEvents.map((item, i) =>
-                                      i === idx ? { ...item, sponsoredCoconuts: val } : item
-                                    );
-                                    setScheduleEvents(updated);
-                                  }}
-                                  className="w-20 px-2 py-1 text-xs font-mono font-bold bg-white border border-neutral-300 rounded-lg text-center text-emerald-800 focus:outline-none focus:border-emerald-700"
-                                  title="Completed / Sponsored Coconuts"
-                                />
-                                <span className="text-neutral-400 font-bold">/</span>
-                                <input
-                                  type="number"
-                                  min="1"
-                                  value={ev.targetCoconuts}
-                                  onChange={(e) => {
-                                    const val = Math.max(1, parseInt(e.target.value) || 1);
-                                    const updated = scheduleEvents.map((item, i) =>
-                                      i === idx ? { ...item, targetCoconuts: val } : item
-                                    );
-                                    setScheduleEvents(updated);
-                                  }}
-                                  className="w-20 px-2 py-1 text-xs font-mono font-bold bg-white border border-neutral-300 rounded-lg text-center text-neutral-900 focus:outline-none focus:border-emerald-700"
-                                  title="Target Goal Coconuts"
-                                />
-                                <span className="text-[10px] text-neutral-500 font-medium">Target</span>
-                              </div>
-                            </div>
-
-                            <div className="flex items-center gap-1.5 text-[11px] text-neutral-600">
-                              <span>⏰ Timing:</span>
-                              <input
-                                type="text"
-                                value={ev.timing || '12:00 PM - 04:00 PM'}
-                                onChange={(e) => {
-                                  const updated = scheduleEvents.map((item, i) =>
-                                    i === idx ? { ...item, timing: e.target.value } : item
-                                  );
-                                  setScheduleEvents(updated);
-                                }}
-                                className="w-36 px-2 py-1 text-xs font-mono bg-white border border-neutral-300 rounded-lg text-neutral-800 focus:outline-none focus:border-emerald-700"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 )}

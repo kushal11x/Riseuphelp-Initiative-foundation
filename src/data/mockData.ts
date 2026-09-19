@@ -128,16 +128,28 @@ export const PARTNER_HOSPITALS: HospitalNode[] = [
 
 export const INITIAL_SEVA_SCHEDULE: SevaScheduleEvent[] = [
   {
+    id: "seva-radha-ashtami",
+    title: "Radha Ashtami State Cancer Hospital Nariyal Pani Seva",
+    tithi: "Radha Ashtami Mahotsav Seva",
+    date: "Sep 19, 2026",
+    hospital: "State Cancer Medical College (RUHS), Jaipur",
+    timing: "12:00 PM - 04:00 PM",
+    targetCoconuts: 300,
+    sponsoredCoconuts: 100,
+    status: "active_today",
+    description: "Today's sacred Radha Ashtami live bedside tender coconut delivery and electrolyte hydration drive for chemotherapy cancer patients across RUHS State Cancer Hospital wards. Timing: 12:00 PM - 04:00 PM."
+  },
+  {
     id: "seva-ekadashi-parsva",
-    title: "Upcoming Parsva (Parivartini) Ekadashi Hospital Drive",
-    tithi: "Parsva / Parivartini Ekadashi (Bhadrapada Shukla)",
+    title: "Upcoming Jaljhulani Ekadashi Hospital Drive",
+    tithi: "Jaljhulani (Parivartini) Ekadashi (Bhadrapada Shukla)",
     date: "Sep 22, 2026",
     hospital: "State Cancer Medical College (RUHS), Jaipur",
     timing: "12:00 PM - 04:00 PM",
     targetCoconuts: 3000,
     sponsoredCoconuts: 150,
     status: "upcoming",
-    description: "Next immediate bedside tender coconut delivery and electrolyte hydration drive for chemotherapy cancer patients across RUHS wards. Timing: 12:00 PM - 04:00 PM."
+    description: "Next immediate bedside tender coconut delivery and electrolyte hydration drive for chemotherapy cancer patients across RUHS wards on sacred Jaljhulani Ekadashi. Timing: 12:00 PM - 04:00 PM."
   },
   {
     id: "seva-ekadashi-indira",

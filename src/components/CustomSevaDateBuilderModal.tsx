@@ -173,7 +173,7 @@ export const CustomSevaDateBuilderModal: React.FC<CustomSevaDateBuilderModalProp
   const [selectedDate, setSelectedDate] = useState<string>('2026-09-22');
   const [datePreset, setDatePreset] = useState<'next_ekadashi' | 'sunday' | 'today' | 'custom'>('next_ekadashi');
   const [selectedHospital, setSelectedHospital] = useState<string>(PARTNER_HOSPITALS[0]?.name || 'RUHS State Cancer Hospital');
-  const [occasionNote, setOccasionNote] = useState<string>('Parsva Ekadashi Vow Seva (Sep 22, 2026)');
+  const [occasionNote, setOccasionNote] = useState<string>('Jaljhulani Ekadashi Vow Seva (Sep 22, 2026)');
   const [donorName, setDonorName] = useState<string>(currentUser?.fullName || '');
   const [donorPhone, setDonorPhone] = useState<string>(currentUser?.phone || '');
   const [error, setError] = useState<string>('');
@@ -202,9 +202,9 @@ export const CustomSevaDateBuilderModal: React.FC<CustomSevaDateBuilderModalProp
       setSelectedDate(d.toISOString().split('T')[0]);
       setOccasionNote('Today Immediate Bedside Seva');
     } else if (preset === 'next_ekadashi') {
-      // Next Ekadashi: Sep 22, 2026 (Parsva / Parivartini Ekadashi)
+      // Next Ekadashi: Sep 22, 2026 (Jaljhulani Ekadashi)
       setSelectedDate('2026-09-22');
-      setOccasionNote('Parsva Ekadashi Vow Seva (Sep 22, 2026)');
+      setOccasionNote('Jaljhulani Ekadashi Vow Seva (Sep 22, 2026)');
     } else if (preset === 'sunday') {
       // Upcoming Sunday
       const day = d.getDay();
