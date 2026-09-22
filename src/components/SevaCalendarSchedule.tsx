@@ -37,7 +37,30 @@ export const SevaCalendarSchedule: React.FC<SevaCalendarScheduleProps> = ({
     if (onSelectScheduleSlot) {
       onSelectScheduleSlot(event);
     } else if (onSponsorItem) {
-      onSponsorItem(DRIVE_ITEMS[0], {
+      const isAnaar = event.title.toLowerCase().includes('anaar') || (event.sevaItems && event.sevaItems.some(i => i.toLowerCase().includes('anaar')));
+      const price = event.pricePerUnit || (isAnaar ? 70 : 65);
+      const unitLabel = event.unitLabel || (isAnaar ? 'Anaar Juice Glass' : 'Fresh Coconut');
+      const slotItem: DriveItem = {
+        id: `slot-${event.id}`,
+        name: `${event.title} (${event.tithi})`,
+        tagline: `${event.date} • ${event.hospital}`,
+        category: 'hospital',
+        price: price,
+        unitLabel: unitLabel,
+        targetCount: `${event.targetCoconuts} ${unitLabel}s`,
+        deliveredCount: `${event.sponsoredCoconuts} Sponsored`,
+        percentage: 90,
+        color: isAnaar ? '#b91c1c' : '#084c36',
+        badge: 'Ekadashi Seva Slot',
+        image: event.image || (isAnaar ? '/uploads/jaljhulani_anar_juice_nariyal_seva.jpg' : '/uploads/nariyal_pani_fresh_coconut.jpg'),
+        description: event.description,
+        impactMetrics: `Direct bedside delivery on ${event.date} at ${event.hospital}`,
+        options: {
+          primary: `${unitLabel} (₹${price})`,
+          secondary: 'Immunity Pack',
+        },
+      };
+      onSponsorItem(slotItem, {
         name: '',
         phone: '',
         quantity: 20,
@@ -240,7 +263,9 @@ export const SevaCalendarSchedule: React.FC<SevaCalendarScheduleProps> = ({
                   {todayLiveEvent.sponsoredCoconuts.toLocaleString('en-IN')} / {todayLiveEvent.targetCoconuts.toLocaleString('en-IN')}
                 </div>
                 <span className="text-[11px] text-amber-300 font-medium block">
-                  {todayLiveEvent.status === 'active_today' ? "Fresh Tender Coconuts Cut Bedside Today" : "Pledged Coconuts for RUHS Cancer Ward"}
+                  {todayLiveEvent.status === 'active_today'
+                    ? (todayLiveEvent.unitLabel ? `${todayLiveEvent.unitLabel}s Served Bedside Today` : "Taaza Pure Anaar Juices Served Bedside Today")
+                    : (todayLiveEvent.unitLabel ? `Pledged ${todayLiveEvent.unitLabel}s for Cancer Ward` : "Pledged Seva for RUHS Cancer Ward")}
                 </span>
               </div>
 
@@ -248,7 +273,11 @@ export const SevaCalendarSchedule: React.FC<SevaCalendarScheduleProps> = ({
                 onClick={() => handleBookSlot(todayLiveEvent)}
                 className="w-full sm:w-auto bg-[#FDB813] hover:bg-[#f59e0b] text-neutral-950 font-extrabold px-6 py-3 rounded-xl text-xs sm:text-sm transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
               >
-                <span>{todayLiveEvent.status === 'active_today' ? 'Sponsor 20 Coconuts Today (₹1,300)' : 'Pre-Book / Sponsor Coconuts (₹65 each)'}</span>
+                <span>
+                  {todayLiveEvent.status === 'active_today'
+                    ? `Sponsor 20 ${todayLiveEvent.unitLabel ? todayLiveEvent.unitLabel + 's' : 'Glasses'} Today (₹${((todayLiveEvent.pricePerUnit || 70) * 20).toLocaleString('en-IN')})`
+                    : `Pre-Book / Sponsor (₹${todayLiveEvent.pricePerUnit || 70} each)`}
+                </span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -324,7 +353,7 @@ export const SevaCalendarSchedule: React.FC<SevaCalendarScheduleProps> = ({
                         <Clock className="w-3 h-3 text-[#084c36]" />
                         <span>{event.timing || '12:00 PM - 04:00 PM'}</span>
                       </span>
-                      <span>Target: {event.targetCoconuts.toLocaleString('en-IN')} Coconuts</span>
+                      <span>Target: {event.targetCoconuts.toLocaleString('en-IN')} {event.unitLabel ? `${event.unitLabel}s` : 'Units'} (₹{event.pricePerUnit || 70}/unit)</span>
                     </div>
                     <div className="flex justify-end text-[10px] text-neutral-500">
                       <strong className="text-neutral-900">{progress}% Booked</strong>

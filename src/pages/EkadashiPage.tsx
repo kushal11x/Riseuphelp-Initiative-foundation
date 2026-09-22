@@ -27,22 +27,27 @@ export const EkadashiPage: React.FC<EkadashiPageProps> = ({
   const { t } = useLanguage();
 
   const handleSelectScheduleSlot = (event: SevaScheduleEvent, _customDate?: string) => {
+    const isAnaar = event.title.toLowerCase().includes('anaar') || (event.sevaItems && event.sevaItems.some(i => i.toLowerCase().includes('anaar')));
+    const price = event.pricePerUnit || (isAnaar ? 70 : 65);
+    const unitLabel = event.unitLabel || (isAnaar ? 'Anaar Juice Glass' : 'Fresh Coconut');
+
     const scheduleDriveItem: DriveItem = {
       id: `slot-${event.id}`,
       name: `${event.title} (${event.tithi})`,
       tagline: `${event.date} • ${event.hospital}`,
       category: 'hospital',
-      price: 65,
-      unitLabel: 'Fresh Coconut',
-      targetCount: `${event.targetCoconuts} Coconuts`,
+      price: price,
+      unitLabel: unitLabel,
+      targetCount: `${event.targetCoconuts} ${unitLabel}s`,
       deliveredCount: `${event.sponsoredCoconuts} Sponsored`,
       percentage: 90,
-      color: '#084c36',
+      color: isAnaar ? '#b91c1c' : '#084c36',
       badge: 'Ekadashi Seva Slot',
+      image: event.image || (isAnaar ? '/uploads/jaljhulani_anar_juice_nariyal_seva.jpg' : '/uploads/nariyal_pani_fresh_coconut.jpg'),
       description: event.description,
       impactMetrics: `Direct bedside delivery on ${event.date} at ${event.hospital}`,
       options: {
-        primary: 'Fresh Coconut',
+        primary: `${unitLabel} (₹${price})`,
         secondary: 'Immunity Pack',
       },
     };
@@ -107,32 +112,34 @@ export const EkadashiPage: React.FC<EkadashiPageProps> = ({
               <div className="pt-2">
                 <button
                   onClick={() => {
-                    const coconutDriveItem: DriveItem = {
-                      id: 'coconut-water',
-                      name: 'Fresh Whole Tender Coconut (RUHS Bedside)',
-                      tagline: 'Every Ekadashi Vow • Government Cancer Hospital (RUHS)',
+                    const activeToday = scheduleEvents.find((e) => e.status === 'active_today');
+                    const isAnaar = activeToday?.title.toLowerCase().includes('anaar') || (activeToday?.sevaItems && activeToday.sevaItems.some(i => i.toLowerCase().includes('anaar')));
+                    const liveDriveItem: DriveItem = {
+                      id: activeToday?.id || 'anaar-juice',
+                      name: activeToday?.title || 'Pure Cold-Pressed Anaar Juice (RUHS Bedside)',
+                      tagline: `${activeToday?.date || 'Sep 22, 2026'} • ${activeToday?.hospital || 'State Cancer Hospital (RUHS)'}`,
                       category: 'hospital',
-                      price: 65,
-                      unitLabel: 'Fresh Coconut',
-                      targetCount: '215K Target',
-                      deliveredCount: '194.7K Delivered',
+                      price: activeToday?.pricePerUnit || 70,
+                      unitLabel: activeToday?.unitLabel || 'Anaar Juice Glass',
+                      targetCount: `${activeToday?.targetCoconuts || 3000} Glasses`,
+                      deliveredCount: `${activeToday?.sponsoredCoconuts || 480} Sponsored`,
                       percentage: 91,
-                      color: '#084c36',
-                      badge: '100% Direct Sourced',
-                      image: '/uploads/nariyal_pani_fresh_coconut.jpg',
-                      description: 'Whole green tender coconuts cut and opened fresh in front of cancer patients at State Cancer Medical College (RUHS) with sterile eco-straws.',
-                      impactMetrics: '194,700+ fresh coconuts cut bedside for patients battling chemotherapy and trauma recovery.',
+                      color: isAnaar ? '#b91c1c' : '#084c36',
+                      badge: '100% Pure Fresh Juice',
+                      image: activeToday?.image || '/uploads/jaljhulani_anar_juice_nariyal_seva.jpg',
+                      description: activeToday?.description || 'Pure cold-pressed pomegranate (taaza anaar) juice served bedside in clean glasses for cancer chemotherapy patients across RUHS wards.',
+                      impactMetrics: 'Restores essential hemoglobin, platelets, and vitamins during intensive oncology treatments.',
                       options: {
-                        primary: 'Fresh Coconut',
-                        secondary: 'Immunity Packs',
+                        primary: `${activeToday?.unitLabel || 'Anaar Juice Glass'} (₹${activeToday?.pricePerUnit || 70})`,
+                        secondary: 'Immunity Pack',
                       },
                       status: 'active',
                     };
-                    onOpenSponsorModal(coconutDriveItem, { name: '', phone: '', quantity: 20 });
+                    onOpenSponsorModal(liveDriveItem, { name: '', phone: '', quantity: 20 });
                   }}
                   className="bg-[#FDB813] hover:bg-amber-400 text-neutral-950 font-extrabold text-xs sm:text-sm px-6 py-3 rounded-full transition-all duration-300 shadow-md hover:shadow-lg active:scale-95 cursor-pointer inline-flex items-center gap-2"
                 >
-                  <span>{t.ekadashiSponsorBtn}</span>
+                  <span>{t.ekadashiSponsorBtn} (₹70/Glass)</span>
                 </button>
               </div>
             </div>

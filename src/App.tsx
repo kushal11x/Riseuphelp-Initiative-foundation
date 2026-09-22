@@ -294,24 +294,26 @@ export function App() {
       try {
         const parsed = JSON.parse(s);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Check if parsed already has Jaljhulani Ekadashi active today with custom offerings and image
+          // Check if parsed already has Jaljhulani Ekadashi active today with price 70
           const jaljhulaniEv = parsed.find((e: any) => e.id === 'seva-ekadashi-parsva');
-          if (jaljhulaniEv && jaljhulaniEv.status === 'active_today' && jaljhulaniEv.image) {
+          if (jaljhulaniEv && jaljhulaniEv.status === 'active_today' && jaljhulaniEv.pricePerUnit === 70) {
             return parsed;
           }
-          // Migrate old cached client data: mark Jaljhulani as active today with Anaar juice photo & offerings
+          // Migrate old cached client data: mark Jaljhulani as active today with 100% Pure Anaar Juice at Rs 70
           const updated = parsed.map((e: any) => {
             if (e.id === 'seva-ekadashi-parsva') {
               return {
                 ...e,
-                title: 'Jaljhulani Ekadashi Hospital Nariyal Pani & Anaar Juice Seva',
+                title: 'Jaljhulani Ekadashi State Cancer Hospital Taaza Anaar Juice Seva',
                 tithi: 'Jaljhulani (Parivartini) Ekadashi Mahotsav',
                 date: 'Sep 22, 2026',
                 timing: '12:00 PM - 04:00 PM',
                 status: 'active_today' as const,
                 image: '/uploads/jaljhulani_anar_juice_nariyal_seva.jpg',
-                sevaItems: ['🥥 Fresh Tender Coconut Water', '🍷 Pure Pomegranate (Anaar) Juice', '💧 Electrolyte Recovery'],
-                customOfferingsNote: 'Special Jaljhulani Offering: Nariyal Pani + Taaza Anaar Juice',
+                sevaItems: ['🍷 100% Taaza Anaar Juice', '🩸 Platelet & Hemoglobin Recovery', '🌿 Zero Adulteration & Sterile'],
+                customOfferingsNote: 'Special Jaljhulani Seva: 100% Taaza Anaar Juice (₹70/Glass)',
+                pricePerUnit: 70,
+                unitLabel: 'Juice Glass',
               };
             }
             if (e.id === 'seva-radha-ashtami') {

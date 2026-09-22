@@ -719,7 +719,7 @@
   "scheduleEvents": [
     {
       "id": "seva-ekadashi-parsva",
-      "title": "Jaljhulani Ekadashi Hospital Nariyal Pani & Anaar Juice Seva",
+      "title": "Jaljhulani Ekadashi State Cancer Hospital Taaza Anaar Juice Seva",
       "tithi": "Jaljhulani (Parivartini) Ekadashi Mahotsav",
       "date": "Sep 22, 2026",
       "hospital": "State Cancer Medical College (RUHS), Jaipur",
@@ -727,14 +727,16 @@
       "targetCoconuts": 3000,
       "sponsoredCoconuts": 480,
       "status": "active_today",
-      "description": "Today's sacred Jaljhulani Ekadashi live bedside seva: fresh green tender coconuts + pure cold-pressed pomegranate (taaza anaar) juice for cancer chemotherapy patients across RUHS wards. Timing: 12:00 PM - 04:00 PM.",
+      "description": "Today's sacred Jaljhulani Ekadashi live bedside 100% pure cold-pressed pomegranate (taaza anaar) juice distribution for cancer chemotherapy patients across RUHS wards to restore hemoglobin and platelets. Rate: ₹70 per glass. Timing: 12:00 PM - 04:00 PM.",
       "image": "/uploads/jaljhulani_anar_juice_nariyal_seva.jpg",
       "sevaItems": [
-        "🥥 Fresh Tender Coconut Water",
-        "🍷 Pure Pomegranate (Anaar) Juice",
-        "💧 Electrolyte Recovery"
+        "🍷 100% Taaza Anaar Juice",
+        "🩸 Platelet & Hemoglobin Recovery",
+        "🌿 Zero Adulteration & Sterile"
       ],
-      "customOfferingsNote": "Special Jaljhulani Offering: Nariyal Pani + Taaza Anaar Juice"
+      "customOfferingsNote": "Special Jaljhulani Seva: 100% Taaza Anaar Juice (₹70/Glass)",
+      "pricePerUnit": 70,
+      "unitLabel": "Juice Glass"
     },
     {
       "id": "seva-radha-ashtami",

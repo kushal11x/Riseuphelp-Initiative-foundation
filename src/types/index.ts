@@ -79,6 +79,8 @@ export interface SevaScheduleEvent {
   sevaItems?: string[];
   image?: string;
   customOfferingsNote?: string;
+  pricePerUnit?: number;
+  unitLabel?: string;
 }
 
 export interface HospitalNode {

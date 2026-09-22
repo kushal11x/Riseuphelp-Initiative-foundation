@@ -345,8 +345,10 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
   const [newEventDate, setNewEventDate] = useState('');
   const [newEventHospital, setNewEventHospital] = useState('State Cancer Medical College (RUHS), Jaipur');
   const [newEventTarget, setNewEventTarget] = useState<number>(3500);
+  const [newEventPrice, setNewEventPrice] = useState<number>(70);
+  const [newEventUnit, setNewEventUnit] = useState<string>('Juice Glass');
   const [newEventDesc, setNewEventDesc] = useState('');
-  const [newEventOfferings, setNewEventOfferings] = useState('🥥 Fresh Tender Coconut Water, 🍷 Pure Pomegranate (Anaar) Juice');
+  const [newEventOfferings, setNewEventOfferings] = useState('🍷 100% Pure Taaza Anaar Juice');
   const [newEventImage, setNewEventImage] = useState('/uploads/jaljhulani_anar_juice_nariyal_seva.jpg');
 
   // State for editing any listed schedule event (current or upcoming)
@@ -1008,7 +1010,9 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
       status: 'upcoming',
       description: newEventDesc || 'Bedside fresh tender coconut & pure fruit juice hydration drive for cancer patients.',
       image: newEventImage || '/uploads/jaljhulani_anar_juice_nariyal_seva.jpg',
-      sevaItems: parsedOfferings.length > 0 ? parsedOfferings : ['🥥 Fresh Tender Coconut Water', '🍷 Pure Pomegranate (Anaar) Juice'],
+      sevaItems: parsedOfferings.length > 0 ? parsedOfferings : ['🍷 100% Pure Taaza Anaar Juice'],
+      pricePerUnit: newEventPrice || 70,
+      unitLabel: newEventUnit || 'Juice Glass',
     };
     if (setScheduleEvents && scheduleEvents) {
       const updated = [...scheduleEvents, newEv];
@@ -1024,10 +1028,13 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
 
   const handleStartEditSchedule = (ev: SevaScheduleEvent) => {
     setEditingScheduleId(ev.id);
+    const isAnaar = ev.title.toLowerCase().includes('anaar') || (ev.sevaItems && ev.sevaItems.some(s => s.toLowerCase().includes('anaar')));
     setEditEventForm({
       ...ev,
-      sevaItems: ev.sevaItems && ev.sevaItems.length > 0 ? ev.sevaItems : ['🥥 Fresh Tender Coconut Water'],
-      image: ev.image || (ev.id === 'seva-ekadashi-parsva' ? '/uploads/jaljhulani_anar_juice_nariyal_seva.jpg' : '/uploads/ruhs_hospital_nariyal_seva_trolley.jpg'),
+      pricePerUnit: ev.pricePerUnit || (isAnaar ? 70 : 65),
+      unitLabel: ev.unitLabel || (isAnaar ? 'Juice Glass' : 'Fresh Coconut'),
+      sevaItems: ev.sevaItems && ev.sevaItems.length > 0 ? ev.sevaItems : [isAnaar ? '🍷 100% Pure Taaza Anaar Juice' : '🥥 Fresh Tender Coconut Water'],
+      image: ev.image || (isAnaar ? '/uploads/jaljhulani_anar_juice_nariyal_seva.jpg' : '/uploads/ruhs_hospital_nariyal_seva_trolley.jpg'),
       customOfferingsNote: ev.customOfferingsNote || '',
     });
   };
@@ -6905,6 +6912,33 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
 
                         <div>
                           <label className="text-[10px] font-semibold text-neutral-600 block mb-1">
+                            Rate / Unit (₹)
+                          </label>
+                          <input
+                            type="number"
+                            min="1"
+                            placeholder="70"
+                            value={newEventPrice}
+                            onChange={(e) => setNewEventPrice(Number(e.target.value))}
+                            className="w-full bg-white border border-neutral-300 rounded-lg p-2 font-bold text-neutral-900 font-mono"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-[10px] font-semibold text-neutral-600 block mb-1">
+                            Unit Label (e.g. Juice Glass / Coconut)
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="Juice Glass"
+                            value={newEventUnit}
+                            onChange={(e) => setNewEventUnit(e.target.value)}
+                            className="w-full bg-white border border-neutral-300 rounded-lg p-2 font-medium text-neutral-900"
+                          />
+                        </div>
+
+                        <div className="sm:col-span-2">
+                          <label className="text-[10px] font-semibold text-neutral-600 block mb-1">
                             Short Description / Ward Details
                           </label>
                           <input
@@ -7180,6 +7214,42 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                                       className="w-full bg-white border border-neutral-300 rounded-lg p-2 font-mono font-bold text-emerald-800 focus:outline-none focus:border-emerald-600 shadow-2xs"
                                     />
                                   </div>
+                                  <div>
+                                    <label className="text-[10px] font-bold text-neutral-700 block mb-1">
+                                      Rate / Unit (₹) *
+                                    </label>
+                                    <input
+                                      type="number"
+                                      min="1"
+                                      value={editEventForm.pricePerUnit ?? 70}
+                                      onChange={(e) =>
+                                        setEditEventForm({
+                                          ...editEventForm,
+                                          pricePerUnit: Math.max(1, parseInt(e.target.value) || 70),
+                                        })
+                                      }
+                                      className="w-full bg-white border border-neutral-300 rounded-lg p-2 font-mono font-bold text-neutral-900 focus:outline-none focus:border-emerald-600 shadow-2xs"
+                                      placeholder="70"
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <label className="text-[10px] font-bold text-neutral-700 block mb-1">
+                                      Unit Label (e.g. Juice Glass / Coconut)
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={editEventForm.unitLabel || ''}
+                                      onChange={(e) =>
+                                        setEditEventForm({
+                                          ...editEventForm,
+                                          unitLabel: e.target.value,
+                                        })
+                                      }
+                                      className="w-full bg-white border border-neutral-300 rounded-lg p-2 font-medium text-neutral-900 focus:outline-none focus:border-emerald-600 shadow-2xs"
+                                      placeholder="Juice Glass"
+                                    />
+                                  </div>
                                 </div>
 
                                 <div>
@@ -7390,7 +7460,11 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                                         <span>⏰ {ev.timing || '12:00 PM - 04:00 PM'}</span>
                                         <span>•</span>
                                         <span className="text-emerald-800 font-bold font-mono">
-                                          {ev.sponsoredCoconuts} / {ev.targetCoconuts} Coconuts
+                                          {ev.sponsoredCoconuts} / {ev.targetCoconuts} {ev.unitLabel ? `${ev.unitLabel}s` : 'Units'}
+                                        </span>
+                                        <span>•</span>
+                                        <span className="text-red-700 font-bold font-mono bg-red-50 px-2 py-0.5 rounded border border-red-200">
+                                          ₹{ev.pricePerUnit || 70} / {ev.unitLabel || 'glass'}
                                         </span>
                                       </p>
                                       {ev.description && (
