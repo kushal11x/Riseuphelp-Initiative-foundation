@@ -346,6 +346,8 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
   const [newEventHospital, setNewEventHospital] = useState('State Cancer Medical College (RUHS), Jaipur');
   const [newEventTarget, setNewEventTarget] = useState<number>(3500);
   const [newEventDesc, setNewEventDesc] = useState('');
+  const [newEventOfferings, setNewEventOfferings] = useState('🥥 Fresh Tender Coconut Water, 🍷 Pure Pomegranate (Anaar) Juice');
+  const [newEventImage, setNewEventImage] = useState('/uploads/jaljhulani_anar_juice_nariyal_seva.jpg');
 
   // State for editing any listed schedule event (current or upcoming)
   const [editingScheduleId, setEditingScheduleId] = useState<string | null>(null);
@@ -990,6 +992,11 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
   const handleAddScheduleEvent = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newEventTitle.trim() || !newEventDate.trim()) return;
+    const parsedOfferings = newEventOfferings
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+
     const newEv: SevaScheduleEvent = {
       id: `seva-event-${Date.now()}`,
       title: newEventTitle.trim(),
@@ -999,7 +1006,9 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
       targetCoconuts: newEventTarget || 3500,
       sponsoredCoconuts: 0,
       status: 'upcoming',
-      description: newEventDesc || 'Bedside fresh tender coconut hydration drive for cancer patients.',
+      description: newEventDesc || 'Bedside fresh tender coconut & pure fruit juice hydration drive for cancer patients.',
+      image: newEventImage || '/uploads/jaljhulani_anar_juice_nariyal_seva.jpg',
+      sevaItems: parsedOfferings.length > 0 ? parsedOfferings : ['🥥 Fresh Tender Coconut Water', '🍷 Pure Pomegranate (Anaar) Juice'],
     };
     if (setScheduleEvents && scheduleEvents) {
       const updated = [...scheduleEvents, newEv];
@@ -1015,7 +1024,12 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
 
   const handleStartEditSchedule = (ev: SevaScheduleEvent) => {
     setEditingScheduleId(ev.id);
-    setEditEventForm({ ...ev });
+    setEditEventForm({
+      ...ev,
+      sevaItems: ev.sevaItems && ev.sevaItems.length > 0 ? ev.sevaItems : ['🥥 Fresh Tender Coconut Water'],
+      image: ev.image || (ev.id === 'seva-ekadashi-parsva' ? '/uploads/jaljhulani_anar_juice_nariyal_seva.jpg' : '/uploads/ruhs_hospital_nariyal_seva_trolley.jpg'),
+      customOfferingsNote: ev.customOfferingsNote || '',
+    });
   };
 
   const handleCancelEditSchedule = () => {
@@ -6901,6 +6915,90 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                             className="w-full bg-white border border-neutral-300 rounded-lg p-2 text-neutral-900"
                           />
                         </div>
+
+                        <div className="sm:col-span-2 bg-emerald-50/70 p-3 rounded-xl border border-emerald-200/80 space-y-2">
+                          <label className="text-[10px] font-bold text-emerald-950 block">
+                            🍇 🥥 Seva Items & Custom Offerings (comma-separated):
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="e.g. 🥥 Fresh Tender Coconut Water, 🍷 Pure Pomegranate (Anaar) Juice"
+                            value={newEventOfferings}
+                            onChange={(e) => setNewEventOfferings(e.target.value)}
+                            className="w-full bg-white border border-neutral-300 rounded-lg p-2 font-medium text-neutral-900 text-xs"
+                          />
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="text-[10px] text-neutral-500 font-semibold">Quick Add:</span>
+                            <button
+                              type="button"
+                              onClick={() => setNewEventOfferings((prev) => prev ? `${prev}, 🍷 Pure Pomegranate (Anaar) Juice` : '🍷 Pure Pomegranate (Anaar) Juice')}
+                              className="text-[10px] bg-white hover:bg-emerald-100 text-emerald-900 font-bold px-2 py-0.5 rounded border border-emerald-300 transition-colors cursor-pointer"
+                            >
+                              + 🍷 Anaar Juice
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setNewEventOfferings((prev) => prev ? `${prev}, 🥥 Fresh Tender Coconut Water` : '🥥 Fresh Tender Coconut Water')}
+                              className="text-[10px] bg-white hover:bg-emerald-100 text-emerald-900 font-bold px-2 py-0.5 rounded border border-emerald-300 transition-colors cursor-pointer"
+                            >
+                              + 🥥 Nariyal Pani
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setNewEventOfferings((prev) => prev ? `${prev}, 🍎 Fresh Seasonal Fruit Pack` : '🍎 Fresh Seasonal Fruit Pack')}
+                              className="text-[10px] bg-white hover:bg-emerald-100 text-emerald-900 font-bold px-2 py-0.5 rounded border border-emerald-300 transition-colors cursor-pointer"
+                            >
+                              + 🍎 Fruit Pack
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="sm:col-span-2 flex flex-col sm:flex-row items-start sm:items-center gap-3 bg-neutral-50 p-3 rounded-xl border border-neutral-200">
+                          <div className="w-16 h-14 rounded-lg overflow-hidden border border-neutral-300 shrink-0 bg-neutral-200">
+                            {newEventImage ? (
+                              <img src={newEventImage} alt="Preview" className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-[10px] text-neutral-400">No Image</div>
+                            )}
+                          </div>
+                          <div className="flex-1 w-full space-y-1.5">
+                            <label className="text-[10px] font-bold text-neutral-700 block">
+                              📸 Event Seva Photo URL / Upload:
+                            </label>
+                            <input
+                              type="text"
+                              value={newEventImage}
+                              onChange={(e) => setNewEventImage(e.target.value)}
+                              placeholder="/uploads/jaljhulani_anar_juice_nariyal_seva.jpg"
+                              className="w-full bg-white border border-neutral-300 rounded-lg p-1.5 text-xs font-mono text-neutral-900"
+                            />
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <label className="text-[10px] bg-[#084c36] hover:bg-[#063b2a] text-white font-bold px-2.5 py-1 rounded cursor-pointer transition-colors shadow-2xs">
+                                📤 Upload Device Photo
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  className="hidden"
+                                  onChange={(e) => handleImageUpload(e, (url: string) => setNewEventImage(url))}
+                                />
+                              </label>
+                              <button
+                                type="button"
+                                onClick={() => setNewEventImage('/uploads/jaljhulani_anar_juice_nariyal_seva.jpg')}
+                                className="text-[10px] bg-red-50 hover:bg-red-100 text-red-900 font-bold px-2 py-1 rounded border border-red-200 cursor-pointer"
+                              >
+                                🍷 Anaar Juice Seva Photo
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setNewEventImage('/uploads/ruhs_hospital_nariyal_seva_trolley.jpg')}
+                                className="text-[10px] bg-emerald-50 hover:bg-emerald-100 text-[#084c36] font-bold px-2 py-1 rounded border border-emerald-200 cursor-pointer"
+                              >
+                                🏥 Hospital Seva Trolley
+                              </button>
+                            </div>
+                          </div>
+                        </div>
                       </div>
 
                       <button
@@ -7099,6 +7197,131 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                                   />
                                 </div>
 
+                                {/* Custom Seva Offerings & Items */}
+                                <div className="bg-emerald-50/70 p-3 rounded-xl border border-emerald-200/80 space-y-2">
+                                  <label className="text-[10px] font-bold text-emerald-950 block">
+                                    🍇 🥥 Custom Seva Items & Offerings (comma-separated):
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={(editEventForm.sevaItems || []).join(', ')}
+                                    onChange={(e) =>
+                                      setEditEventForm({
+                                        ...editEventForm,
+                                        sevaItems: e.target.value.split(',').map((s) => s.trim()).filter(Boolean),
+                                      })
+                                    }
+                                    className="w-full bg-white border border-neutral-300 rounded-lg p-2 font-medium text-neutral-900 focus:outline-none focus:border-emerald-600 shadow-2xs text-xs"
+                                    placeholder="e.g. 🥥 Fresh Tender Coconut Water, 🍷 Pure Pomegranate (Anaar) Juice"
+                                  />
+                                  <div className="flex items-center gap-1.5 flex-wrap">
+                                    <span className="text-[10px] text-neutral-500 font-semibold">Quick Add:</span>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const current = editEventForm.sevaItems || [];
+                                        if (!current.includes('🍷 Pure Pomegranate (Anaar) Juice')) {
+                                          setEditEventForm({ ...editEventForm, sevaItems: [...current, '🍷 Pure Pomegranate (Anaar) Juice'] });
+                                        }
+                                      }}
+                                      className="text-[10px] bg-red-50 hover:bg-red-100 text-red-900 font-bold px-2 py-0.5 rounded border border-red-200 transition-colors cursor-pointer"
+                                    >
+                                      + 🍷 Anaar Juice
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const current = editEventForm.sevaItems || [];
+                                        if (!current.includes('🥥 Fresh Tender Coconut Water')) {
+                                          setEditEventForm({ ...editEventForm, sevaItems: [...current, '🥥 Fresh Tender Coconut Water'] });
+                                        }
+                                      }}
+                                      className="text-[10px] bg-emerald-50 hover:bg-emerald-100 text-emerald-900 font-bold px-2 py-0.5 rounded border border-emerald-200 transition-colors cursor-pointer"
+                                    >
+                                      + 🥥 Nariyal Pani
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const current = editEventForm.sevaItems || [];
+                                        if (!current.includes('🍎 Fresh Seasonal Fruit Pack')) {
+                                          setEditEventForm({ ...editEventForm, sevaItems: [...current, '🍎 Fresh Seasonal Fruit Pack'] });
+                                        }
+                                      }}
+                                      className="text-[10px] bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded border border-amber-200 transition-colors cursor-pointer"
+                                    >
+                                      + 🍎 Fruit Pack
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const current = editEventForm.sevaItems || [];
+                                        if (!current.includes('💧 Electrolyte Recovery')) {
+                                          setEditEventForm({ ...editEventForm, sevaItems: [...current, '💧 Electrolyte Recovery'] });
+                                        }
+                                      }}
+                                      className="text-[10px] bg-blue-50 hover:bg-blue-100 text-blue-900 font-bold px-2 py-0.5 rounded border border-blue-200 transition-colors cursor-pointer"
+                                    >
+                                      + 💧 Electrolytes
+                                    </button>
+                                  </div>
+                                </div>
+
+                                {/* Custom Event Seva Photo with Preview & Upload */}
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 bg-neutral-50 p-3 rounded-xl border border-neutral-200">
+                                  <div className="w-18 h-16 rounded-xl overflow-hidden border border-neutral-300 shrink-0 bg-neutral-200 shadow-2xs">
+                                    {editEventForm.image ? (
+                                      <img src={editEventForm.image} alt="Event Preview" className="w-full h-full object-cover" />
+                                    ) : (
+                                      <div className="w-full h-full flex items-center justify-center text-[10px] text-neutral-400">No Photo</div>
+                                    )}
+                                  </div>
+                                  <div className="flex-1 w-full space-y-1.5">
+                                    <label className="text-[10px] font-bold text-neutral-700 block">
+                                      📸 Event Seva Photo URL / Upload:
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={editEventForm.image || ''}
+                                      onChange={(e) => setEditEventForm({ ...editEventForm, image: e.target.value })}
+                                      placeholder="/uploads/jaljhulani_anar_juice_nariyal_seva.jpg"
+                                      className="w-full bg-white border border-neutral-300 rounded-lg p-1.5 text-xs font-mono text-neutral-900 focus:outline-none focus:border-emerald-600 shadow-2xs"
+                                    />
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                      <label className="text-[10px] bg-[#084c36] hover:bg-[#063b2a] text-white font-bold px-2.5 py-1 rounded cursor-pointer transition-colors shadow-2xs">
+                                        📤 Upload New Photo
+                                        <input
+                                          type="file"
+                                          accept="image/*"
+                                          className="hidden"
+                                          onChange={(e) => handleImageUpload(e, (url: string) => setEditEventForm({ ...editEventForm, image: url }))}
+                                        />
+                                      </label>
+                                      <button
+                                        type="button"
+                                        onClick={() => setEditEventForm({ ...editEventForm, image: '/uploads/jaljhulani_anar_juice_nariyal_seva.jpg' })}
+                                        className="text-[10px] bg-red-50 hover:bg-red-100 text-red-900 font-bold px-2 py-1 rounded border border-red-200 cursor-pointer"
+                                      >
+                                        🍷 Anaar Juice Photo
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => setEditEventForm({ ...editEventForm, image: '/uploads/ruhs_hospital_nariyal_seva_trolley.jpg' })}
+                                        className="text-[10px] bg-emerald-50 hover:bg-emerald-100 text-[#084c36] font-bold px-2 py-1 rounded border border-emerald-200 cursor-pointer"
+                                      >
+                                        🏥 Hospital Seva Trolley
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => setEditEventForm({ ...editEventForm, image: '/uploads/nariyal_pani_fresh_coconut.jpg' })}
+                                        className="text-[10px] bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold px-2 py-1 rounded border border-amber-200 cursor-pointer"
+                                      >
+                                        🥥 Fresh Coconut
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+
                                 <div className="flex items-center justify-end gap-2 pt-2 border-t border-emerald-200">
                                   <button
                                     type="button"
@@ -7120,43 +7343,62 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                               /* NORMAL CARD VIEW WITH EDIT & QUICK CONTROLS */
                               <>
                                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                                  <div className="space-y-1">
-                                    <div className="flex items-center gap-2 flex-wrap">
-                                      <span
-                                        className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded-full ${
-                                          ev.status === 'active_today'
-                                            ? 'bg-red-100 text-red-700 animate-pulse border border-red-300'
-                                            : ev.status === 'completed'
-                                            ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
-                                            : 'bg-amber-50 text-amber-900 border border-amber-200'
-                                        }`}
-                                      >
-                                        {ev.status === 'active_today'
-                                          ? '🔴 Active Today'
-                                          : ev.status === 'completed'
-                                          ? '✅ Completed'
-                                          : ev.tithi}
-                                      </span>
-                                      <strong className="text-xs sm:text-sm text-neutral-900 font-bold">
-                                        {ev.title}
-                                      </strong>
-                                    </div>
-                                    <p className="text-[11px] text-neutral-500 flex flex-wrap items-center gap-2 font-medium">
-                                      <span>📅 {ev.date}</span>
-                                      <span>•</span>
-                                      <span>🏥 {ev.hospital}</span>
-                                      <span>•</span>
-                                      <span>⏰ {ev.timing || '12:00 PM - 04:00 PM'}</span>
-                                      <span>•</span>
-                                      <span className="text-emerald-800 font-bold font-mono">
-                                        {ev.sponsoredCoconuts} / {ev.targetCoconuts} Coconuts
-                                      </span>
-                                    </p>
-                                    {ev.description && (
-                                      <p className="text-[11px] text-neutral-600 line-clamp-1 italic">
-                                        "{ev.description}"
-                                      </p>
+                                  <div className="flex items-start gap-3">
+                                    {ev.image && (
+                                      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden border border-neutral-200 shrink-0 shadow-2xs">
+                                        <img src={ev.image} alt={ev.title} className="w-full h-full object-cover" />
+                                      </div>
                                     )}
+                                    <div className="space-y-1">
+                                      <div className="flex items-center gap-2 flex-wrap">
+                                        <span
+                                          className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded-full ${
+                                            ev.status === 'active_today'
+                                              ? 'bg-red-100 text-red-700 animate-pulse border border-red-300'
+                                              : ev.status === 'completed'
+                                              ? 'bg-neutral-100 text-neutral-700 border border-neutral-200'
+                                              : 'bg-amber-50 text-amber-900 border border-amber-200'
+                                          }`}
+                                        >
+                                          {ev.status === 'active_today'
+                                            ? '🔴 Active Today'
+                                            : ev.status === 'completed'
+                                            ? '✅ Completed'
+                                            : ev.tithi}
+                                        </span>
+                                        <strong className="text-xs sm:text-sm text-neutral-900 font-bold">
+                                          {ev.title}
+                                        </strong>
+                                      </div>
+
+                                      {/* Custom Seva Items Tags */}
+                                      {ev.sevaItems && ev.sevaItems.length > 0 && (
+                                        <div className="flex flex-wrap gap-1 pt-0.5">
+                                          {ev.sevaItems.map((item, i) => (
+                                            <span key={i} className="text-[10px] bg-emerald-50 text-emerald-800 font-bold px-1.5 py-0.5 rounded border border-emerald-200">
+                                              {item}
+                                            </span>
+                                          ))}
+                                        </div>
+                                      )}
+
+                                      <p className="text-[11px] text-neutral-500 flex flex-wrap items-center gap-2 font-medium">
+                                        <span>📅 {ev.date}</span>
+                                        <span>•</span>
+                                        <span>🏥 {ev.hospital}</span>
+                                        <span>•</span>
+                                        <span>⏰ {ev.timing || '12:00 PM - 04:00 PM'}</span>
+                                        <span>•</span>
+                                        <span className="text-emerald-800 font-bold font-mono">
+                                          {ev.sponsoredCoconuts} / {ev.targetCoconuts} Coconuts
+                                        </span>
+                                      </p>
+                                      {ev.description && (
+                                        <p className="text-[11px] text-neutral-600 line-clamp-1 italic">
+                                          "{ev.description}"
+                                        </p>
+                                      )}
+                                    </div>
                                   </div>
 
                                   <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-center">

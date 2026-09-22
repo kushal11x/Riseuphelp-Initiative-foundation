@@ -294,23 +294,24 @@ export function App() {
       try {
         const parsed = JSON.parse(s);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Check if parsed already has Jaljhulani Ekadashi active today
-          const hasJaljhulaniActive = parsed.some(
-            (e: any) => e.id === 'seva-ekadashi-parsva' && e.status === 'active_today'
-          );
-          if (hasJaljhulaniActive) {
+          // Check if parsed already has Jaljhulani Ekadashi active today with custom offerings and image
+          const jaljhulaniEv = parsed.find((e: any) => e.id === 'seva-ekadashi-parsva');
+          if (jaljhulaniEv && jaljhulaniEv.status === 'active_today' && jaljhulaniEv.image) {
             return parsed;
           }
-          // Migrate old cached client data: mark Jaljhulani as active today and Radha Ashtami as completed
+          // Migrate old cached client data: mark Jaljhulani as active today with Anaar juice photo & offerings
           const updated = parsed.map((e: any) => {
             if (e.id === 'seva-ekadashi-parsva') {
               return {
                 ...e,
-                title: 'Jaljhulani Ekadashi State Cancer Hospital Nariyal Pani Seva',
+                title: 'Jaljhulani Ekadashi Hospital Nariyal Pani & Anaar Juice Seva',
                 tithi: 'Jaljhulani (Parivartini) Ekadashi Mahotsav',
                 date: 'Sep 22, 2026',
                 timing: '12:00 PM - 04:00 PM',
                 status: 'active_today' as const,
+                image: '/uploads/jaljhulani_anar_juice_nariyal_seva.jpg',
+                sevaItems: ['🥥 Fresh Tender Coconut Water', '🍷 Pure Pomegranate (Anaar) Juice', '💧 Electrolyte Recovery'],
+                customOfferingsNote: 'Special Jaljhulani Offering: Nariyal Pani + Taaza Anaar Juice',
               };
             }
             if (e.id === 'seva-radha-ashtami') {

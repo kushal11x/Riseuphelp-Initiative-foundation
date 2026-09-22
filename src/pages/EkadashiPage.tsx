@@ -139,45 +139,45 @@ export const EkadashiPage: React.FC<EkadashiPageProps> = ({
 
             {/* Right Photo Column: Dual Authentic Seva Photos */}
             <div className="lg:col-span-5 flex flex-col sm:flex-row lg:flex-col gap-3.5">
-              {/* Photo 1: Authentic RUHS Hospital Seva Trolley */}
+              {/* Photo 1: Authentic Jaljhulani Ekadashi Anaar Juice & Nariyal Seva */}
               <div className="relative rounded-2xl overflow-hidden border-2 border-white/25 shadow-2xl group bg-neutral-950 aspect-4/3 sm:aspect-auto sm:h-56 lg:h-64">
                 <img
-                  src="/uploads/ruhs_hospital_nariyal_seva_trolley.jpg"
-                  alt="Rise Up Help Foundation RUHS Hospital Nariyal Pani Seva Trolley"
+                  src="/uploads/jaljhulani_anar_juice_nariyal_seva.jpg"
+                  alt="Rise Up Help Foundation Jaljhulani Ekadashi Taaza Anaar Juice & Nariyal Pani Seva"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/30 pointer-events-none" />
-                <div className="absolute top-2.5 left-2.5 bg-[#084c36]/90 backdrop-blur-md text-[#FDB813] text-[10px] font-mono font-bold px-2.5 py-1 rounded-full border border-emerald-400/40 shadow-xs">
-                  🏥 RUHS Hospital Bedside Trolley
+                <div className="absolute top-2.5 left-2.5 bg-red-600/90 backdrop-blur-md text-white text-[10px] font-mono font-bold px-2.5 py-1 rounded-full border border-red-400/40 shadow-xs flex items-center gap-1">
+                  <span>🍷 Taaza Anaar Juice + 🥥 Nariyal Pani Seva</span>
                 </div>
                 <div className="absolute bottom-2.5 inset-x-2.5 text-left">
                   <div className="text-white font-extrabold text-xs sm:text-sm leading-snug drop-shadow-xs">
-                    "Small Steps, Big Changes!"
+                    "निःशुल्क सेवा: ताज़ा अनार का जूस और नारियल पानी"
                   </div>
                   <div className="text-[11px] text-emerald-200 mt-0.5 leading-tight drop-shadow-2xs">
-                    Fresh coconut sacks loaded on seva trolley at State Cancer Hospital (RUHS), Jaipur
+                    Special Jaljhulani Ekadashi bedside delivery for chemotherapy cancer patients at RUHS Jaipur
                   </div>
                 </div>
               </div>
 
-              {/* Photo 2: Fresh Whole Tender Coconut Cut Bedside */}
+              {/* Photo 2: Authentic RUHS Hospital Seva Trolley */}
               <div className="relative rounded-2xl overflow-hidden border-2 border-white/20 shadow-lg group bg-black/40 backdrop-blur-md flex items-center gap-3.5 p-3">
                 <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden shrink-0 border-2 border-emerald-400/40 shadow-xs bg-neutral-900">
                   <img
-                    src="/uploads/nariyal_pani_fresh_coconut.jpg"
-                    alt="Fresh Green Tender Coconut with Straw"
+                    src="/uploads/ruhs_hospital_nariyal_seva_trolley.jpg"
+                    alt="RUHS Hospital Bedside Seva Trolley"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
                 <div className="min-w-0 flex-1 text-left">
                   <div className="inline-block bg-emerald-400/20 text-emerald-300 text-[10px] font-mono font-bold px-2 py-0.5 rounded-md uppercase">
-                    🥥 100% Pure Tender Coconut
+                    🏥 RUHS Bedside Trolley
                   </div>
                   <div className="text-white font-bold text-xs sm:text-sm mt-1 leading-snug">
-                    Cut Live in Front of Patients
+                    Pure Sourced & Bedside Cut
                   </div>
                   <div className="text-[11px] text-emerald-100/80 mt-0.5 leading-tight">
-                    Served with sterile eco-straws for chemotherapy hydration & nausea relief.
+                    Whole tender coconuts and freshly pressed juices served bedside with sterile eco-straws.
                   </div>
                 </div>
               </div>

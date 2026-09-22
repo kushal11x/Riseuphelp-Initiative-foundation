@@ -90,7 +90,7 @@ export const SevaCalendarSchedule: React.FC<SevaCalendarScheduleProps> = ({
         </p>
 
         {/* On-Ground Bedside Proof Photo Cards */}
-        <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-w-2xl mx-auto text-left">
+        <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3.5 max-w-5xl mx-auto text-left">
           <div className="bg-white/90 rounded-2xl p-3 border border-emerald-200/80 shadow-xs flex items-center gap-3">
             <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-xl overflow-hidden bg-neutral-100 shrink-0 border border-neutral-200 shadow-2xs">
               <img
@@ -104,10 +104,10 @@ export const SevaCalendarSchedule: React.FC<SevaCalendarScheduleProps> = ({
                 🏥 RUHS Ward Trolley
               </span>
               <h4 className="text-xs font-bold text-neutral-900 mt-1 truncate">
-                On-Ground Coconut Distribution
+                Bedside Distribution
               </h4>
               <p className="text-[11px] text-neutral-500 line-clamp-1">
-                Trolley loaded bedside with whole green tender coconuts.
+                Trolley loaded bedside across oncology wards.
               </p>
             </div>
           </div>
@@ -128,7 +128,28 @@ export const SevaCalendarSchedule: React.FC<SevaCalendarScheduleProps> = ({
                 Cut Fresh Live Bedside
               </h4>
               <p className="text-[11px] text-neutral-500 line-clamp-1">
-                Zero chemical adulteration, sterile eco-straws for hydration.
+                Zero chemicals, sterile eco-straws for hydration.
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-white/90 rounded-2xl p-3 border border-red-200/80 shadow-xs flex items-center gap-3">
+            <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-xl overflow-hidden bg-neutral-100 shrink-0 border border-red-100 shadow-2xs">
+              <img
+                src="/uploads/jaljhulani_anar_juice_nariyal_seva.jpg"
+                alt="100% Taaza Anaar Juice Seva"
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            <div className="min-w-0 flex-1">
+              <span className="text-[10px] font-bold text-red-800 bg-red-50 px-2 py-0.5 rounded-md uppercase font-mono">
+                🍷 Pure Taaza Anaar Juice
+              </span>
+              <h4 className="text-xs font-bold text-neutral-900 mt-1 truncate">
+                Fresh Cold-Pressed
+              </h4>
+              <p className="text-[11px] text-neutral-500 line-clamp-1">
+                Hemoglobin & platelet recovery during chemotherapy.
               </p>
             </div>
           </div>
@@ -156,6 +177,11 @@ export const SevaCalendarSchedule: React.FC<SevaCalendarScheduleProps> = ({
                 <span className="bg-white/15 backdrop-blur-md px-3 py-1 rounded-full text-xs font-mono text-emerald-200 border border-white/10">
                   {todayLiveEvent.date} • {todayLiveEvent.tithi}
                 </span>
+                {todayLiveEvent.customOfferingsNote && (
+                  <span className="bg-amber-400/20 text-amber-300 font-semibold text-xs px-3 py-1 rounded-full border border-amber-400/30">
+                    ✨ {todayLiveEvent.customOfferingsNote}
+                  </span>
+                )}
               </div>
 
               <h3 className="text-xl sm:text-3xl font-extrabold text-white leading-tight">
@@ -165,7 +191,21 @@ export const SevaCalendarSchedule: React.FC<SevaCalendarScheduleProps> = ({
                 {todayLiveEvent.description}
               </p>
 
-              <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-emerald-200">
+              {/* Seva Offerings Badges */}
+              {todayLiveEvent.sevaItems && todayLiveEvent.sevaItems.length > 0 && (
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {todayLiveEvent.sevaItems.map((item, idx) => (
+                    <span
+                      key={idx}
+                      className="bg-white/15 text-amber-200 border border-white/20 text-xs px-2.5 py-1 rounded-lg font-bold flex items-center gap-1 backdrop-blur-xs shadow-2xs"
+                    >
+                      <span>{item}</span>
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-emerald-200 pt-1">
                 <span className="flex items-center gap-1.5">
                   <MapPin className="w-4 h-4 text-[#FDB813]" />
                   <span>{todayLiveEvent.hospital}</span>
@@ -178,15 +218,15 @@ export const SevaCalendarSchedule: React.FC<SevaCalendarScheduleProps> = ({
             </div>
 
             {/* Live Seva Photo Preview */}
-            <div className="relative w-36 h-28 sm:w-44 sm:h-32 rounded-2xl overflow-hidden border-2 border-white/20 shadow-lg shrink-0 hidden md:block group">
+            <div className="relative w-40 h-32 sm:w-56 sm:h-40 rounded-2xl overflow-hidden border-2 border-white/25 shadow-xl shrink-0 hidden md:block group">
               <img
-                src="/uploads/ruhs_hospital_nariyal_seva_trolley.jpg"
-                alt="RUHS Hospital Bedside Seva Trolley"
+                src={todayLiveEvent.image || '/uploads/jaljhulani_anar_juice_nariyal_seva.jpg'}
+                alt={todayLiveEvent.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-              <span className="absolute bottom-1.5 inset-x-1.5 text-[9px] font-bold text-amber-300 text-center uppercase tracking-wider font-mono">
-                🏥 RUHS Hospital Trolley
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent" />
+              <span className="absolute bottom-2 inset-x-2 text-[10px] font-bold text-amber-300 text-center uppercase tracking-wider font-mono truncate">
+                {todayLiveEvent.customOfferingsNote || '🏥 Bedside Live Seva'}
               </span>
             </div>
 
@@ -255,6 +295,21 @@ export const SevaCalendarSchedule: React.FC<SevaCalendarScheduleProps> = ({
                   <h4 className="font-bold text-neutral-900 text-sm sm:text-base mb-1.5 leading-snug">
                     {event.title}
                   </h4>
+
+                  {/* Seva Offerings Badges */}
+                  {event.sevaItems && event.sevaItems.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mb-2.5">
+                      {event.sevaItems.map((item, i) => (
+                        <span
+                          key={i}
+                          className="text-[10px] bg-emerald-50 text-emerald-800 font-bold px-2 py-0.5 rounded-md border border-emerald-200"
+                        >
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
                   <p className="text-xs text-neutral-600 mb-3 line-clamp-2">
                     {event.description}
                   </p>

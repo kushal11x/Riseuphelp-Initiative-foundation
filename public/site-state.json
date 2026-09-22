@@ -719,7 +719,7 @@
   "scheduleEvents": [
     {
       "id": "seva-ekadashi-parsva",
-      "title": "Jaljhulani Ekadashi State Cancer Hospital Nariyal Pani Seva",
+      "title": "Jaljhulani Ekadashi Hospital Nariyal Pani & Anaar Juice Seva",
       "tithi": "Jaljhulani (Parivartini) Ekadashi Mahotsav",
       "date": "Sep 22, 2026",
       "hospital": "State Cancer Medical College (RUHS), Jaipur",
@@ -727,7 +727,14 @@
       "targetCoconuts": 3000,
       "sponsoredCoconuts": 480,
       "status": "active_today",
-      "description": "Today's sacred Jaljhulani Ekadashi live bedside fresh tender coconut delivery and electrolyte hydration drive for chemotherapy cancer patients across RUHS wards. Timing: 12:00 PM - 04:00 PM."
+      "description": "Today's sacred Jaljhulani Ekadashi live bedside seva: fresh green tender coconuts + pure cold-pressed pomegranate (taaza anaar) juice for cancer chemotherapy patients across RUHS wards. Timing: 12:00 PM - 04:00 PM.",
+      "image": "/uploads/jaljhulani_anar_juice_nariyal_seva.jpg",
+      "sevaItems": [
+        "🥥 Fresh Tender Coconut Water",
+        "🍷 Pure Pomegranate (Anaar) Juice",
+        "💧 Electrolyte Recovery"
+      ],
+      "customOfferingsNote": "Special Jaljhulani Offering: Nariyal Pani + Taaza Anaar Juice"
     },
     {
       "id": "seva-radha-ashtami",
@@ -739,7 +746,11 @@
       "targetCoconuts": 300,
       "sponsoredCoconuts": 300,
       "status": "completed",
-      "description": "Completed with immense gratitude: 300 bedside fresh tender coconuts served to cancer patients across RUHS State Cancer Hospital on Radha Ashtami."
+      "description": "Completed with immense gratitude: 300 bedside fresh tender coconuts served to cancer patients across RUHS State Cancer Hospital on Radha Ashtami.",
+      "image": "/uploads/ruhs_hospital_nariyal_seva_trolley.jpg",
+      "sevaItems": [
+        "🥥 Fresh Tender Coconut Water"
+      ]
     },
     {
       "id": "seva-ekadashi-indira",

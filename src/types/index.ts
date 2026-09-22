@@ -75,6 +75,10 @@ export interface SevaScheduleEvent {
   sponsoredCoconuts: number;
   status: 'active_today' | 'upcoming' | 'completed';
   description: string;
+  // Custom Seva Offerings & Media fields:
+  sevaItems?: string[];
+  image?: string;
+  customOfferingsNote?: string;
 }
 
 export interface HospitalNode {
