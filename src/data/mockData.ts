@@ -128,6 +128,18 @@ export const PARTNER_HOSPITALS: HospitalNode[] = [
 
 export const INITIAL_SEVA_SCHEDULE: SevaScheduleEvent[] = [
   {
+    id: "seva-ekadashi-parsva",
+    title: "Jaljhulani Ekadashi State Cancer Hospital Nariyal Pani Seva",
+    tithi: "Jaljhulani (Parivartini) Ekadashi Mahotsav",
+    date: "Sep 22, 2026",
+    hospital: "State Cancer Medical College (RUHS), Jaipur",
+    timing: "12:00 PM - 04:00 PM",
+    targetCoconuts: 3000,
+    sponsoredCoconuts: 480,
+    status: "active_today",
+    description: "Today's sacred Jaljhulani Ekadashi live bedside fresh tender coconut delivery and electrolyte hydration drive for chemotherapy cancer patients across RUHS wards. Timing: 12:00 PM - 04:00 PM."
+  },
+  {
     id: "seva-radha-ashtami",
     title: "Radha Ashtami State Cancer Hospital Nariyal Pani Seva",
     tithi: "Radha Ashtami Mahotsav Seva",
@@ -135,21 +147,9 @@ export const INITIAL_SEVA_SCHEDULE: SevaScheduleEvent[] = [
     hospital: "State Cancer Medical College (RUHS), Jaipur",
     timing: "12:00 PM - 04:00 PM",
     targetCoconuts: 300,
-    sponsoredCoconuts: 100,
-    status: "active_today",
-    description: "Today's sacred Radha Ashtami live bedside tender coconut delivery and electrolyte hydration drive for chemotherapy cancer patients across RUHS State Cancer Hospital wards. Timing: 12:00 PM - 04:00 PM."
-  },
-  {
-    id: "seva-ekadashi-parsva",
-    title: "Upcoming Jaljhulani Ekadashi Hospital Drive",
-    tithi: "Jaljhulani (Parivartini) Ekadashi (Bhadrapada Shukla)",
-    date: "Sep 22, 2026",
-    hospital: "State Cancer Medical College (RUHS), Jaipur",
-    timing: "12:00 PM - 04:00 PM",
-    targetCoconuts: 3000,
-    sponsoredCoconuts: 150,
-    status: "upcoming",
-    description: "Next immediate bedside tender coconut delivery and electrolyte hydration drive for chemotherapy cancer patients across RUHS wards on sacred Jaljhulani Ekadashi. Timing: 12:00 PM - 04:00 PM."
+    sponsoredCoconuts: 300,
+    status: "completed",
+    description: "Completed with immense gratitude: 300 bedside fresh tender coconuts served to cancer patients across RUHS State Cancer Hospital on Radha Ashtami."
   },
   {
     id: "seva-ekadashi-indira",

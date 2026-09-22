@@ -1026,7 +1026,22 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
   const handleSaveEditSchedule = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!editEventForm || !setScheduleEvents || !scheduleEvents) return;
-    const updated = scheduleEvents.map((ev) => (ev.id === editEventForm.id ? editEventForm : ev));
+    let updated = scheduleEvents.map((ev) => {
+      if (ev.id === editEventForm.id) return editEventForm;
+      // If saving this event as active_today, ensure no other event is also active_today
+      if (editEventForm.status === 'active_today' && ev.status === 'active_today') {
+        return { ...ev, status: 'upcoming' as const };
+      }
+      return ev;
+    });
+    // If set to active_today, sort it to the front so it immediately displays everywhere
+    if (editEventForm.status === 'active_today') {
+      const activeIdx = updated.findIndex((ev) => ev.id === editEventForm.id);
+      if (activeIdx > 0) {
+        const [activeEv] = updated.splice(activeIdx, 1);
+        updated = [activeEv, ...updated];
+      }
+    }
     setScheduleEvents(updated);
     safeLocalStorageSet('ruh_schedule_v3', updated);
     if (onSyncToServer) onSyncToServer({ scheduleEvents: updated });
@@ -7178,14 +7193,19 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                                       <button
                                         type="button"
                                         onClick={() => {
-                                          const updated = scheduleEvents.map((item, i) => ({
-                                            ...item,
-                                            status: i === idx ? ('active_today' as const) : ('upcoming' as const),
-                                          }));
+                                          let updated = scheduleEvents.map((item, i) => {
+                                            if (i === idx) return { ...item, status: 'active_today' as const };
+                                            if (item.status === 'active_today') return { ...item, status: 'upcoming' as const };
+                                            return item;
+                                          });
+                                          const activeItem = updated[idx];
+                                          if (activeItem) {
+                                            updated = [activeItem, ...updated.filter((_, i) => i !== idx)];
+                                          }
                                           setScheduleEvents(updated);
                                           safeLocalStorageSet('ruh_schedule_v3', updated);
                                           if (onSyncToServer) onSyncToServer({ scheduleEvents: updated });
-                                          showToast(`Set "${ev.title}" as Active Today!`);
+                                          showToast(`Set "${ev.title}" as Active Today! 🔴`);
                                         }}
                                         className="text-[10px] bg-emerald-50 hover:bg-emerald-100 text-[#084c36] font-bold px-2.5 py-1.5 rounded-lg border border-emerald-200 transition-colors cursor-pointer"
                                       >

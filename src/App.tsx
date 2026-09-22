@@ -294,24 +294,36 @@ export function App() {
       try {
         const parsed = JSON.parse(s);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Ensure Radha Ashtami is active today and Jaljhulani Ekadashi is upcoming
-          if (!parsed.some((e: any) => e.id === 'seva-radha-ashtami')) {
-            const radhaEvent = INITIAL_SEVA_SCHEDULE[0];
-            return [
-              radhaEvent,
-              ...parsed.map((e: any) =>
-                e.id === 'seva-ekadashi-parsva'
-                  ? {
-                      ...e,
-                      title: 'Upcoming Jaljhulani Ekadashi Hospital Drive',
-                      tithi: 'Jaljhulani (Parivartini) Ekadashi (Bhadrapada Shukla)',
-                      status: 'upcoming',
-                    }
-                  : e
-              ),
-            ];
+          // Check if parsed already has Jaljhulani Ekadashi active today
+          const hasJaljhulaniActive = parsed.some(
+            (e: any) => e.id === 'seva-ekadashi-parsva' && e.status === 'active_today'
+          );
+          if (hasJaljhulaniActive) {
+            return parsed;
           }
-          return parsed;
+          // Migrate old cached client data: mark Jaljhulani as active today and Radha Ashtami as completed
+          const updated = parsed.map((e: any) => {
+            if (e.id === 'seva-ekadashi-parsva') {
+              return {
+                ...e,
+                title: 'Jaljhulani Ekadashi State Cancer Hospital Nariyal Pani Seva',
+                tithi: 'Jaljhulani (Parivartini) Ekadashi Mahotsav',
+                date: 'Sep 22, 2026',
+                timing: '12:00 PM - 04:00 PM',
+                status: 'active_today' as const,
+              };
+            }
+            if (e.id === 'seva-radha-ashtami') {
+              return {
+                ...e,
+                status: 'completed' as const,
+              };
+            }
+            return e;
+          });
+          // Ensure active_today event is sorted first
+          updated.sort((a: any, b: any) => (a.status === 'active_today' ? -1 : b.status === 'active_today' ? 1 : 0));
+          return updated;
         }
       } catch {
         // ignore
@@ -493,6 +505,8 @@ export function App() {
         if (res.data.childSpotlights) setChildSpotlights(sanitizeSpotlights(res.data.childSpotlights));
         if (res.data.wardProfiles) setWardProfiles(sanitizeWardProfiles(res.data.wardProfiles));
         if (res.data.patientProfiles) setPatientProfiles(res.data.patientProfiles);
+        if (res.data.scheduleEvents && Array.isArray(res.data.scheduleEvents)) setScheduleEvents(res.data.scheduleEvents);
+        if (res.data.foundationStats) setFoundationStats(res.data.foundationStats);
         if (res.data.galleryItems) setGalleryItems(res.data.galleryItems);
         if (res.data.heroContent) setHeroContent(res.data.heroContent);
         if (res.data.storyContent) setStoryContent(res.data.storyContent);
@@ -639,7 +653,10 @@ export function App() {
           if (d.mediaPhotosRow1) setMediaPhotosRow1(d.mediaPhotosRow1);
           if (d.mediaPhotosRow2) setMediaPhotosRow2(d.mediaPhotosRow2);
           if (d.foundationStats) setFoundationStats(d.foundationStats);
-          if (d.scheduleEvents) setScheduleEvents(d.scheduleEvents);
+          if (d.scheduleEvents && Array.isArray(d.scheduleEvents)) {
+            setScheduleEvents(d.scheduleEvents);
+            safeLocalStorageSet('ruh_schedule_v3', d.scheduleEvents);
+          }
           if (d.galleryItems && Array.isArray(d.galleryItems)) {
             const cleanG = sanitizeGalleryItems(d.galleryItems);
             setGalleryItems(cleanG);

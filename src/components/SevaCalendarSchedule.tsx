@@ -30,7 +30,7 @@ export const SevaCalendarSchedule: React.FC<SevaCalendarScheduleProps> = ({
   const [selectedCustomDate, setSelectedCustomDate] = useState<string>('');
   const [customOccasion, setCustomOccasion] = useState<string>('In Memory of Beloved / Birthday');
 
-  const todayLiveEvent = scheduleEvents.find((e) => e.status === 'active_today') || scheduleEvents[0];
+  const todayLiveEvent = scheduleEvents.find((e) => e.status === 'active_today') || scheduleEvents.find((e) => e.status === 'upcoming') || scheduleEvents[0];
   const upcomingEvents = scheduleEvents.filter((e) => e.id !== todayLiveEvent?.id);
 
   const handleBookSlot = (event: SevaScheduleEvent) => {
