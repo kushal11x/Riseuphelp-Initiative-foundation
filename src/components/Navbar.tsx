@@ -5,7 +5,7 @@ import type { DonorProfile } from '../types';
 import type { LanguageMode } from '../data/translations';
 import { TRANSLATIONS } from '../data/translations';
 
-export type AppView = 'home' | 'ekadashi' | 'cancer-warriors' | 'education' | 'gallery' | 'volunteer';
+export type AppView = 'home' | 'nariyal-pani' | 'ekadashi' | 'cancer-warriors' | 'education' | 'gallery' | 'volunteer';
 
 interface NavbarProps {
   activeView: AppView;
@@ -148,7 +148,20 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>{t.navHome}</span>
             </button>
 
-            {/* 2. Har Ekadashi Seva Page */}
+            {/* 2. Direct Nariyal Pani Seva Link */}
+            <button
+              onClick={() => handleNavClick('nariyal-pani')}
+              className={`relative px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                activeView === 'nariyal-pani'
+                  ? 'bg-[#084c36] text-white shadow-xs'
+                  : 'text-emerald-900 hover:text-emerald-950 hover:bg-emerald-50/80'
+              }`}
+            >
+              <span className="text-sm leading-none">🥥</span>
+              <span>{t.navNariyalPani}</span>
+            </button>
+
+            {/* 3. Har Ekadashi Seva Page */}
             <button
               onClick={() => handleNavClick('ekadashi')}
               className={`relative px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
@@ -366,6 +379,24 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Home className="w-4 h-4" />
               <span>{t.navHome}</span>
+            </button>
+            <button
+              onClick={() => handleNavClick('nariyal-pani')}
+              className={`p-2 text-left font-semibold rounded-xl flex items-center justify-between gap-2 ${
+                activeView === 'nariyal-pani'
+                  ? 'bg-[#084c36] text-white'
+                  : 'text-emerald-900 bg-emerald-50/70 hover:bg-emerald-100/80 border border-emerald-200/50'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-base leading-none">🥥</span>
+                <span className="font-bold">{t.navNariyalPani}</span>
+              </div>
+              <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold ${
+                activeView === 'nariyal-pani' ? 'bg-emerald-800 text-white' : 'bg-emerald-200/80 text-emerald-900'
+              }`}>
+                Direct Seva
+              </span>
             </button>
             <button
               onClick={() => handleNavClick('ekadashi')}

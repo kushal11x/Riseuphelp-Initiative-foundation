@@ -14,11 +14,13 @@ import { Footer } from './components/Footer';
 
 // Standalone Multi-Page Views
 import { HomePage } from './pages/HomePage';
+import { NariyalPaniPage } from './pages/NariyalPaniPage';
 import { EkadashiPage } from './pages/EkadashiPage';
 import { CancerWarriorsPage } from './pages/CancerWarriorsPage';
 import { EducationLivelihoodPage } from './pages/EducationLivelihoodPage';
 import { VolunteerPage } from './pages/VolunteerPage';
 import { Navbar, type AppView } from './components/Navbar';
+import { getRouteFromLocation, pushViewToHistory } from './utils/urlRouter';
 import { useLanguage } from './context/LanguageContext';
 import { safeLocalStorageSet } from './utils/imageUtils';
 import { processEkadashiSchedule } from './utils/ekadashiCalendar';
@@ -169,13 +171,20 @@ const sanitizeWardProfiles = (profiles: ChildSpotlightProfile[]): ChildSpotlight
 };
 
 export function App() {
-  const [showPreloader, setShowPreloader] = useState(true);
+  const initialRouteRef = useRef(getRouteFromLocation());
+  const [showPreloader, setShowPreloader] = useState(() => {
+    // If arriving via direct deep link (e.g. /nariyal-pani, /ekadashi) or direct donate, skip preloader immediately
+    if (initialRouteRef.current.view !== 'home' || initialRouteRef.current.autoOpenCheckout) {
+      return false;
+    }
+    return true;
+  });
 
   const handlePreloaderComplete = useCallback(() => {
     setShowPreloader(false);
   }, []);
 
-  const [activeView, setActiveView] = useState<AppView>('home');
+  const [activeView, setActiveView] = useState<AppView>(() => initialRouteRef.current.view);
   const [isPatientPortalOpen, setIsPatientPortalOpen] = useState(false);
   const [checkoutModalOpen, setCheckoutModalOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -852,8 +861,38 @@ export function App() {
 
   const handleNavigateView = (view: AppView) => {
     setActiveView(view);
+    pushViewToHistory(view);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // Support Browser Back/Forward navigation buttons
+  useEffect(() => {
+    const handlePopState = () => {
+      const route = getRouteFromLocation();
+      setActiveView(route.view);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // Direct 1-Click Donation on Deep Links (e.g. /nariyal-pani, ?donate=nariyal-pani)
+  const autoOpenedRef = useRef(false);
+  useEffect(() => {
+    if (autoOpenedRef.current) return;
+    const route = initialRouteRef.current;
+    if (route.autoOpenCheckout) {
+      autoOpenedRef.current = true;
+      const coconutItem =
+        driveItems.find((i) => i.id === (route.driveItemId || 'coconut-water')) ||
+        driveItems[0] ||
+        DRIVE_ITEMS[0];
+      handleOpenCheckout(coconutItem, {
+        name: currentUser?.fullName || '',
+        phone: currentUser?.phone || '',
+        quantity: route.quantity && route.quantity > 0 ? route.quantity : 20,
+      });
+    }
+  }, [currentUser, driveItems]);
 
   const totalCartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -927,6 +966,17 @@ export function App() {
           language={language}
           onChangeLanguage={handleLanguageChange}
         />
+      )}
+
+      {activeView === 'nariyal-pani' && (
+        <main className="relative z-10 w-full animate-in fade-in duration-300">
+          <NariyalPaniPage
+            onBackToHome={() => handleNavigateView('home')}
+            onOpenSponsorModal={(item, init) => handleOpenCheckout(item, init)}
+            hospitals={partnerHospitals}
+          />
+          <Footer onOpenAdmin={() => setAdminPortalOpen(true)} />
+        </main>
       )}
 
       {activeView === 'ekadashi' && (

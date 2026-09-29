@@ -3,6 +3,7 @@ export type LanguageMode = 'en' | 'hi' | 'hinglish';
 export interface TranslationDictionary {
   // Navigation
   navHome: string;
+  navNariyalPani: string;
   navEkadashi: string;
   navWarriors: string;
   navEducation: string;
@@ -171,6 +172,7 @@ export const TRANSLATIONS: Record<LanguageMode, TranslationDictionary> = {
   // 1. SIMPLE ENGLISH
   en: {
     navHome: 'Home',
+    navNariyalPani: 'Nariyal Pani',
     navEkadashi: 'Ekadashi Seva',
     navWarriors: 'Cancer Warriors',
     navEducation: 'Children Education',
@@ -324,6 +326,7 @@ export const TRANSLATIONS: Record<LanguageMode, TranslationDictionary> = {
   // 2. HINDI (हिंदी)
   hi: {
     navHome: 'होम',
+    navNariyalPani: 'नारियल पानी',
     navEkadashi: 'एकादशी सेवा',
     navWarriors: 'कैंसर वॉरियर्स',
     navEducation: 'बाल शिक्षा',
@@ -477,6 +480,7 @@ export const TRANSLATIONS: Record<LanguageMode, TranslationDictionary> = {
   // 3. HINGLISH (हिंदी + English)
   hinglish: {
     navHome: 'Home',
+    navNariyalPani: 'Nariyal Pani',
     navEkadashi: 'Ekadashi Seva',
     navWarriors: 'Cancer Warriors',
     navEducation: 'Bacchon Ki Padhai',

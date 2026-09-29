@@ -16,6 +16,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="google-site-verification" content="jjhWEEIC5hM4aFsGA3-tZPf1M6WEnOMziWo6Nz3pnNM" />
     <meta name="google-site-verification" content="JWe6Uj-4JRimKH5livsSdmoJRuYm0F_d58uiix1CqTI" />
+    
+    <!-- SPA redirect decoder for GitHub Pages / static hosting fallback -->
+    <script type="text/javascript">
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&');
+          }).join('?');
+          window.history.replaceState(null, null,
+              l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      }(window.location))
+    </script>
     <title>RiseUpHelp Initiative Foundation — Jaipur Seva, RUHS & SMS Hospital Relief</title>
     
     <meta name="title" content="RiseUpHelp Initiative Foundation — Jaipur Seva, RUHS & SMS Hospital Relief" />
