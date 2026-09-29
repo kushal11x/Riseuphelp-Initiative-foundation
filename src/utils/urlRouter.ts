@@ -30,32 +30,82 @@ export function getRouteFromLocation(): RouteResolution {
   const hash = window.location.hash.toLowerCase();
 
   const donateParam = search.get('donate')?.toLowerCase();
+  const itemParam = search.get('item')?.toLowerCase();
   const viewParam = search.get('view')?.toLowerCase();
   const qtyParam = search.get('qty') || search.get('quantity');
   const parsedQty = qtyParam ? parseInt(qtyParam, 10) : undefined;
 
-  // Direct Nariyal Pani Donation URL patterns
-  const isNariyalDirect =
+  // Direct Hospital Seva URL patterns (Nariyal Pani, Anaar Juice, Khana/Meal Box)
+  const isHospitalSeva =
+    path === '/hospital-seva' ||
+    path === '/hospital' ||
+    path === '/poshan-seva' ||
+    path === '/direct-seva' ||
     path === '/nariyal-pani' ||
     path === '/nariyal' ||
     path === '/nariyal-pani-seva' ||
     path === '/donate/nariyal-pani' ||
     path === '/donate/nariyal' ||
+    path === '/donate/hospital-seva' ||
     path === '/coconut-water' ||
+    path === '/anar-juice' ||
+    path === '/anaar' ||
+    path === '/juice' ||
+    path === '/khana' ||
+    path === '/meal' ||
+    path === '/meal-box' ||
+    hash === '#hospital-seva' ||
+    hash === '#/hospital-seva' ||
     hash === '#nariyal-pani' ||
     hash === '#/nariyal-pani' ||
     hash === '#nariyal' ||
     hash === '#/nariyal' ||
-    donateParam === 'nariyal' ||
-    donateParam === 'nariyal-pani' ||
-    donateParam === 'coconut-water' ||
-    donateParam === 'coconut';
+    hash === '#anar-juice' ||
+    hash === '#khana' ||
+    viewParam === 'hospital-seva' ||
+    viewParam === 'nariyal-pani' ||
+    Boolean(donateParam);
 
-  if (isNariyalDirect) {
+  if (isHospitalSeva) {
+    // Determine which of the 3 items to preselect
+    let targetItem = 'coconut-water';
+    if (
+      path.includes('anar') ||
+      path.includes('anaar') ||
+      path.includes('juice') ||
+      itemParam === 'anar' ||
+      itemParam === 'anar-juice' ||
+      itemParam === 'anaar' ||
+      itemParam === 'juice' ||
+      donateParam === 'anar' ||
+      donateParam === 'anar-juice' ||
+      donateParam === 'anaar' ||
+      donateParam === 'juice'
+    ) {
+      targetItem = 'anar-juice';
+    } else if (
+      path.includes('khana') ||
+      path.includes('meal') ||
+      itemParam === 'khana' ||
+      itemParam === 'meal' ||
+      itemParam === 'meal-box' ||
+      donateParam === 'khana' ||
+      donateParam === 'meal' ||
+      donateParam === 'meal-box'
+    ) {
+      targetItem = 'pomegranate-meal';
+    }
+
+    const isDirectDonate =
+      Boolean(donateParam) ||
+      path.startsWith('/donate') ||
+      Boolean(qtyParam) ||
+      hash.includes('donate');
+
     return {
-      view: 'nariyal-pani',
-      autoOpenCheckout: true,
-      driveItemId: 'coconut-water',
+      view: 'hospital-seva',
+      autoOpenCheckout: isDirectDonate,
+      driveItemId: targetItem,
       quantity: parsedQty && parsedQty > 0 ? parsedQty : 20,
     };
   }
@@ -122,8 +172,10 @@ export function getRouteFromLocation(): RouteResolution {
  */
 export function getPathForView(view: AppView): string {
   switch (view) {
+    case 'hospital-seva':
+      return '/hospital-seva';
     case 'nariyal-pani':
-      return '/nariyal-pani';
+      return '/hospital-seva';
     case 'ekadashi':
       return '/ekadashi';
     case 'cancer-warriors':

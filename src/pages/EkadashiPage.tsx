@@ -117,43 +117,61 @@ export const EkadashiPage: React.FC<EkadashiPageProps> = ({
               </div>
 
               {/* Quick Sponsor CTA */}
-              <div className="pt-2">
+              {/* Quick Sponsor CTA Buttons */}
+              <div className="pt-2 flex flex-wrap items-center gap-2.5">
                 <button
                   onClick={() => {
-                    const isAnaar = primaryEvent?.title.toLowerCase().includes('anaar') || (primaryEvent?.sevaItems && primaryEvent.sevaItems.some(i => i.toLowerCase().includes('anaar')));
-                    const price = primaryEvent?.pricePerUnit || (isAnaar ? 70 : 65);
-                    const unitLabel = primaryEvent?.unitLabel || (isAnaar ? 'Anaar Juice Glass' : 'Fresh Coconut');
-                    const liveDriveItem: DriveItem = {
-                      id: primaryEvent?.id || 'indira-ekadashi-slot',
-                      name: `${primaryEvent?.title || 'Hospital Bedside Seva'} (${primaryEvent?.tithi || 'Ekadashi'})`,
-                      tagline: `${primaryEvent?.date || 'Oct 6, 2026'} • ${primaryEvent?.hospital || 'State Cancer Hospital (RUHS)'}`,
+                    const coconutDriveItem: DriveItem = {
+                      id: `ekadashi-nariyal-${primaryEvent?.id || 'slot'}`,
+                      name: `Ekadashi Bedside Nariyal Pani Seva (${primaryEvent?.tithi || 'Ekadashi'})`,
+                      tagline: `${primaryEvent?.date || 'Upcoming Ekadashi'} • ${primaryEvent?.hospital || 'RUHS Cancer Hospital'}`,
                       category: 'hospital',
-                      price: price,
-                      unitLabel: unitLabel,
-                      targetCount: `${primaryEvent?.targetCoconuts || 3800} ${unitLabel}s`,
+                      price: 65,
+                      unitLabel: 'Tender Coconut',
+                      targetCount: `${primaryEvent?.targetCoconuts || 3000} Coconuts`,
                       deliveredCount: `${primaryEvent?.sponsoredCoconuts || 1420} Sponsored`,
-                      percentage: Math.min(100, Math.round(((primaryEvent?.sponsoredCoconuts || 0) / (primaryEvent?.targetCoconuts || 1)) * 100)),
-                      color: isAnaar ? '#b91c1c' : '#084c36',
-                      badge: isTodayActive ? '🔴 Active Today' : 'Upcoming Ekadashi Seva',
-                      image: primaryEvent?.image || '/uploads/ruhs_hospital_nariyal_seva_trolley.jpg',
-                      description: primaryEvent?.description || 'Bedside tender coconut and taaza fruit juice distribution for cancer chemotherapy patients.',
-                      impactMetrics: `Direct bedside delivery on ${primaryEvent?.date || 'Oct 6, 2026'} at ${primaryEvent?.hospital || 'RUHS Jaipur'}`,
-                      options: {
-                        primary: `${unitLabel} (₹${price})`,
-                        secondary: 'Immunity Pack',
-                      },
+                      percentage: 90,
+                      color: '#084c36',
+                      badge: 'Ekadashi Nariyal Seva',
+                      image: '/uploads/nariyal_pani_fresh_coconut.jpg',
+                      description: 'Fresh green tender coconuts cut live bedside for cancer chemotherapy patients on auspicious Ekadashi.',
+                      impactMetrics: `Direct bedside delivery on ${primaryEvent?.date || 'Upcoming Ekadashi'} at ${primaryEvent?.hospital || 'RUHS Jaipur'}`,
+                      options: { primary: 'Fresh Coconut (₹65)', secondary: 'Immunity Pack' },
                       status: 'active',
                     };
-                    onOpenSponsorModal(liveDriveItem, { name: '', phone: '', quantity: 20 });
+                    onOpenSponsorModal(coconutDriveItem, { name: '', phone: '', quantity: 20 });
                   }}
-                  className="bg-[#FDB813] hover:bg-amber-400 text-neutral-950 font-extrabold text-xs sm:text-sm px-6 py-3 rounded-full transition-all duration-300 shadow-md hover:shadow-lg active:scale-95 cursor-pointer inline-flex items-center gap-2"
+                  className="bg-[#FDB813] hover:bg-amber-400 text-neutral-950 font-extrabold text-xs sm:text-sm px-5 py-3 rounded-full transition-all duration-300 shadow-md hover:shadow-lg active:scale-95 cursor-pointer inline-flex items-center gap-2"
                 >
                   <Sparkles className="w-4 h-4 text-neutral-950" />
-                  <span>
-                    {isTodayActive
-                      ? `Sponsor 20 Bedside Units Today (₹${((primaryEvent?.pricePerUnit || 65) * 20).toLocaleString('en-IN')})`
-                      : `Pre-Book for ${primaryEvent?.tithi ? primaryEvent.tithi.split('(')[0].trim() : 'Ekadashi'} (₹${primaryEvent?.pricePerUnit || 65}/unit)`}
-                  </span>
+                  <span>🥥 Sponsor Nariyal Pani (₹65/pc)</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    const anarDriveItem: DriveItem = {
+                      id: `ekadashi-anar-${primaryEvent?.id || 'slot'}`,
+                      name: `Ekadashi Bedside Taaza Anaar Juice Seva (${primaryEvent?.tithi || 'Ekadashi'})`,
+                      tagline: `${primaryEvent?.date || 'Upcoming Ekadashi'} • ${primaryEvent?.hospital || 'RUHS Cancer Hospital'}`,
+                      category: 'hospital',
+                      price: 70,
+                      unitLabel: 'Anaar Juice Glass',
+                      targetCount: `3,000 Glasses`,
+                      deliveredCount: `2,100 Sponsored`,
+                      percentage: 85,
+                      color: '#b91c1c',
+                      badge: 'Ekadashi Anaar Juice Seva',
+                      image: '/uploads/jaljhulani_anar_juice_nariyal_seva.jpg',
+                      description: '100% pure cold-pressed fresh pomegranate (taaza anaar) juice without water/sugar for chemotherapy platelet & hemoglobin recovery.',
+                      impactMetrics: `Direct bedside delivery on ${primaryEvent?.date || 'Upcoming Ekadashi'} at ${primaryEvent?.hospital || 'RUHS Jaipur'}`,
+                      options: { primary: 'Anaar Juice Glass (₹70)', secondary: 'Nutritional Pack' },
+                      status: 'active',
+                    };
+                    onOpenSponsorModal(anarDriveItem, { name: '', phone: '', quantity: 20 });
+                  }}
+                  className="bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs sm:text-sm px-5 py-3 rounded-full transition-all duration-300 shadow-md hover:shadow-lg active:scale-95 cursor-pointer inline-flex items-center gap-2 border border-rose-400/40"
+                >
+                  <span>🥤 Sponsor Taaza Anaar Juice (₹70/glass)</span>
                 </button>
               </div>
             </div>

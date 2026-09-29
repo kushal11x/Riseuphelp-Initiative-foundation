@@ -4,7 +4,6 @@ import {
   Calendar as CalendarIcon,
   Clock,
   MapPin,
-  Sparkles,
   ArrowRight,
   Heart,
   Building2,
@@ -377,13 +376,29 @@ export const SevaCalendarSchedule: React.FC<SevaCalendarScheduleProps> = ({
                   </div>
                 </div>
 
-                <button
-                  onClick={() => handleBookSlot(event)}
-                  className="w-full bg-emerald-50 hover:bg-[#084c36] text-[#084c36] hover:text-white font-bold py-2.5 px-4 rounded-xl text-xs transition-all border border-emerald-200 hover:border-[#084c36] flex items-center justify-center gap-1.5 cursor-pointer"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                  <span>Book This Ekadashi Slot</span>
-                </button>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => handleBookSlot(event)}
+                    className="bg-emerald-50 hover:bg-[#084c36] text-[#084c36] hover:text-white font-bold py-2.5 px-2 rounded-xl text-xs transition-all border border-emerald-200 hover:border-[#084c36] flex items-center justify-center gap-1 cursor-pointer"
+                  >
+                    <span>🥥 Coconuts (₹65)</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      const anarEvent: SevaScheduleEvent = {
+                        ...event,
+                        title: `${event.tithi} Taaza Anaar Juice Seva`,
+                        pricePerUnit: 70,
+                        unitLabel: 'Juice Glass',
+                        image: '/uploads/jaljhulani_anar_juice_nariyal_seva.jpg',
+                      };
+                      handleBookSlot(anarEvent);
+                    }}
+                    className="bg-rose-50 hover:bg-rose-700 text-rose-700 hover:text-white font-bold py-2.5 px-2 rounded-xl text-xs transition-all border border-rose-200 hover:border-rose-700 flex items-center justify-center gap-1 cursor-pointer"
+                  >
+                    <span>🥤 Anaar Juice (₹70)</span>
+                  </button>
+                </div>
               </motion.div>
             );
           })}

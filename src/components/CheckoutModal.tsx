@@ -116,7 +116,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     } catch {}
     return currentUser?.email || '';
   });
-  const [panNumber, setPanNumber] = useState(() => {
+  const panNumber = (() => {
     try {
       const savedUser = localStorage.getItem('ruh_donor_user');
       if (savedUser) {
@@ -125,8 +125,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       }
     } catch {}
     return currentUser?.panNumber || '';
-  });
-  const [wants80G, setWants80G] = useState(false);
+  })();
 
   // Payment Gateway Flow States (Official Razorpay Gateway by Default)
   const [showBankWireDetails, setShowBankWireDetails] = useState(false);
@@ -456,10 +455,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     const cleanPhone = donorPhone.replace(/\D/g, '');
     if (cleanPhone.length !== 10) {
       setValidationError('Please enter a valid 10-digit mobile number for SMS receipt');
-      return;
-    }
-    if (wants80G && panNumber.length !== 10) {
-      setValidationError('Please enter a valid 10-character PAN number for Section 80G Tax Exemption');
       return;
     }
 
@@ -1150,7 +1145,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Rajesh Agarwal"
+                    placeholder="Enter your full name"
                     value={donorName}
                     onChange={(e) => setDonorName(e.target.value)}
                     className="w-full text-xs bg-neutral-50 border border-neutral-300 rounded-xl px-3 py-2 text-neutral-900 focus:bg-white focus:border-emerald-800 focus:outline-none font-medium"
@@ -1173,21 +1168,21 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       type="tel"
                       required
                       maxLength={10}
-                      placeholder="9828291119"
+                      placeholder="10-digit mobile number"
                       value={donorPhone}
                       onChange={(e) => setDonorPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                      className="w-full text-xs bg-neutral-50 border border-neutral-300 rounded-xl pl-10 pr-3 py-2 text-neutral-900 focus:bg-white focus:border-emerald-800 focus:outline-none"
+                      className="w-full text-xs bg-neutral-50 border border-neutral-300 rounded-xl pl-10 pr-3 py-2 text-neutral-900 focus:bg-white focus:border-emerald-800 focus:outline-none font-mono"
                     />
                   </div>
                 </div>
               </div>
 
-              {/* Email Address Input for 80G PDF Receipt */}
+              {/* Email Address Input (Optional) */}
               <div>
                 <label className="text-[11px] font-semibold text-neutral-700 block mb-1 flex items-center justify-between">
                   <span className="flex items-center gap-1">
                     <Mail className="w-3.5 h-3.5 text-neutral-500" />
-                    <span>Email Address (Optional for 80G Tax Receipt PDF)</span>
+                    <span>Email Address (Optional)</span>
                   </span>
                   <span className="text-[9px] text-purple-700 font-bold bg-purple-50 px-1.5 py-0.5 rounded border border-purple-200">
                     ✉️ PDF Certificate
@@ -1195,36 +1190,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 </label>
                 <input
                   type="email"
-                  placeholder="e.g. rajesh.agarwal@gmail.com"
+                  placeholder="Enter email address (optional)"
                   value={donorEmail}
                   onChange={(e) => setDonorEmail(e.target.value)}
                   className="w-full text-xs bg-neutral-50 border border-neutral-300 rounded-xl px-3 py-2 text-neutral-900 focus:bg-white focus:border-emerald-800 focus:outline-none"
                 />
-              </div>
-
-              {/* 80G Tax Exemption Toggle */}
-              <div className="border border-neutral-200 rounded-xl p-2.5 bg-neutral-50/50">
-                <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-neutral-800">
-                  <input
-                    type="checkbox"
-                    checked={wants80G}
-                    onChange={(e) => setWants80G(e.target.checked)}
-                    className="w-4 h-4 text-[#084c36] rounded border-neutral-300 focus:ring-emerald-800"
-                  />
-                  <span>Generate Official 80G Tax Exemption Certificate (50% IT Benefit)</span>
-                </label>
-                {wants80G && (
-                  <div className="mt-2 pt-2 border-t border-neutral-200">
-                    <input
-                      type="text"
-                      maxLength={10}
-                      placeholder="Enter PAN Number (e.g. ABCDE1234F)"
-                      value={panNumber}
-                      onChange={(e) => setPanNumber(e.target.value.toUpperCase())}
-                      className="w-full text-xs uppercase bg-white border border-neutral-300 rounded-lg px-3 py-1.5 text-neutral-900 focus:border-emerald-800 focus:outline-none font-mono"
-                    />
-                  </div>
-                )}
               </div>
 
               {/* Calculated Total Card */}

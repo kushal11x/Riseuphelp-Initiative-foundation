@@ -14,7 +14,7 @@ import { Footer } from './components/Footer';
 
 // Standalone Multi-Page Views
 import { HomePage } from './pages/HomePage';
-import { NariyalPaniPage } from './pages/NariyalPaniPage';
+import { HospitalSevaPage } from './pages/HospitalSevaPage';
 import { EkadashiPage } from './pages/EkadashiPage';
 import { CancerWarriorsPage } from './pages/CancerWarriorsPage';
 import { EducationLivelihoodPage } from './pages/EducationLivelihoodPage';
@@ -968,9 +968,9 @@ export function App() {
         />
       )}
 
-      {activeView === 'nariyal-pani' && (
+      {(activeView === 'hospital-seva' || activeView === 'nariyal-pani') && (
         <main className="relative z-10 w-full animate-in fade-in duration-300">
-          <NariyalPaniPage
+          <HospitalSevaPage
             onBackToHome={() => handleNavigateView('home')}
             onOpenSponsorModal={(item, init) => handleOpenCheckout(item, init)}
             hospitals={partnerHospitals}
