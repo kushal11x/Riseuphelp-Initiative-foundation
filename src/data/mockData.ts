@@ -382,21 +382,21 @@ export const DRIVE_ITEMS: DriveItem[] = [
   },
   {
     id: "pomegranate-meal",
-    name: "Wholesome Hospital Meal Box",
-    tagline: "Daily Hospital Drives • SMS & JK Lon",
+    name: "Wholesome Hospital Meal Box (Shraadh Bhojan Seva)",
+    tagline: "Pavitra Shraadh Drive (26 Sep - 10 Oct) • Daily RUHS Meals",
     category: "hospital",
     price: 70,
     unitLabel: "Meal Box",
     targetCount: "50K Target",
     deliveredCount: "34K Delivered",
     percentage: 68,
-    color: "#084c36",
-    badge: "Active Metrics",
+    color: "#c2410c",
+    badge: "Pavitra Shraadh Seva",
     image: "/uploads/slum_packed_thali_tiffin.jpg",
-    description: "Freshly cooked hygienic high-protein meal box containing roti, sabzi, dal, rice and salad for patient attendants and recovering individuals.",
+    description: "Daily warm wholesome meal box containing 4 soft rotis, sabzi, dal, rice and salad served to cancer patients and attendants at RUHS Hospital during Pavitra Shraadh Paksha (26 Sep to 10 Oct).",
     impactMetrics: "34,000+ wholesome nutritious meals distributed across Jaipur government healthcare centers.",
     options: {
-      primary: "Meal Box",
+      primary: "Shraadh Meal Box (₹70)",
       secondary: "Nutritional Pack"
     },
     status: "active"
