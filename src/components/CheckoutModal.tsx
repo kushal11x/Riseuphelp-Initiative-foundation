@@ -4,23 +4,19 @@ import confetti from 'canvas-confetti';
 import {
   X,
   ShieldCheck,
-  CreditCard,
-  QrCode,
   Sparkles,
   ArrowRight,
   Printer,
-  Copy,
-  Check,
   Phone,
   User,
   HeartHandshake,
   Mail,
   Lock,
   Clock,
-  Building2,
   AlertCircle,
   RefreshCw,
   Shield,
+  Check,
 } from 'lucide-react';
 import type { DriveItem, LeaderboardDonor, DonorProfile } from '../types';
 import { OFFICIAL_INFO } from '../data/mockData';
@@ -128,7 +124,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   })();
 
   // Payment Gateway Flow States (Official Razorpay Gateway by Default)
-  const [showBankWireDetails, setShowBankWireDetails] = useState(false);
   const [phase, setPhase] = useState<ModalPhase>('form');
   const [validationError, setValidationError] = useState('');
   const [paymentError, setPaymentError] = useState('');
@@ -137,10 +132,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [countdownSeconds, setCountdownSeconds] = useState(300); // 5 minutes
   const [isVerifying, setIsVerifying] = useState(false);
   const [verifyStage, setVerifyStage] = useState('');
-
-  // Clipboard Copied Indicators
-  const [copiedAccount, setCopiedAccount] = useState(false);
-  const [copiedIfsc, setCopiedIfsc] = useState(false);
 
   // Final Success State Records
   const [receiptId, setReceiptId] = useState('');
@@ -243,21 +234,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
-  const handlePresetAmount = (amt: number) => {
-    setUseCustomAmount(true);
-    setCustomAmount(amt);
-  };
-
-  const handleCopy = (text: string, type: 'account' | 'ifsc') => {
-    navigator.clipboard.writeText(text);
-    if (type === 'account') {
-      setCopiedAccount(true);
-      setTimeout(() => setCopiedAccount(false), 2000);
-    } else if (type === 'ifsc') {
-      setCopiedIfsc(true);
-      setTimeout(() => setCopiedIfsc(false), 2000);
-    }
-  };
 
   const handlePrintReceipt = () => {
     const receiptElement = document.getElementById('tax-receipt-container');
@@ -612,26 +588,26 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.94, y: 20 }}
           transition={{ type: 'spring', stiffness: 350, damping: 28 }}
-          className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-neutral-200 overflow-hidden z-10 my-auto"
+          className="relative w-full max-w-md bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-neutral-200 overflow-hidden z-10 my-auto max-h-[96vh] flex flex-col"
         >
           {/* Top Header Bar */}
-          <div className="flex items-center justify-between px-5 sm:px-6 py-3.5 bg-gradient-to-r from-emerald-950 via-[#084c36] to-[#042f22] text-white sticky top-0 z-20 no-print">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center flex-shrink-0">
-                <HeartHandshake className="w-4 h-4 text-[#FDB813]" />
+          <div className="flex items-center justify-between px-4 sm:px-5 py-2.5 sm:py-3 bg-gradient-to-r from-emerald-950 via-[#084c36] to-[#042f22] text-white sticky top-0 z-20 no-print flex-shrink-0">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center flex-shrink-0">
+                <HeartHandshake className="w-3.5 h-3.5 text-[#FDB813]" />
               </div>
               <div>
-                <h2 className="text-sm sm:text-base font-semibold leading-tight flex items-center gap-1.5">
+                <h2 className="text-xs sm:text-sm font-semibold leading-tight flex items-center gap-1">
                   <span>
                     {phase === 'success'
                       ? 'Donation Confirmed!'
                       : phase === 'processing'
-                      ? 'Secure Banking Gateway'
+                      ? 'Secure Gateway'
                       : 'Official Donation Gateway'}
                   </span>
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
                 </h2>
-                <p className="text-[10px] sm:text-[11px] text-emerald-200/90 font-mono">
+                <p className="text-[9px] sm:text-[10px] text-emerald-200/90 font-mono">
                   {OFFICIAL_INFO.cinNumber} • 80G Certified Non-Profit
                 </p>
               </div>
@@ -641,7 +617,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               disabled={isVerifying}
               className="text-white/80 hover:text-white p-1 rounded-full hover:bg-white/10 transition-colors ml-auto cursor-pointer disabled:opacity-50"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
           </div>
 
@@ -938,58 +914,47 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               PHASE 3: INITIAL DONATION FORM & MODE SELECTION
              ========================================================================= */}
           {phase === 'form' && (
-            <form onSubmit={handleInitiatePayment} className="p-5 sm:p-6 flex flex-col gap-3.5">
-              {/* Cause Summary Card */}
-              <div className="bg-[#f5f2ee] rounded-2xl p-3.5 sm:p-4 border border-neutral-200/80 flex items-start justify-between gap-3">
-                <div className="flex-1 min-w-0">
-                  <span className="text-[11px] font-semibold uppercase tracking-wider text-[#084c36] block">
-                    {item.tagline}
-                  </span>
-                  <h4 className="font-bold text-neutral-900 text-sm sm:text-base">
+            <form onSubmit={handleInitiatePayment} className="p-3.5 sm:p-5 flex flex-col gap-2.5 overflow-y-auto max-h-[calc(96vh-56px)] text-left">
+              {/* Compact Cause Summary Strip */}
+              <div className="bg-[#f5f2ee] rounded-xl p-2.5 sm:p-3 border border-neutral-200/80 flex items-center justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-[10px] font-bold text-[#084c36] bg-emerald-100/90 px-1.5 py-0.2 rounded font-mono">
+                      ₹{unitPrice} / {item.unitLabel || 'Unit'}
+                    </span>
+                    {scheduledDate && (
+                      <span className="text-[10px] font-bold text-amber-900 bg-amber-100 px-1.5 py-0.2 rounded font-mono">
+                        📅 {scheduledDate}
+                      </span>
+                    )}
+                  </div>
+                  <h4 className="font-bold text-neutral-900 text-xs sm:text-sm mt-0.5 truncate">
                     {item.name}
                   </h4>
-
-                  {/* Scheduled Date & Hospital Badge if present */}
-                  {(scheduledDate || hospitalName || occasionNote || customBreakdown) && (
-                    <div className="mt-2 space-y-1 bg-white/80 p-2.5 rounded-xl border border-neutral-200/80 text-[11px]">
-                      {scheduledDate && (
-                        <div className="flex items-center gap-1.5 text-neutral-700 font-semibold">
-                          <span className="text-amber-700">📅 Scheduled Seva Date:</span>
-                          <strong className="text-neutral-950 font-mono">{scheduledDate}</strong>
-                        </div>
-                      )}
-                      {hospitalName && (
-                        <div className="flex items-center gap-1.5 text-neutral-700">
-                          <span className="text-emerald-800 font-semibold">🏥 Venue:</span>
-                          <span className="text-neutral-900">{hospitalName}</span>
-                        </div>
-                      )}
-                      {occasionNote && (
-                        <div className="flex items-center gap-1.5 text-neutral-700">
-                          <span className="text-purple-800 font-semibold">🕊️ Sankalp / Note:</span>
-                          <span className="text-neutral-900 italic font-medium">{occasionNote}</span>
-                        </div>
-                      )}
-                      {customBreakdown && (
-                        <div className="pt-1 border-t border-neutral-200 text-neutral-600 font-mono text-[10px]">
-                          <strong>Items:</strong> {customBreakdown}
-                        </div>
-                      )}
-                    </div>
+                  {occasionNote && (
+                    <p className="text-[10px] text-purple-900 truncate mt-0.2">
+                      🕊️ {occasionNote}
+                    </p>
                   )}
-
-                  <p className="text-xs text-neutral-600 mt-1">
-                    Direct on-ground relief support with live WhatsApp photo verification
-                  </p>
+                  {hospitalName && !scheduledDate && (
+                    <p className="text-[10px] text-neutral-600 truncate">
+                      🏥 {hospitalName}
+                    </p>
+                  )}
+                  {customBreakdown && (
+                    <p className="text-[10px] text-neutral-600 truncate font-mono">
+                      📦 {customBreakdown}
+                    </p>
+                  )}
                 </div>
 
-                {/* Quantity Stepper (Hidden for fixed price custom bundle) */}
+                {/* Quantity Stepper */}
                 {!useCustomAmount && item.id.indexOf('custom-bundle') === -1 && (
-                  <div className="flex items-center gap-1 bg-white rounded-xl border border-neutral-300 p-1 shadow-xs flex-shrink-0">
+                  <div className="flex items-center gap-0.5 bg-white rounded-lg border border-neutral-300 p-0.5 shadow-2xs flex-shrink-0">
                     <button
                       type="button"
                       onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                      className="w-7 h-7 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-bold flex items-center justify-center text-sm cursor-pointer"
+                      className="w-6 h-6 rounded bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-bold flex items-center justify-center text-xs cursor-pointer"
                     >
                       -
                     </button>
@@ -998,12 +963,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       min="1"
                       value={quantity}
                       onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                      className="w-10 text-center font-bold text-neutral-900 text-sm focus:outline-none"
+                      className="w-8 text-center font-bold text-neutral-900 text-xs focus:outline-none"
                     />
                     <button
                       type="button"
                       onClick={() => setQuantity((q) => q + 1)}
-                      className="w-7 h-7 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-bold flex items-center justify-center text-sm cursor-pointer"
+                      className="w-6 h-6 rounded bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-bold flex items-center justify-center text-xs cursor-pointer"
                     >
                       +
                     </button>
@@ -1011,308 +976,145 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 )}
               </div>
 
-              {/* Quick Amount Presets & Custom Open Input */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between text-xs font-semibold text-neutral-700">
-                  <span className="flex items-center gap-1">
-                    <Sparkles className="w-3.5 h-3.5 text-[#FDB813]" />
-                    <span>Contribution Amount:</span>
-                  </span>
-                  {useCustomAmount && (
-                    <button
-                      type="button"
-                      onClick={() => setUseCustomAmount(false)}
-                      className="text-[11px] text-[#084c36] underline cursor-pointer"
-                    >
-                      Switch to Unit Stepper
-                    </button>
-                  )}
+              {/* Compact Razorpay Verified Strip */}
+              <div className="bg-emerald-50/70 border border-emerald-200 rounded-xl px-2.5 py-1.5 flex items-center justify-between text-[10px] text-emerald-950">
+                <div className="flex items-center gap-1.5 font-semibold">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-700 flex-shrink-0" />
+                  <span>Razorpay Verified (UPI, GPay, Cards, QR)</span>
                 </div>
-
-                <div className="flex flex-wrap gap-1.5">
-                  {[1500, 5000, 15000, 30000, 50000, 100000].map((amt) => (
-                    <button
-                      key={amt}
-                      type="button"
-                      onClick={() => handlePresetAmount(amt)}
-                      className={`text-xs px-2.5 py-1 rounded-full border transition-all cursor-pointer font-medium ${
-                        useCustomAmount && customAmount === amt
-                          ? 'bg-[#084c36] text-white border-[#084c36] shadow-sm'
-                          : 'bg-white text-neutral-700 border-neutral-300 hover:border-emerald-800'
-                      }`}
-                    >
-                      ₹{amt >= 100000 ? '1 Lakh' : amt.toLocaleString('en-IN')} {amt === 15000 && '⭐'}
-                    </button>
-                  ))}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setUseCustomAmount(true);
-                      setCustomAmount(customAmount || 15000);
-                    }}
-                    className={`text-xs px-2.5 py-1 rounded-full border transition-all cursor-pointer font-medium ${
-                      useCustomAmount && ![1500, 5000, 15000, 30000, 50000, 100000].includes(Number(customAmount))
-                        ? 'bg-[#084c36] text-white border-[#084c36]'
-                        : 'bg-white text-neutral-700 border-neutral-300'
-                    }`}
-                  >
-                    Custom ✏️
-                  </button>
-                </div>
-
-                {useCustomAmount && (
-                  <div className="relative flex items-center mt-1.5 animate-in fade-in">
-                    <span className="absolute left-3 text-sm font-bold text-neutral-500">₹</span>
-                    <input
-                      type="number"
-                      min="50"
-                      placeholder="Enter donation amount (e.g. 50000)"
-                      value={customAmount}
-                      onChange={(e) => setCustomAmount(e.target.value === '' ? '' : Number(e.target.value))}
-                      className="w-full text-sm font-bold bg-white border border-neutral-300 rounded-xl pl-8 pr-3 py-2 text-neutral-900 focus:border-emerald-800 focus:outline-none"
-                    />
-                  </div>
-                )}
+                <span className="text-[9px] font-bold text-emerald-800 bg-emerald-100 px-1.5 py-0.2 rounded font-mono">
+                  80G Certified
+                </span>
               </div>
 
-              {/* Unified Razorpay Secure Gateway Card */}
-              <div className="bg-gradient-to-br from-emerald-50 via-white to-amber-50/30 border border-emerald-300/80 rounded-2xl p-3.5 space-y-2.5 shadow-xs">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-xl bg-[#084c36] text-white flex items-center justify-center shadow-xs flex-shrink-0">
-                      <Shield className="w-4 h-4 text-[#FDB813]" />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        <h4 className="text-xs font-bold text-neutral-950 uppercase tracking-wide">
-                          Official Razorpay Secure Checkout
-                        </h4>
-                        <span className="text-[9px] font-bold text-emerald-800 bg-emerald-100 px-1.5 py-0.5 rounded-full border border-emerald-300 flex items-center gap-1">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
-                          Live Gateway
-                        </span>
-                      </div>
-                      <p className="text-[10px] text-neutral-500">
-                        Instant 80G tax receipt issued strictly after real bank settlement
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Badges for Supported Methods */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 pt-1">
-                  <div className="bg-white/90 border border-neutral-200/80 rounded-xl p-2 flex items-center gap-1.5 text-neutral-800">
-                    <QrCode className="w-3.5 h-3.5 text-[#084c36] flex-shrink-0" />
-                    <div>
-                      <span className="text-[10px] font-bold block leading-none">UPI & QR</span>
-                      <span className="text-[9px] text-neutral-500 leading-none">GPay, PhonePe, QR</span>
-                    </div>
-                  </div>
-
-                  <div className="bg-white/90 border border-neutral-200/80 rounded-xl p-2 flex items-center gap-1.5 text-neutral-800">
-                    <CreditCard className="w-3.5 h-3.5 text-[#084c36] flex-shrink-0" />
-                    <div>
-                      <span className="text-[10px] font-bold block leading-none">Cards</span>
-                      <span className="text-[9px] text-neutral-500 leading-none">Visa, RuPay, Master</span>
-                    </div>
-                  </div>
-
-                  <div className="bg-white/90 border border-neutral-200/80 rounded-xl p-2 flex items-center gap-1.5 text-neutral-800">
-                    <Building2 className="w-3.5 h-3.5 text-[#084c36] flex-shrink-0" />
-                    <div>
-                      <span className="text-[10px] font-bold block leading-none">NetBanking</span>
-                      <span className="text-[9px] text-neutral-500 leading-none">50+ Indian Banks</span>
-                    </div>
-                  </div>
-
-                  <div className="bg-white/90 border border-neutral-200/80 rounded-xl p-2 flex items-center gap-1.5 text-neutral-800">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-700 flex-shrink-0" />
-                    <div>
-                      <span className="text-[10px] font-bold block leading-none">50% Tax Benefit</span>
-                      <span className="text-[9px] text-emerald-700 leading-none">Sec 80G Certified</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Donor Contact Information */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {/* Donor Contact Inputs (Compact 2-Column Grid) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div>
-                  <label className="text-[11px] font-semibold text-neutral-700 block mb-1 flex items-center gap-1">
-                    <User className="w-3.5 h-3.5 text-neutral-500" />
-                    <span>Full Name *</span>
+                  <label className="text-[10px] font-semibold text-neutral-700 block mb-0.5 flex items-center gap-1">
+                    <User className="w-3 h-3 text-neutral-500" />
+                    <span>Your Full Name *</span>
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="Enter your full name"
+                    placeholder="Enter full name"
                     value={donorName}
                     onChange={(e) => setDonorName(e.target.value)}
-                    className="w-full text-xs bg-neutral-50 border border-neutral-300 rounded-xl px-3 py-2 text-neutral-900 focus:bg-white focus:border-emerald-800 focus:outline-none font-medium"
+                    className="w-full text-xs bg-neutral-50 border border-neutral-300 rounded-xl px-2.5 py-1.5 text-neutral-900 focus:bg-white focus:border-emerald-800 focus:outline-none font-medium"
                   />
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-semibold text-neutral-700 block mb-1 flex items-center justify-between">
+                  <label className="text-[10px] font-semibold text-neutral-700 block mb-0.5 flex items-center justify-between">
                     <span className="flex items-center gap-1">
-                      <Phone className="w-3.5 h-3.5 text-neutral-500" />
-                      <span>Phone Number *</span>
+                      <Phone className="w-3 h-3 text-neutral-500" />
+                      <span>Mobile Number *</span>
                     </span>
-                    <span className="text-[9px] text-emerald-700 font-bold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-                      ⚡ Fast2SMS Receipt
-                    </span>
+                    <span className="text-[8px] text-emerald-700 font-bold">Fast2SMS</span>
                   </label>
                   <div className="relative flex items-center">
-                    <span className="absolute left-3 text-xs font-medium text-neutral-400">+91</span>
+                    <span className="absolute left-2.5 text-xs font-medium text-neutral-400">+91</span>
                     <input
                       type="tel"
                       required
                       maxLength={10}
-                      placeholder="10-digit mobile number"
+                      placeholder="10-digit phone"
                       value={donorPhone}
                       onChange={(e) => setDonorPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                      className="w-full text-xs bg-neutral-50 border border-neutral-300 rounded-xl pl-10 pr-3 py-2 text-neutral-900 focus:bg-white focus:border-emerald-800 focus:outline-none font-mono"
+                      className="w-full text-xs bg-neutral-50 border border-neutral-300 rounded-xl pl-9 pr-2.5 py-1.5 text-neutral-900 focus:bg-white focus:border-emerald-800 focus:outline-none font-mono"
                     />
                   </div>
                 </div>
               </div>
 
-              {/* Email Address Input (Optional) */}
-              <div>
-                <label className="text-[11px] font-semibold text-neutral-700 block mb-1 flex items-center justify-between">
+              {/* Optional Email & Custom Amount Row */}
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center justify-between text-[10px] text-neutral-600">
                   <span className="flex items-center gap-1">
-                    <Mail className="w-3.5 h-3.5 text-neutral-500" />
-                    <span>Email Address (Optional)</span>
+                    <Mail className="w-3 h-3 text-neutral-400" />
+                    <span>Email (Optional for 80G Certificate PDF)</span>
                   </span>
-                  <span className="text-[9px] text-purple-700 font-bold bg-purple-50 px-1.5 py-0.5 rounded border border-purple-200">
-                    ✉️ PDF Certificate
-                  </span>
-                </label>
-                <input
-                  type="email"
-                  placeholder="Enter email address (optional)"
-                  value={donorEmail}
-                  onChange={(e) => setDonorEmail(e.target.value)}
-                  className="w-full text-xs bg-neutral-50 border border-neutral-300 rounded-xl px-3 py-2 text-neutral-900 focus:bg-white focus:border-emerald-800 focus:outline-none"
-                />
-              </div>
+                  {!useCustomAmount ? (
+                    <button
+                      type="button"
+                      onClick={() => setUseCustomAmount(true)}
+                      className="text-emerald-800 hover:text-emerald-950 font-bold underline cursor-pointer"
+                    >
+                      + Custom Amount
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setUseCustomAmount(false)}
+                      className="text-emerald-800 hover:text-emerald-950 font-bold underline cursor-pointer"
+                    >
+                      Back to Unit Stepper
+                    </button>
+                  )}
+                </div>
 
-              {/* Calculated Total Card */}
-              <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-3 flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] text-amber-900 font-medium block">
-                    Total Contribution
-                  </span>
-                  <span className="text-[11px] text-neutral-600">
-                    {useCustomAmount
-                      ? 'Custom Donation'
-                      : `${quantity} units × ₹${unitPrice.toLocaleString('en-IN')}`}
-                  </span>
-                </div>
-                <div className="text-right">
-                  <div className="text-xl font-bold text-neutral-950 font-sans">
-                    ₹{grandTotal.toLocaleString('en-IN')}
+                {useCustomAmount ? (
+                  <div className="relative flex items-center">
+                    <span className="absolute left-2.5 text-xs font-bold text-neutral-500">₹</span>
+                    <input
+                      type="number"
+                      min="50"
+                      placeholder="Enter amount (e.g. 5000)"
+                      value={customAmount}
+                      onChange={(e) => setCustomAmount(e.target.value === '' ? '' : Number(e.target.value))}
+                      className="w-full text-xs font-bold bg-white border border-neutral-300 rounded-xl pl-7 pr-2.5 py-1.5 text-neutral-900 focus:outline-none"
+                    />
                   </div>
-                  <span className="text-[9px] text-emerald-800 font-medium flex items-center justify-end gap-1">
-                    <ShieldCheck className="w-3 h-3 text-emerald-700" />
-                    <span>Direct HDFC Settlement</span>
-                  </span>
-                </div>
+                ) : (
+                  <input
+                    type="email"
+                    placeholder="Enter email address (optional)"
+                    value={donorEmail}
+                    onChange={(e) => setDonorEmail(e.target.value)}
+                    className="w-full text-xs bg-neutral-50 border border-neutral-300 rounded-xl px-2.5 py-1.5 text-neutral-900 focus:bg-white focus:border-emerald-800 focus:outline-none"
+                  />
+                )}
               </div>
 
               {/* Notice / Errors if any */}
               {validationError && (
-                <div className="text-xs text-red-600 font-medium text-center bg-red-50 py-1.5 px-2 rounded-lg border border-red-200">
+                <div className="text-[11px] text-red-600 font-medium text-center bg-red-50 py-1 px-2 rounded-lg border border-red-200">
                   {validationError}
                 </div>
               )}
               {paymentError && (
-                <div className="text-xs text-amber-800 bg-amber-50 py-2 px-3 rounded-xl border border-amber-300 flex items-start gap-1.5 text-left">
-                  <AlertCircle className="w-4 h-4 text-amber-700 flex-shrink-0 mt-0.5" />
+                <div className="text-[11px] text-amber-800 bg-amber-50 py-1.5 px-2.5 rounded-xl border border-amber-300 flex items-start gap-1.5">
+                  <AlertCircle className="w-3.5 h-3.5 text-amber-700 flex-shrink-0 mt-0.5" />
                   <span>{paymentError}</span>
                 </div>
               )}
 
-              {/* Optional Offline Corporate NEFT / RTGS Wire Accordion */}
-              <div className="border border-neutral-200 rounded-xl p-2.5 bg-neutral-50/70 text-left">
-                <button
-                  type="button"
-                  onClick={() => setShowBankWireDetails(!showBankWireDetails)}
-                  className="w-full flex items-center justify-between text-[11px] font-semibold text-neutral-700 hover:text-neutral-950 cursor-pointer"
-                >
-                  <span className="flex items-center gap-1.5">
-                    <Building2 className="w-3.5 h-3.5 text-neutral-600" />
-                    <span>Large Corporate Donation via Direct NEFT / RTGS?</span>
-                  </span>
-                  <span className="text-[10px] text-[#084c36] underline font-medium">
-                    {showBankWireDetails ? 'Hide Bank Details ▲' : 'View Bank Details ▼'}
-                  </span>
-                </button>
-
-                {showBankWireDetails && (
-                  <div className="mt-2.5 pt-2.5 border-t border-neutral-200 space-y-2 text-xs animate-in fade-in">
-                    <div className="bg-amber-50 p-2 rounded-lg border border-amber-200 text-[10px] text-amber-900 leading-tight">
-                      <strong>Audit Notice:</strong> Direct NEFT/RTGS wire transfers require 24–48 hours for manual bank reconciliation before an 80G certificate can be issued. For instant confirmation and digital certificate, please pay online above using <strong>Proceed to Pay</strong>.
-                    </div>
-                    <div className="space-y-1.5 bg-white p-2.5 rounded-xl border border-neutral-200 text-[11px]">
-                      <div className="flex justify-between">
-                        <span className="text-neutral-500">Beneficiary:</span>
-                        <strong className="text-neutral-900">RiseUpHelp Initiative Foundation</strong>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-neutral-500">Account No:</span>
-                        <div className="flex items-center gap-1">
-                          <strong className="font-mono text-neutral-950">50200098282911</strong>
-                          <button
-                            type="button"
-                            onClick={() => handleCopy('50200098282911', 'account')}
-                            className="text-[10px] bg-neutral-100 hover:bg-neutral-200 px-1.5 py-0.5 rounded text-neutral-700 flex items-center gap-1 cursor-pointer"
-                          >
-                            {copiedAccount ? <Check className="w-3 h-3 text-emerald-700" /> : <Copy className="w-3 h-3" />}
-                            <span>{copiedAccount ? 'Copied' : 'Copy'}</span>
-                          </button>
-                        </div>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-neutral-500">IFSC Code:</span>
-                        <div className="flex items-center gap-1">
-                          <strong className="font-mono text-neutral-950">HDFC0000054</strong>
-                          <button
-                            type="button"
-                            onClick={() => handleCopy('HDFC0000054', 'ifsc')}
-                            className="text-[10px] bg-neutral-100 hover:bg-neutral-200 px-1.5 py-0.5 rounded text-neutral-700 flex items-center gap-1 cursor-pointer"
-                          >
-                            {copiedIfsc ? <Check className="w-3 h-3 text-emerald-700" /> : <Copy className="w-3 h-3" />}
-                            <span>{copiedIfsc ? 'Copied' : 'Copy'}</span>
-                          </button>
-                        </div>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-neutral-500">Bank & Branch:</span>
-                        <span className="text-neutral-900">HDFC Bank, C-Scheme, Jaipur</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Submit Action */}
-              <div className="flex items-center justify-between pt-1 border-t border-neutral-100 gap-3">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="text-xs text-neutral-500 underline hover:text-neutral-800 cursor-pointer font-medium"
-                >
-                  Cancel
-                </button>
-
+              {/* Primary Action Button with Total */}
+              <div className="pt-1.5 border-t border-neutral-200 flex flex-col gap-1.5">
                 <button
                   type="submit"
-                  className="bg-[#084c36] hover:bg-[#063b2a] text-white text-xs sm:text-sm font-semibold rounded-xl px-6 py-2.5 transition-all shadow hover:shadow-md active:scale-95 flex items-center gap-2 cursor-pointer ml-auto"
+                  className="w-full bg-[#084c36] hover:bg-[#063b2a] text-white text-xs sm:text-sm font-bold rounded-xl py-3 px-4 transition-all shadow-md hover:shadow-lg active:scale-98 flex items-center justify-between gap-2 cursor-pointer"
                 >
-                  <span>Proceed to Pay ₹{grandTotal.toLocaleString('en-IN')}</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <div className="flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                    <span>Proceed to Pay Online</span>
+                  </div>
+                  <div className="flex items-center gap-1 font-mono text-amber-300 font-extrabold text-sm">
+                    <span>₹{grandTotal.toLocaleString('en-IN')}</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </div>
                 </button>
+
+                <div className="flex items-center justify-between text-[10px] text-neutral-500 px-1">
+                  <span>🛡️ 50% Tax Exemption Under Section 80G</span>
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="text-neutral-500 hover:text-neutral-800 underline cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             </form>
           )}
