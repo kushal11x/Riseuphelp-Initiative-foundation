@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
   ArrowLeft,
-  Copy,
-  Check,
   Building2,
   Sparkles,
   MapPin,
   MessageCircle,
   Calendar,
   ChevronRight,
+  CheckCircle2,
 } from 'lucide-react';
 import type { DriveItem, HospitalNode } from '../types';
 import { DRIVE_ITEMS, PARTNER_HOSPITALS, OFFICIAL_INFO } from '../data/mockData';
@@ -88,7 +87,6 @@ export const HospitalSevaPage: React.FC<HospitalSevaPageProps> = ({
   const [selectedQty, setSelectedQty] = useState<number>(20);
   const [isCustomMode, setIsCustomMode] = useState<boolean>(false);
   const [customQtyInput, setCustomQtyInput] = useState<number | ''>('');
-  const [copiedLink, setCopiedLink] = useState(false);
 
   const todayIST = getTodayISTString();
 
@@ -182,14 +180,6 @@ export const HospitalSevaPage: React.FC<HospitalSevaPageProps> = ({
       : 'https://riseuphelp.org/hospital-seva';
   const shareableUrl = selectedTab === 'nariyal' ? baseUrl : `${baseUrl}?item=${selectedTab}`;
 
-  const handleCopyLink = () => {
-    if (typeof navigator !== 'undefined' && navigator.clipboard) {
-      navigator.clipboard.writeText(shareableUrl);
-      setCopiedLink(true);
-      setTimeout(() => setCopiedLink(false), 3000);
-    }
-  };
-
   const handleWhatsAppShare = () => {
     let itemTitle = 'Fresh Tender Coconut Water Seva (₹65/pc)';
     let shareText = '';
@@ -244,121 +234,105 @@ export const HospitalSevaPage: React.FC<HospitalSevaPageProps> = ({
   };
 
   return (
-    <div className="w-full flex flex-col gap-3 sm:gap-5 animate-in fade-in duration-300 pb-12 px-2 sm:px-4 max-w-4xl mx-auto">
+    <div className="w-full flex flex-col gap-3.5 sm:gap-5 animate-in fade-in duration-300 pb-12 px-3 sm:px-4 max-w-4xl mx-auto font-sans">
       {/* 1. COMPACT TOP HEADER */}
-      <div className="w-full pt-2 flex items-center justify-between gap-2">
+      <div className="w-full pt-2 flex items-center justify-between gap-3">
         <button
           onClick={onBackToHome}
-          className="inline-flex items-center gap-1.5 bg-white text-neutral-800 font-bold text-xs px-3 py-1.5 rounded-full border border-neutral-200 shadow-2xs hover:bg-neutral-50 transition-all cursor-pointer"
+          className="inline-flex items-center gap-1.5 bg-white text-neutral-700 hover:text-neutral-900 font-medium text-xs px-3 py-1.5 rounded-full border border-neutral-200/90 shadow-2xs hover:bg-neutral-50 transition-colors cursor-pointer"
         >
-          <ArrowLeft className="w-3.5 h-3.5 text-[#084c36]" />
-          <span>{t.ekadashiBack || 'Back'}</span>
+          <ArrowLeft className="w-3.5 h-3.5 text-neutral-600" />
+          <span>{t.ekadashiBack || 'Back to Home'}</span>
         </button>
 
-        <div className="flex items-center gap-1.5">
-          <button
-            onClick={handleWhatsAppShare}
-            className="inline-flex items-center gap-1 bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-xs px-3 py-1.5 rounded-full shadow-2xs transition-all cursor-pointer active:scale-95"
-            title="Share on WhatsApp"
-          >
-            <MessageCircle className="w-3.5 h-3.5 fill-white" />
-            <span>Share</span>
-          </button>
-
-          <button
-            onClick={handleCopyLink}
-            className="inline-flex items-center gap-1 bg-white hover:bg-neutral-50 text-neutral-800 font-bold text-xs px-3 py-1.5 rounded-full border border-neutral-300 shadow-2xs transition-all cursor-pointer active:scale-95"
-            title="Copy Direct Link"
-          >
-            {copiedLink ? (
-              <>
-                <Check className="w-3.5 h-3.5 text-emerald-600" />
-                <span className="text-emerald-700">Copied</span>
-              </>
-            ) : (
-              <>
-                <Copy className="w-3.5 h-3.5 text-neutral-600" />
-                <span>Copy Link</span>
-              </>
-            )}
-          </button>
-        </div>
+        <button
+          onClick={handleWhatsAppShare}
+          className="inline-flex items-center gap-1.5 bg-[#25D366] hover:bg-[#20ba59] text-white font-semibold text-xs px-3.5 py-1.5 rounded-full shadow-2xs transition-all cursor-pointer active:scale-95"
+          title="Share on WhatsApp"
+        >
+          <MessageCircle className="w-3.5 h-3.5 fill-white" />
+          <span>Share on WhatsApp</span>
+        </button>
       </div>
 
-      {/* 2. COMPACT 3-TAB SELECTION PILLS */}
-      <div className="w-full bg-white rounded-2xl p-1.5 border border-neutral-200 shadow-2xs">
+      {/* 2. MINIMALIST SEGMENTED SELECTION TABS */}
+      <div className="w-full bg-neutral-100/90 p-1 rounded-2xl border border-neutral-200/70 shadow-2xs">
         <div className="grid grid-cols-3 gap-1 w-full">
           {/* Tab 1: Coconut */}
           <button
             onClick={() => setSelectedTab('nariyal')}
-            className={`py-2 px-1 sm:px-3 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1 ${
+            className={`py-2 px-2 rounded-xl text-xs transition-all cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 ${
               selectedTab === 'nariyal'
-                ? 'bg-[#084c36] text-white shadow-xs'
-                : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
+                ? 'bg-white text-neutral-900 font-semibold shadow-xs border border-neutral-200/70'
+                : 'text-neutral-600 hover:text-neutral-900 font-medium hover:bg-neutral-200/40'
             }`}
           >
-            <span>🥥</span>
-            <span className="truncate">Coconut (₹65)</span>
+            <span className="truncate">Coconut Water</span>
+            <span className={`text-[11px] font-mono ${selectedTab === 'nariyal' ? 'text-emerald-800 font-semibold' : 'text-neutral-400'}`}>
+              ₹65
+            </span>
           </button>
 
           {/* Tab 2: Anaar Juice */}
           <button
             onClick={() => setSelectedTab('anar-juice')}
-            className={`py-2 px-1 sm:px-3 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1 ${
+            className={`py-2 px-2 rounded-xl text-xs transition-all cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 ${
               selectedTab === 'anar-juice'
-                ? 'bg-[#b91c1c] text-white shadow-xs'
-                : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
+                ? 'bg-white text-neutral-900 font-semibold shadow-xs border border-neutral-200/70'
+                : 'text-neutral-600 hover:text-neutral-900 font-medium hover:bg-neutral-200/40'
             }`}
           >
-            <span>🥤</span>
-            <span className="truncate">Anaar Juice (₹70)</span>
+            <span className="truncate">Anaar Juice</span>
+            <span className={`text-[11px] font-mono ${selectedTab === 'anar-juice' ? 'text-rose-800 font-semibold' : 'text-neutral-400'}`}>
+              ₹70
+            </span>
           </button>
 
           {/* Tab 3: Meal Box */}
           <button
             onClick={() => setSelectedTab('meal')}
-            className={`py-2 px-1 sm:px-3 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1 relative ${
+            className={`py-2 px-2 rounded-xl text-xs transition-all cursor-pointer flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 relative ${
               selectedTab === 'meal'
-                ? 'bg-[#c2410c] text-white shadow-xs'
-                : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
+                ? 'bg-white text-neutral-900 font-semibold shadow-xs border border-neutral-200/70'
+                : 'text-neutral-600 hover:text-neutral-900 font-medium hover:bg-neutral-200/40'
             }`}
           >
-            <span>🍱</span>
-            <span className="truncate">Meal Box (₹70)</span>
-            <span className="absolute -top-1.5 -right-1 bg-amber-400 text-neutral-950 text-[8px] font-mono font-bold px-1 rounded-full uppercase">
-              Live
+            <span className="truncate">Meal Box</span>
+            <span className={`text-[11px] font-mono ${selectedTab === 'meal' ? 'text-amber-800 font-semibold' : 'text-neutral-400'}`}>
+              ₹70
             </span>
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 ml-0.5" />
           </button>
         </div>
       </div>
 
-      {/* 3. MOBILE-OPTIMIZED MAIN SEVA CARD (ALL-IN-ONE COMPACT BOX) */}
-      <div className="w-full bg-white rounded-2xl sm:rounded-3xl border border-neutral-200 shadow-sm overflow-hidden">
-        {/* Card Header Banner */}
+      {/* 3. AESTHETIC MAIN SEVA CARD */}
+      <div className="w-full bg-white rounded-2xl sm:rounded-3xl border border-neutral-200/80 shadow-xs overflow-hidden">
+        {/* Card Header Banner with Rich Muted Gradients */}
         <div
-          className={`p-3.5 sm:p-5 text-white flex items-center justify-between gap-3 ${
+          className={`p-4 sm:p-5 text-white flex items-center justify-between gap-3 ${
             selectedTab === 'anar-juice'
-              ? 'bg-gradient-to-r from-[#7f1d1d] to-[#450a0a]'
+              ? 'bg-gradient-to-br from-[#4a0a0e] via-[#6d1319] to-[#300508]'
               : selectedTab === 'meal'
-              ? 'bg-gradient-to-r from-[#9a3412] to-[#431407]'
-              : 'bg-gradient-to-r from-[#084c36] to-[#04261b]'
+              ? 'bg-gradient-to-br from-[#591d09] via-[#7c290e] to-[#331005]'
+              : 'bg-gradient-to-br from-[#05291d] via-[#084c36] to-[#031d14]'
           }`}
         >
           <div className="min-w-0 flex-1 text-left">
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="bg-[#FDB813] text-neutral-950 font-bold text-[10px] px-2 py-0.5 rounded-md font-mono uppercase">
-                {selectedTab === 'meal' ? 'Shraadh Seva' : 'Bedside Relief'}
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="bg-white/15 text-white text-[10px] font-medium tracking-wider px-2.5 py-0.5 rounded-full border border-white/20 uppercase">
+                {selectedTab === 'meal' ? 'Shraadh Bhojan Seva' : 'Bedside Patient Relief'}
               </span>
-              <span className="text-[11px] text-white/80 font-mono">
-                RUHS Cancer Hospital
+              <span className="text-[11px] text-white/70 font-medium">
+                RUHS & SMS Medical Oncology
               </span>
             </div>
-            <h1 className="text-base sm:text-xl font-black text-white mt-1 truncate">
+            <h1 className="text-base sm:text-xl font-bold tracking-tight text-white mt-1.5 truncate">
               {activeItem.name}
             </h1>
-            <p className="text-[11px] sm:text-xs text-neutral-100/90 line-clamp-1 mt-0.5">
+            <p className="text-[11px] sm:text-xs text-white/80 font-normal line-clamp-1 mt-0.5">
               {selectedTab === 'meal'
-                ? 'Wholesome fresh meal box (4 rotis, dal, sabzi, rice, salad) served bedside.'
+                ? 'Freshly prepared wholesome meals (rotis, dal, sabzi, rice, salad) served bedside.'
                 : activeItem.description}
             </p>
           </div>
@@ -373,43 +347,43 @@ export const HospitalSevaPage: React.FC<HospitalSevaPageProps> = ({
         </div>
 
         {/* Card Body */}
-        <div className="p-3.5 sm:p-5 flex flex-col gap-3 text-left">
-          {/* ONLY FOR MEAL TAB: CLEAN COMPACT DATE SELECTOR */}
+        <div className="p-4 sm:p-5 flex flex-col gap-3.5 text-left">
+          {/* ONLY FOR MEAL TAB: ELEGANT DATE SELECTOR */}
           {selectedTab === 'meal' && (
-            <div className="bg-amber-50/70 border border-amber-300 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            <div className="bg-neutral-50 border border-neutral-200/90 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
               <div className="space-y-0.5">
                 <div className="flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5 text-amber-800" />
-                  <span className="text-xs font-bold text-neutral-900">
-                    Seva Date (26 Sep - 10 Oct):
+                  <Calendar className="w-3.5 h-3.5 text-neutral-600" />
+                  <span className="text-xs font-semibold text-neutral-900">
+                    Seva Schedule (26 Sep – 10 Oct):
                   </span>
                   {isSelectedDateCompleted ? (
-                    <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-1.5 py-0.2 rounded font-mono">
-                      Completed ✅
+                    <span className="text-[10px] font-medium text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-md">
+                      Completed
                     </span>
                   ) : (
-                    <span className="text-[10px] font-bold text-amber-900 bg-amber-200 px-1.5 py-0.2 rounded font-mono">
-                      Available 🟢
+                    <span className="text-[10px] font-medium text-amber-900 bg-amber-100/90 px-2 py-0.5 rounded-md">
+                      Available
                     </span>
                   )}
                 </div>
-                <p className="text-[10px] text-neutral-600">
+                <p className="text-[11px] text-neutral-500 font-normal">
                   {isSelectedDateCompleted
-                    ? '450 meals successfully distributed bedside at RUHS.'
-                    : `Daily fresh meals at RUHS Cancer Hospital (₹70/meal).`}
+                    ? '450 meals successfully distributed bedside at RUHS Cancer Hospital.'
+                    : `Daily fresh high-protein meals served bedside (₹70/meal box).`}
                 </p>
               </div>
 
               <select
                 value={selectedDateStr}
                 onChange={(e) => setSelectedDateStr(e.target.value)}
-                className="w-full sm:w-auto bg-white border border-neutral-300 rounded-lg px-2.5 py-1.5 text-xs font-bold text-neutral-900 focus:outline-none focus:ring-2 focus:ring-[#084c36] cursor-pointer"
+                className="w-full sm:w-auto bg-white border border-neutral-300 rounded-lg px-2.5 py-1.5 text-xs font-medium text-neutral-900 focus:outline-none focus:ring-1 focus:ring-[#084c36] shadow-2xs cursor-pointer"
               >
                 {SHRAADH_DATES.map((d) => {
                   const completed = d.dateStr <= todayIST;
                   return (
                     <option key={d.dateStr} value={d.dateStr}>
-                      {d.label} ({d.day}) - {d.note} {completed ? '• Completed' : '• Open'}
+                      {d.label} ({d.day}) • {d.note} {completed ? '— Completed' : '— Open'}
                     </option>
                   );
                 })}
@@ -419,16 +393,16 @@ export const HospitalSevaPage: React.FC<HospitalSevaPageProps> = ({
 
           {/* QUANTITY PRESET PILLS */}
           <div>
-            <div className="flex items-center justify-between text-xs mb-1.5">
-              <span className="font-bold text-neutral-800">
-                Select Quantity:
+            <div className="flex items-center justify-between text-xs mb-2">
+              <span className="font-semibold text-neutral-800 tracking-tight">
+                Select Quantity
               </span>
               <span className="text-neutral-500 font-mono text-[11px]">
                 Rate: ₹{unitRate} / {activeItem.unitLabel || 'Unit'}
               </span>
             </div>
 
-            <div className="grid grid-cols-4 gap-1.5">
+            <div className="grid grid-cols-4 gap-2">
               {[10, 20, 50, 100].map((qty) => (
                 <button
                   key={qty}
@@ -440,14 +414,18 @@ export const HospitalSevaPage: React.FC<HospitalSevaPageProps> = ({
                   className={`py-2 px-1 rounded-xl text-center transition-all cursor-pointer border ${
                     !isCustomMode && selectedQty === qty
                       ? 'bg-[#084c36] text-white border-[#084c36] shadow-xs'
-                      : 'bg-neutral-50 hover:bg-neutral-100 text-neutral-800 border-neutral-200'
+                      : 'bg-white hover:bg-neutral-50 text-neutral-800 border-neutral-200/90'
                   }`}
                 >
-                  <div className="text-xs sm:text-sm font-extrabold">
+                  <div className="text-xs sm:text-sm font-semibold">
                     {qty}
-                    {qty === 20 && <span className="text-[9px] text-amber-300 ml-0.5">⭐</span>}
+                    {qty === 20 && (
+                      <span className={`text-[9px] font-normal ml-1 ${!isCustomMode && selectedQty === qty ? 'text-emerald-200' : 'text-neutral-400'}`}>
+                        Popular
+                      </span>
+                    )}
                   </div>
-                  <div className={`text-[10px] font-mono ${!isCustomMode && selectedQty === qty ? 'text-emerald-200' : 'text-neutral-500'}`}>
+                  <div className={`text-[10px] font-mono mt-0.5 ${!isCustomMode && selectedQty === qty ? 'text-emerald-200' : 'text-neutral-500'}`}>
                     ₹{(qty * unitRate).toLocaleString('en-IN')}
                   </div>
                 </button>
@@ -455,11 +433,11 @@ export const HospitalSevaPage: React.FC<HospitalSevaPageProps> = ({
             </div>
 
             {/* Custom Quantity Toggle Option */}
-            <div className="mt-2 flex items-center justify-between gap-2 text-xs">
+            <div className="mt-2.5 flex items-center justify-between gap-2 text-xs">
               <button
                 type="button"
                 onClick={() => setIsCustomMode(!isCustomMode)}
-                className="text-emerald-800 hover:text-emerald-950 font-bold underline cursor-pointer text-[11px]"
+                className="text-emerald-800 hover:text-emerald-950 font-medium text-[11px] underline underline-offset-2 cursor-pointer"
               >
                 {isCustomMode ? 'Use Preset Quantities' : '+ Enter Custom Quantity'}
               </button>
@@ -477,7 +455,7 @@ export const HospitalSevaPage: React.FC<HospitalSevaPageProps> = ({
                         e.target.value === '' ? '' : Math.max(1, parseInt(e.target.value, 10))
                       )
                     }
-                    className="w-16 bg-neutral-100 border border-neutral-300 rounded-lg px-2 py-1 text-center font-bold text-xs focus:outline-none"
+                    className="w-16 bg-white border border-neutral-300 rounded-lg px-2 py-1 text-center font-medium text-xs focus:outline-none focus:border-[#084c36]"
                   />
                 </div>
               )}
@@ -485,10 +463,10 @@ export const HospitalSevaPage: React.FC<HospitalSevaPageProps> = ({
           </div>
 
           {/* TOTAL SUMMARY & PRIMARY CTA BUTTON */}
-          <div className="pt-2 border-t border-neutral-200">
+          <div className="pt-2 border-t border-neutral-200/80">
             {selectedTab === 'meal' && isSelectedDateCompleted ? (
-              <div className="w-full bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold text-xs sm:text-sm py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-center">
-                <Check className="w-4 h-4 text-emerald-600" />
+              <div className="w-full bg-emerald-50 text-emerald-800 border border-emerald-300/80 font-medium text-xs sm:text-sm py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-center">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                 <span>
                   {selectedDateObj.label} Seva Completed (450 Meals Distributed)
                 </span>
@@ -497,16 +475,16 @@ export const HospitalSevaPage: React.FC<HospitalSevaPageProps> = ({
               <button
                 type="button"
                 onClick={handleTriggerCheckout}
-                className="w-full bg-[#084c36] hover:bg-[#063b2a] text-white font-extrabold text-sm sm:text-base py-3.5 px-5 rounded-xl transition-all shadow-md hover:shadow-lg active:scale-98 cursor-pointer flex items-center justify-between gap-2"
+                className="w-full bg-[#084c36] hover:bg-[#063b2a] text-white font-medium text-sm sm:text-base py-3 px-5 rounded-xl transition-all shadow-xs hover:shadow active:scale-[0.99] cursor-pointer flex items-center justify-between gap-2"
               >
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-[#FDB813]" />
-                  <span>
+                  <Sparkles className="w-4 h-4 text-amber-300" />
+                  <span className="tracking-tight">
                     Sponsor {effectiveQty} {activeItem.unitLabel || 'Units'}
                     {selectedTab === 'meal' ? ` for ${selectedDateObj.label}` : ''}
                   </span>
                 </div>
-                <div className="flex items-center gap-1 font-mono text-amber-300">
+                <div className="flex items-center gap-1 font-mono font-semibold text-emerald-100">
                   <span>₹{totalAmount.toLocaleString('en-IN')}</span>
                   <ChevronRight className="w-4 h-4" />
                 </div>
@@ -516,35 +494,35 @@ export const HospitalSevaPage: React.FC<HospitalSevaPageProps> = ({
         </div>
       </div>
 
-      {/* 4. COMPACT TRUST & 80G HIGHLIGHTS (CLEAN 3-COLUMN ROW) */}
+      {/* 4. AESTHETIC TRUST & 80G HIGHLIGHTS */}
       <div className="grid grid-cols-3 gap-2 text-center">
-        <div className="bg-white rounded-xl p-2.5 border border-neutral-200/90 shadow-2xs">
-          <div className="text-xs font-bold text-emerald-900">100% Bedside</div>
-          <div className="text-[10px] text-neutral-500">RUHS & SMS Hospital</div>
+        <div className="bg-white rounded-xl p-2.5 border border-neutral-200/80 shadow-2xs">
+          <div className="text-xs font-semibold text-neutral-900 tracking-tight">100% Bedside</div>
+          <div className="text-[10px] text-neutral-500 font-normal">RUHS & SMS Hospital</div>
         </div>
-        <div className="bg-white rounded-xl p-2.5 border border-neutral-200/90 shadow-2xs">
-          <div className="text-xs font-bold text-amber-900">50% Tax Relief</div>
-          <div className="text-[10px] text-neutral-500">Section 80G Certified</div>
+        <div className="bg-white rounded-xl p-2.5 border border-neutral-200/80 shadow-2xs">
+          <div className="text-xs font-semibold text-neutral-900 tracking-tight">50% Tax Relief</div>
+          <div className="text-[10px] text-neutral-500 font-normal">Section 80G Certified</div>
         </div>
-        <div className="bg-white rounded-xl p-2.5 border border-neutral-200/90 shadow-2xs">
-          <div className="text-xs font-bold text-neutral-900">WhatsApp Proof</div>
-          <div className="text-[10px] text-neutral-500">Live Ground Photos</div>
+        <div className="bg-white rounded-xl p-2.5 border border-neutral-200/80 shadow-2xs">
+          <div className="text-xs font-semibold text-neutral-900 tracking-tight">Direct Updates</div>
+          <div className="text-[10px] text-neutral-500 font-normal">WhatsApp Live Proof</div>
         </div>
       </div>
 
-      {/* 5. VERIFIED PARTNER HOSPITALS (CLEAN 1-LINE SUMMARY) */}
-      <div className="bg-white rounded-2xl p-3 sm:p-4 border border-neutral-200 shadow-2xs text-left">
+      {/* 5. VERIFIED PARTNER HOSPITALS */}
+      <div className="bg-white rounded-2xl p-3 sm:p-4 border border-neutral-200/80 shadow-2xs text-left">
         <div className="flex items-center gap-2 mb-2">
-          <Building2 className="w-4 h-4 text-[#084c36]" />
-          <h4 className="text-xs font-bold text-neutral-900">
-            Active Verified Hospital Wards in Jaipur:
+          <Building2 className="w-3.5 h-3.5 text-[#084c36]" />
+          <h4 className="text-xs font-semibold text-neutral-900 tracking-tight">
+            Active Verified Hospital Relief Wards in Jaipur:
           </h4>
         </div>
         <div className="flex flex-wrap gap-1.5 text-[11px]">
           {hospitals.slice(0, 3).map((h) => (
             <span
               key={h.id}
-              className="bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-lg border border-neutral-200 font-medium inline-flex items-center gap-1"
+              className="bg-neutral-50 text-neutral-700 px-2.5 py-1 rounded-lg border border-neutral-200/80 font-medium inline-flex items-center gap-1"
             >
               <MapPin className="w-2.5 h-2.5 text-emerald-700" />
               <span>{h.name.split('(')[0].trim()}</span>
@@ -554,8 +532,8 @@ export const HospitalSevaPage: React.FC<HospitalSevaPageProps> = ({
       </div>
 
       {/* 6. TRANSPARENCY FOOTNOTE */}
-      <div className="text-center text-[10px] text-neutral-500 pt-1">
-        <span>🏛️ {OFFICIAL_INFO.name} • CIN: {OFFICIAL_INFO.cinNumber} • Helpline: {OFFICIAL_INFO.phone}</span>
+      <div className="text-center text-[10px] text-neutral-400 pt-1 font-normal">
+        <span>{OFFICIAL_INFO.name} • Section 8 Non-Profit • CIN: {OFFICIAL_INFO.cinNumber}</span>
       </div>
     </div>
   );
