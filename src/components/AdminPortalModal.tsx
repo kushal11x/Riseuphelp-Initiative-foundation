@@ -59,6 +59,7 @@ import type {
 import { compressImageFile, safeLocalStorageSet } from '../utils/imageUtils';
 import { uploadImageToServer, pushServerState, type ReceiptConfig, type SiteStatePayload } from '../utils/serverSync';
 import { RUHS_CHILDREN_WARD_PROFILES } from '../data/mockData';
+import { processEkadashiSchedule } from '../utils/ekadashiCalendar';
 
 interface AdminPortalModalProps {
   isOpen: boolean;
@@ -1017,6 +1018,7 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
     if (setScheduleEvents && scheduleEvents) {
       const updated = [...scheduleEvents, newEv];
       setScheduleEvents(updated);
+      safeLocalStorageSet('ruh_schedule_v4', updated);
       safeLocalStorageSet('ruh_schedule_v3', updated);
       if (onSyncToServer) onSyncToServer({ scheduleEvents: updated });
     }
@@ -1064,17 +1066,30 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
       }
     }
     setScheduleEvents(updated);
-    safeLocalStorageSet('ruh_schedule_v3', updated);
+    safeLocalStorageSet('ruh_schedule_v4', updated);
+      safeLocalStorageSet('ruh_schedule_v3', updated);
     if (onSyncToServer) onSyncToServer({ scheduleEvents: updated });
     setEditingScheduleId(null);
     setEditEventForm(null);
     showToast(`✅ Successfully saved & broadcasted "${editEventForm.title}" live!`);
   };
 
+    const handleAutoSyncCalendar = () => {
+    if (setScheduleEvents && scheduleEvents) {
+      const { processedEvents, primaryEvent } = processEkadashiSchedule(scheduleEvents);
+      setScheduleEvents(processedEvents);
+      safeLocalStorageSet('ruh_schedule_v4', processedEvents);
+      safeLocalStorageSet('ruh_schedule_v3', processedEvents);
+      if (onSyncToServer) onSyncToServer({ scheduleEvents: processedEvents });
+      showToast(`✅ Auto-Calendar Synced: Featured Drive is "${primaryEvent.title}"!`);
+    }
+  };
+
   const handleDeleteScheduleEvent = (id: string) => {
     if (setScheduleEvents && scheduleEvents) {
       const updated = scheduleEvents.filter((ev) => ev.id !== id);
       setScheduleEvents(updated);
+      safeLocalStorageSet('ruh_schedule_v4', updated);
       safeLocalStorageSet('ruh_schedule_v3', updated);
       if (onSyncToServer) onSyncToServer({ scheduleEvents: updated });
       showToast('Event removed from schedule');
@@ -6821,9 +6836,20 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                           Update currently active on-ground seva broadcast and upcoming Ekadashi dates across Jaipur hospitals.
                         </p>
                       </div>
-                      <span className="text-xs font-mono font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-                        {scheduleEvents.length} Events Listed
-                      </span>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-xs font-mono font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+                          {scheduleEvents.length} Events Listed
+                        </span>
+                        <button
+                          type="button"
+                          onClick={handleAutoSyncCalendar}
+                          className="text-xs bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-3 py-1 rounded-full flex items-center gap-1.5 shadow-xs transition-all cursor-pointer active:scale-95"
+                          title="Automatically roll over past events and bring upcoming Ekadashi to the top"
+                        >
+                          <RotateCcw className="w-3.5 h-3.5" />
+                          <span>Auto-Sync Calendar ⚡</span>
+                        </button>
+                      </div>
                     </div>
 
                     {/* Form to Schedule New Ekadashi Drive */}
@@ -7497,7 +7523,8 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                                             status: i === idx ? ('upcoming' as const) : item.status,
                                           }));
                                           setScheduleEvents(updated);
-                                          safeLocalStorageSet('ruh_schedule_v3', updated);
+                                          safeLocalStorageSet('ruh_schedule_v4', updated);
+      safeLocalStorageSet('ruh_schedule_v3', updated);
                                           if (onSyncToServer) onSyncToServer({ scheduleEvents: updated });
                                           showToast(`Set "${ev.title}" back to Upcoming`);
                                         }}
@@ -7519,7 +7546,8 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                                             updated = [activeItem, ...updated.filter((_, i) => i !== idx)];
                                           }
                                           setScheduleEvents(updated);
-                                          safeLocalStorageSet('ruh_schedule_v3', updated);
+                                          safeLocalStorageSet('ruh_schedule_v4', updated);
+      safeLocalStorageSet('ruh_schedule_v3', updated);
                                           if (onSyncToServer) onSyncToServer({ scheduleEvents: updated });
                                           showToast(`Set "${ev.title}" as Active Today! 🔴`);
                                         }}
@@ -7556,7 +7584,8 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                                             i === idx ? { ...item, sponsoredCoconuts: val } : item
                                           );
                                           setScheduleEvents(updated);
-                                          safeLocalStorageSet('ruh_schedule_v3', updated);
+                                          safeLocalStorageSet('ruh_schedule_v4', updated);
+      safeLocalStorageSet('ruh_schedule_v3', updated);
                                           if (onSyncToServer) onSyncToServer({ scheduleEvents: updated });
                                         }}
                                         className="w-20 px-2 py-1 text-xs font-mono font-bold bg-white border border-neutral-300 rounded-lg text-center text-emerald-800 focus:outline-none focus:border-emerald-700"
@@ -7573,7 +7602,8 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                                             i === idx ? { ...item, targetCoconuts: val } : item
                                           );
                                           setScheduleEvents(updated);
-                                          safeLocalStorageSet('ruh_schedule_v3', updated);
+                                          safeLocalStorageSet('ruh_schedule_v4', updated);
+      safeLocalStorageSet('ruh_schedule_v3', updated);
                                           if (onSyncToServer) onSyncToServer({ scheduleEvents: updated });
                                         }}
                                         className="w-20 px-2 py-1 text-xs font-mono font-bold bg-white border border-neutral-300 rounded-lg text-center text-neutral-900 focus:outline-none focus:border-emerald-700"
@@ -7593,7 +7623,8 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                                           i === idx ? { ...item, timing: e.target.value } : item
                                         );
                                         setScheduleEvents(updated);
-                                        safeLocalStorageSet('ruh_schedule_v3', updated);
+                                        safeLocalStorageSet('ruh_schedule_v4', updated);
+      safeLocalStorageSet('ruh_schedule_v3', updated);
                                         if (onSyncToServer) onSyncToServer({ scheduleEvents: updated });
                                       }}
                                       className="w-36 px-2 py-1 text-xs font-mono bg-white border border-neutral-300 rounded-lg text-neutral-800 focus:outline-none focus:border-emerald-700"

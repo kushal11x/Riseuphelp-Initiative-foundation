@@ -21,6 +21,7 @@ import { VolunteerPage } from './pages/VolunteerPage';
 import { Navbar, type AppView } from './components/Navbar';
 import { useLanguage } from './context/LanguageContext';
 import { safeLocalStorageSet } from './utils/imageUtils';
+import { processEkadashiSchedule } from './utils/ekadashiCalendar';
 import {
   fetchServerState,
   pushServerState,
@@ -289,50 +290,28 @@ export function App() {
   });
 
   const [scheduleEvents, setScheduleEvents] = useState<SevaScheduleEvent[]>(() => {
-    const s = localStorage.getItem('ruh_schedule_v3');
+    const s = localStorage.getItem('ruh_schedule_v4') || localStorage.getItem('ruh_schedule_v3');
+    let baseEvents = INITIAL_SEVA_SCHEDULE;
     if (s) {
       try {
         const parsed = JSON.parse(s);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Check if parsed already has Jaljhulani Ekadashi active today with price 70
-          const jaljhulaniEv = parsed.find((e: any) => e.id === 'seva-ekadashi-parsva');
-          if (jaljhulaniEv && jaljhulaniEv.status === 'active_today' && jaljhulaniEv.pricePerUnit === 70) {
-            return parsed;
-          }
-          // Migrate old cached client data: mark Jaljhulani as active today with 100% Pure Anaar Juice at Rs 70
-          const updated = parsed.map((e: any) => {
-            if (e.id === 'seva-ekadashi-parsva') {
-              return {
-                ...e,
-                title: 'Jaljhulani Ekadashi State Cancer Hospital Taaza Anaar Juice Seva',
-                tithi: 'Jaljhulani (Parivartini) Ekadashi Mahotsav',
-                date: 'Sep 22, 2026',
-                timing: '12:00 PM - 04:00 PM',
-                status: 'active_today' as const,
-                image: '/uploads/jaljhulani_anar_juice_nariyal_seva.jpg',
-                sevaItems: ['🍷 100% Taaza Anaar Juice', '🩸 Platelet & Hemoglobin Recovery', '🌿 Zero Adulteration & Sterile'],
-                customOfferingsNote: 'Special Jaljhulani Seva: 100% Taaza Anaar Juice (₹70/Glass)',
-                pricePerUnit: 70,
-                unitLabel: 'Juice Glass',
-              };
-            }
-            if (e.id === 'seva-radha-ashtami') {
-              return {
-                ...e,
-                status: 'completed' as const,
-              };
+          baseEvents = parsed.map((e: any) => {
+            // Automatically ensure past Jaljhulani is marked completed
+            if (e.id === 'seva-ekadashi-parsva' && e.status === 'active_today') {
+              return { ...e, status: 'completed' as const, sponsoredCoconuts: Math.max(e.sponsoredCoconuts || 0, 3000) };
             }
             return e;
           });
-          // Ensure active_today event is sorted first
-          updated.sort((a: any, b: any) => (a.status === 'active_today' ? -1 : b.status === 'active_today' ? 1 : 0));
-          return updated;
         }
       } catch {
         // ignore
       }
     }
-    return INITIAL_SEVA_SCHEDULE;
+    const { processedEvents } = processEkadashiSchedule(baseEvents);
+    safeLocalStorageSet('ruh_schedule_v4', processedEvents);
+    safeLocalStorageSet('ruh_schedule_v3', processedEvents);
+    return processedEvents;
   });
 
   const [heroContent, setHeroContent] = useState<HeroContentConfig>(() => {
@@ -586,8 +565,10 @@ export function App() {
           if (d.mediaPhotosRow2) setMediaPhotosRow2(d.mediaPhotosRow2);
           if (d.foundationStats) setFoundationStats(d.foundationStats);
           if (d.scheduleEvents && Array.isArray(d.scheduleEvents)) {
-            setScheduleEvents(d.scheduleEvents);
-            safeLocalStorageSet('ruh_schedule_v3', d.scheduleEvents);
+            const { processedEvents } = processEkadashiSchedule(d.scheduleEvents);
+            setScheduleEvents(processedEvents);
+            safeLocalStorageSet('ruh_schedule_v4', processedEvents);
+            safeLocalStorageSet('ruh_schedule_v3', processedEvents);
           }
           if (d.galleryItems && Array.isArray(d.galleryItems)) {
             const cleanG = sanitizeGalleryItems(d.galleryItems);
@@ -657,8 +638,10 @@ export function App() {
           if (d.mediaPhotosRow2) setMediaPhotosRow2(d.mediaPhotosRow2);
           if (d.foundationStats) setFoundationStats(d.foundationStats);
           if (d.scheduleEvents && Array.isArray(d.scheduleEvents)) {
-            setScheduleEvents(d.scheduleEvents);
-            safeLocalStorageSet('ruh_schedule_v3', d.scheduleEvents);
+            const { processedEvents } = processEkadashiSchedule(d.scheduleEvents);
+            setScheduleEvents(processedEvents);
+            safeLocalStorageSet('ruh_schedule_v4', processedEvents);
+            safeLocalStorageSet('ruh_schedule_v3', processedEvents);
           }
           if (d.galleryItems && Array.isArray(d.galleryItems)) {
             const cleanG = sanitizeGalleryItems(d.galleryItems);

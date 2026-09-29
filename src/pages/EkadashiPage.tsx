@@ -1,10 +1,11 @@
 import React from 'react';
-import { ArrowLeft, Flame } from 'lucide-react';
+import { ArrowLeft, Flame, Sparkles } from 'lucide-react';
 import { SevaCalendarSchedule } from '../components/SevaCalendarSchedule';
 import { Footer } from '../components/Footer';
 import type { SevaScheduleEvent, DriveItem, HospitalNode } from '../types';
 import { PARTNER_HOSPITALS } from '../data/mockData';
 import { useLanguage } from '../context/LanguageContext';
+import { processEkadashiSchedule } from '../utils/ekadashiCalendar';
 
 interface EkadashiPageProps {
   onBackToHome: () => void;
@@ -25,6 +26,13 @@ export const EkadashiPage: React.FC<EkadashiPageProps> = ({
   onOpenAdmin,
 }) => {
   const { t } = useLanguage();
+
+  const {
+    processedEvents,
+    primaryEvent,
+    isTodayActive,
+    daysUntilNext,
+  } = processEkadashiSchedule(scheduleEvents);
 
   const handleSelectScheduleSlot = (event: SevaScheduleEvent, _customDate?: string) => {
     const isAnaar = event.title.toLowerCase().includes('anaar') || (event.sevaItems && event.sevaItems.some(i => i.toLowerCase().includes('anaar')));
@@ -112,25 +120,26 @@ export const EkadashiPage: React.FC<EkadashiPageProps> = ({
               <div className="pt-2">
                 <button
                   onClick={() => {
-                    const activeToday = scheduleEvents.find((e) => e.status === 'active_today');
-                    const isAnaar = activeToday?.title.toLowerCase().includes('anaar') || (activeToday?.sevaItems && activeToday.sevaItems.some(i => i.toLowerCase().includes('anaar')));
+                    const isAnaar = primaryEvent?.title.toLowerCase().includes('anaar') || (primaryEvent?.sevaItems && primaryEvent.sevaItems.some(i => i.toLowerCase().includes('anaar')));
+                    const price = primaryEvent?.pricePerUnit || (isAnaar ? 70 : 65);
+                    const unitLabel = primaryEvent?.unitLabel || (isAnaar ? 'Anaar Juice Glass' : 'Fresh Coconut');
                     const liveDriveItem: DriveItem = {
-                      id: activeToday?.id || 'anaar-juice',
-                      name: activeToday?.title || 'Pure Cold-Pressed Anaar Juice (RUHS Bedside)',
-                      tagline: `${activeToday?.date || 'Sep 22, 2026'} • ${activeToday?.hospital || 'State Cancer Hospital (RUHS)'}`,
+                      id: primaryEvent?.id || 'indira-ekadashi-slot',
+                      name: `${primaryEvent?.title || 'Hospital Bedside Seva'} (${primaryEvent?.tithi || 'Ekadashi'})`,
+                      tagline: `${primaryEvent?.date || 'Oct 6, 2026'} • ${primaryEvent?.hospital || 'State Cancer Hospital (RUHS)'}`,
                       category: 'hospital',
-                      price: activeToday?.pricePerUnit || 70,
-                      unitLabel: activeToday?.unitLabel || 'Anaar Juice Glass',
-                      targetCount: `${activeToday?.targetCoconuts || 3000} Glasses`,
-                      deliveredCount: `${activeToday?.sponsoredCoconuts || 480} Sponsored`,
-                      percentage: 91,
+                      price: price,
+                      unitLabel: unitLabel,
+                      targetCount: `${primaryEvent?.targetCoconuts || 3800} ${unitLabel}s`,
+                      deliveredCount: `${primaryEvent?.sponsoredCoconuts || 1420} Sponsored`,
+                      percentage: Math.min(100, Math.round(((primaryEvent?.sponsoredCoconuts || 0) / (primaryEvent?.targetCoconuts || 1)) * 100)),
                       color: isAnaar ? '#b91c1c' : '#084c36',
-                      badge: '100% Pure Fresh Juice',
-                      image: activeToday?.image || '/uploads/jaljhulani_anar_juice_nariyal_seva.jpg',
-                      description: activeToday?.description || 'Pure cold-pressed pomegranate (taaza anaar) juice served bedside in clean glasses for cancer chemotherapy patients across RUHS wards.',
-                      impactMetrics: 'Restores essential hemoglobin, platelets, and vitamins during intensive oncology treatments.',
+                      badge: isTodayActive ? '🔴 Active Today' : 'Upcoming Ekadashi Seva',
+                      image: primaryEvent?.image || '/uploads/ruhs_hospital_nariyal_seva_trolley.jpg',
+                      description: primaryEvent?.description || 'Bedside tender coconut and taaza fruit juice distribution for cancer chemotherapy patients.',
+                      impactMetrics: `Direct bedside delivery on ${primaryEvent?.date || 'Oct 6, 2026'} at ${primaryEvent?.hospital || 'RUHS Jaipur'}`,
                       options: {
-                        primary: `${activeToday?.unitLabel || 'Anaar Juice Glass'} (₹${activeToday?.pricePerUnit || 70})`,
+                        primary: `${unitLabel} (₹${price})`,
                         secondary: 'Immunity Pack',
                       },
                       status: 'active',
@@ -139,30 +148,35 @@ export const EkadashiPage: React.FC<EkadashiPageProps> = ({
                   }}
                   className="bg-[#FDB813] hover:bg-amber-400 text-neutral-950 font-extrabold text-xs sm:text-sm px-6 py-3 rounded-full transition-all duration-300 shadow-md hover:shadow-lg active:scale-95 cursor-pointer inline-flex items-center gap-2"
                 >
-                  <span>{t.ekadashiSponsorBtn} (₹70/Glass)</span>
+                  <Sparkles className="w-4 h-4 text-neutral-950" />
+                  <span>
+                    {isTodayActive
+                      ? `Sponsor 20 Bedside Units Today (₹${((primaryEvent?.pricePerUnit || 65) * 20).toLocaleString('en-IN')})`
+                      : `Pre-Book for ${primaryEvent?.tithi ? primaryEvent.tithi.split('(')[0].trim() : 'Ekadashi'} (₹${primaryEvent?.pricePerUnit || 65}/unit)`}
+                  </span>
                 </button>
               </div>
             </div>
 
             {/* Right Photo Column: Dual Authentic Seva Photos */}
             <div className="lg:col-span-5 flex flex-col sm:flex-row lg:flex-col gap-3.5">
-              {/* Photo 1: Authentic Jaljhulani Ekadashi Anaar Juice & Nariyal Seva */}
+              {/* Photo 1: Featured Ekadashi Bedside Seva */}
               <div className="relative rounded-2xl overflow-hidden border-2 border-white/25 shadow-2xl group bg-neutral-950 aspect-4/3 sm:aspect-auto sm:h-56 lg:h-64">
                 <img
-                  src="/uploads/jaljhulani_anar_juice_nariyal_seva.jpg"
-                  alt="Rise Up Help Foundation Jaljhulani Ekadashi Taaza Anaar Juice & Nariyal Pani Seva"
+                  src={primaryEvent?.image || '/uploads/ruhs_hospital_nariyal_seva_trolley.jpg'}
+                  alt={primaryEvent?.title || 'Rise Up Help Foundation Hospital Seva'}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/30 pointer-events-none" />
-                <div className="absolute top-2.5 left-2.5 bg-red-600/90 backdrop-blur-md text-white text-[10px] font-mono font-bold px-2.5 py-1 rounded-full border border-red-400/40 shadow-xs flex items-center gap-1">
-                  <span>🍷 Taaza Anaar Juice + 🥥 Nariyal Pani Seva</span>
+                <div className="absolute top-2.5 left-2.5 bg-emerald-700/90 backdrop-blur-md text-white text-[10px] font-mono font-bold px-2.5 py-1 rounded-full border border-emerald-400/40 shadow-xs flex items-center gap-1">
+                  <span>{isTodayActive ? '🔴 Live Bedside Seva' : `🗓️ Drive in ${daysUntilNext} Days (${primaryEvent?.date})`}</span>
                 </div>
                 <div className="absolute bottom-2.5 inset-x-2.5 text-left">
                   <div className="text-white font-extrabold text-xs sm:text-sm leading-snug drop-shadow-xs">
-                    "निःशुल्क सेवा: ताज़ा अनार का जूस और नारियल पानी"
+                    {primaryEvent?.title}
                   </div>
                   <div className="text-[11px] text-emerald-200 mt-0.5 leading-tight drop-shadow-2xs">
-                    Special Jaljhulani Ekadashi bedside delivery for chemotherapy cancer patients at RUHS Jaipur
+                    {primaryEvent?.customOfferingsNote || primaryEvent?.description}
                   </div>
                 </div>
               </div>
@@ -196,7 +210,7 @@ export const EkadashiPage: React.FC<EkadashiPageProps> = ({
       {/* Main Seva Calendar Schedule Container */}
       <div className="w-full matte-gradient-canvas rounded-2xl sm:rounded-3xl border border-neutral-300/80 shadow-sm relative overflow-hidden max-w-7xl mx-auto">
         <SevaCalendarSchedule
-          scheduleEvents={scheduleEvents}
+          scheduleEvents={processedEvents}
           hospitals={hospitals}
           onSelectScheduleSlot={handleSelectScheduleSlot}
           onSponsorItem={(item, init) => onOpenSponsorModal(item, init)}

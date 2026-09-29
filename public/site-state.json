@@ -718,6 +718,28 @@
   },
   "scheduleEvents": [
     {
+      "id": "seva-ekadashi-indira",
+      "title": "Indira Ekadashi State Cancer Hospital Nariyal Pani & Taaza Anaar Seva",
+      "tithi": "Indira Ekadashi Mahavrat (Ashwin Krishna • Pitru Paksha)",
+      "date": "Oct 6, 2026",
+      "hospital": "State Cancer Medical College (RUHS) & SMS Hospital, Jaipur",
+      "targetCoconuts": 3800,
+      "sponsoredCoconuts": 1420,
+      "status": "upcoming",
+      "description": "Upcoming sacred Indira Ekadashi (Pitru Paksha) bedside fresh tender coconut & pure cold-pressed taaza anaar juice distribution for cancer chemotherapy patients across RUHS wards. Relieves post-chemo nausea and restores hydration with ancestral blessings.",
+      "timing": "12:00 PM - 04:00 PM",
+      "image": "/uploads/ruhs_hospital_nariyal_seva_trolley.jpg",
+      "sevaItems": [
+        "🥥 Fresh Tender Coconut Water",
+        "🍷 Pure Taaza Anaar Juice",
+        "🕊️ Pitru Paksha Ancestral Blessings",
+        "🩸 Chemo Electrolyte Recovery"
+      ],
+      "customOfferingsNote": "Indira Ekadashi Seva: Nariyal Pani (₹65) & Taaza Anaar Juice (₹70)",
+      "pricePerUnit": 65,
+      "unitLabel": "Fresh Coconut / Juice"
+    },
+    {
       "id": "seva-ekadashi-parsva",
       "title": "Jaljhulani Ekadashi State Cancer Hospital Taaza Anaar Juice Seva",
       "tithi": "Jaljhulani (Parivartini) Ekadashi Mahotsav",
@@ -725,16 +747,16 @@
       "hospital": "State Cancer Medical College (RUHS), Jaipur",
       "timing": "12:00 PM - 04:00 PM",
       "targetCoconuts": 3000,
-      "sponsoredCoconuts": 480,
-      "status": "active_today",
-      "description": "Today's sacred Jaljhulani Ekadashi live bedside 100% pure cold-pressed pomegranate (taaza anaar) juice distribution for cancer chemotherapy patients across RUHS wards to restore hemoglobin and platelets. Rate: ₹70 per glass. Timing: 12:00 PM - 04:00 PM.",
+      "sponsoredCoconuts": 3000,
+      "status": "completed",
+      "description": "Completed with immense gratitude: 3,000 bedside 100% pure cold-pressed pomegranate (taaza anaar) juice glasses served to cancer chemotherapy patients across RUHS State Cancer Hospital wards on Jaljhulani Ekadashi.",
       "image": "/uploads/jaljhulani_anar_juice_nariyal_seva.jpg",
       "sevaItems": [
         "🍷 100% Taaza Anaar Juice",
         "🩸 Platelet & Hemoglobin Recovery",
         "🌿 Zero Adulteration & Sterile"
       ],
-      "customOfferingsNote": "Special Jaljhulani Seva: 100% Taaza Anaar Juice (₹70/Glass)",
+      "customOfferingsNote": "Completed: 3,000 Glasses Served Bedside",
       "pricePerUnit": 70,
       "unitLabel": "Juice Glass"
     },
@@ -753,17 +775,6 @@
       "sevaItems": [
         "🥥 Fresh Tender Coconut Water"
       ]
-    },
-    {
-      "id": "seva-ekadashi-indira",
-      "title": "Upcoming Indira Ekadashi Bedside Seva",
-      "tithi": "Indira Ekadashi Vow (Ashwin Krishna)",
-      "date": "Oct 6, 2026",
-      "hospital": "State Cancer Medical College (RUHS) & SMS Hospital",
-      "targetCoconuts": 3800,
-      "sponsoredCoconuts": 1420,
-      "status": "upcoming",
-      "description": "Bi-monthly oncology hydration vow ensuring every chemo patient receives natural potassium & electrolyte hydration straight from fresh green coconuts."
     },
     {
       "id": "seva-ekadashi-papankusha",
@@ -1017,6 +1028,6 @@
     "developerName": "Kushal",
     "inaugurationTitle": "RiseUpHelp Website Inauguration"
   },
-  "lastUpdated": 1789451000000,
+  "lastUpdated": 1790663124824,
   "initialized": true
 }

@@ -10,9 +10,11 @@ import {
   Building2,
   CalendarCheck,
   Flame,
+  CheckCircle,
 } from 'lucide-react';
 import type { SevaScheduleEvent, DriveItem, HospitalNode } from '../types';
 import { INITIAL_SEVA_SCHEDULE, PARTNER_HOSPITALS, DRIVE_ITEMS } from '../data/mockData';
+import { processEkadashiSchedule } from '../utils/ekadashiCalendar';
 
 interface SevaCalendarScheduleProps {
   scheduleEvents?: SevaScheduleEvent[];
@@ -30,8 +32,15 @@ export const SevaCalendarSchedule: React.FC<SevaCalendarScheduleProps> = ({
   const [selectedCustomDate, setSelectedCustomDate] = useState<string>('');
   const [customOccasion, setCustomOccasion] = useState<string>('In Memory of Beloved / Birthday');
 
-  const todayLiveEvent = scheduleEvents.find((e) => e.status === 'active_today') || scheduleEvents.find((e) => e.status === 'upcoming') || scheduleEvents[0];
-  const upcomingEvents = scheduleEvents.filter((e) => e.id !== todayLiveEvent?.id);
+  const {
+    primaryEvent: todayLiveEvent,
+    isTodayActive,
+    daysUntilNext,
+    upcomingEvents: rawUpcoming,
+    completedEvents,
+  } = processEkadashiSchedule(scheduleEvents);
+
+  const upcomingEvents = rawUpcoming.filter((e) => e.id !== todayLiveEvent?.id);
 
   const handleBookSlot = (event: SevaScheduleEvent) => {
     if (onSelectScheduleSlot) {
@@ -187,14 +196,14 @@ export const SevaCalendarSchedule: React.FC<SevaCalendarScheduleProps> = ({
           <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
             <div className="space-y-3 max-w-2xl">
               <div className="flex flex-wrap items-center gap-2.5">
-                {todayLiveEvent.status === 'active_today' ? (
+                {isTodayActive ? (
                   <span className="inline-flex items-center gap-1.5 bg-red-600 text-white font-bold text-xs px-3 py-1 rounded-full animate-pulse shadow-md">
                     <span className="w-2 h-2 rounded-full bg-white animate-ping" />
                     <span>CURRENTLY ACTIVE ON-GROUND</span>
                   </span>
                 ) : (
                   <span className="inline-flex items-center gap-1.5 bg-amber-400 text-neutral-950 font-extrabold text-xs px-3.5 py-1 rounded-full shadow-md font-mono">
-                    <span>🗓️ NEXT UPCOMING EKADASHI DRIVE</span>
+                    <span>🗓️ NEXT UPCOMING EKADASHI DRIVE ({daysUntilNext === 1 ? 'TOMORROW' : `IN ${daysUntilNext} DAYS`})</span>
                   </span>
                 )}
                 <span className="bg-white/15 backdrop-blur-md px-3 py-1 rounded-full text-xs font-mono text-emerald-200 border border-white/10">
@@ -243,13 +252,13 @@ export const SevaCalendarSchedule: React.FC<SevaCalendarScheduleProps> = ({
             {/* Live Seva Photo Preview */}
             <div className="relative w-40 h-32 sm:w-56 sm:h-40 rounded-2xl overflow-hidden border-2 border-white/25 shadow-xl shrink-0 hidden md:block group">
               <img
-                src={todayLiveEvent.image || '/uploads/jaljhulani_anar_juice_nariyal_seva.jpg'}
+                src={todayLiveEvent.image || '/uploads/ruhs_hospital_nariyal_seva_trolley.jpg'}
                 alt={todayLiveEvent.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent" />
               <span className="absolute bottom-2 inset-x-2 text-[10px] font-bold text-amber-300 text-center uppercase tracking-wider font-mono truncate">
-                {todayLiveEvent.customOfferingsNote || '🏥 Bedside Live Seva'}
+                {todayLiveEvent.customOfferingsNote || (isTodayActive ? '🏥 Bedside Live Seva' : `🗓️ Drive in ${daysUntilNext} Days`)}
               </span>
             </div>
 
@@ -257,15 +266,15 @@ export const SevaCalendarSchedule: React.FC<SevaCalendarScheduleProps> = ({
             <div className="w-full lg:w-auto bg-black/30 backdrop-blur-md rounded-2xl p-5 border border-white/15 flex flex-col items-center sm:items-end justify-center gap-3 shrink-0">
               <div className="text-center sm:text-right">
                 <span className="text-[11px] uppercase tracking-wider text-emerald-300 font-mono font-semibold">
-                  {todayLiveEvent.status === 'active_today' ? "Today's Live Bedside Progress" : "Scheduled Drive Goal"}
+                  {isTodayActive ? "Today's Live Bedside Progress" : "Drive Goal & Bookings"}
                 </span>
                 <div className="text-2xl sm:text-3xl font-extrabold text-white mt-0.5">
                   {todayLiveEvent.sponsoredCoconuts.toLocaleString('en-IN')} / {todayLiveEvent.targetCoconuts.toLocaleString('en-IN')}
                 </div>
                 <span className="text-[11px] text-amber-300 font-medium block">
-                  {todayLiveEvent.status === 'active_today'
+                  {isTodayActive
                     ? (todayLiveEvent.unitLabel ? `${todayLiveEvent.unitLabel}s Served Bedside Today` : "Taaza Pure Anaar Juices Served Bedside Today")
-                    : (todayLiveEvent.unitLabel ? `Pledged ${todayLiveEvent.unitLabel}s for Cancer Ward` : "Pledged Seva for RUHS Cancer Ward")}
+                    : (todayLiveEvent.unitLabel ? `Pledged ${todayLiveEvent.unitLabel}s for Cancer Ward` : `Pledged Seva Slots (${todayLiveEvent.tithi})`)}
                 </span>
               </div>
 
@@ -274,9 +283,9 @@ export const SevaCalendarSchedule: React.FC<SevaCalendarScheduleProps> = ({
                 className="w-full sm:w-auto bg-[#FDB813] hover:bg-[#f59e0b] text-neutral-950 font-extrabold px-6 py-3 rounded-xl text-xs sm:text-sm transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span>
-                  {todayLiveEvent.status === 'active_today'
-                    ? `Sponsor 20 ${todayLiveEvent.unitLabel ? todayLiveEvent.unitLabel + 's' : 'Glasses'} Today (₹${((todayLiveEvent.pricePerUnit || 70) * 20).toLocaleString('en-IN')})`
-                    : `Pre-Book / Sponsor (₹${todayLiveEvent.pricePerUnit || 70} each)`}
+                  {isTodayActive
+                    ? `Sponsor 20 ${todayLiveEvent.unitLabel ? todayLiveEvent.unitLabel + 's' : 'Juices'} Today (₹${((todayLiveEvent.pricePerUnit || 65) * 20).toLocaleString('en-IN')})`
+                    : `Pre-Book / Sponsor (₹${todayLiveEvent.pricePerUnit || 65} each)`}
                 </span>
                 <ArrowRight className="w-4 h-4" />
               </button>
@@ -439,6 +448,47 @@ export const SevaCalendarSchedule: React.FC<SevaCalendarScheduleProps> = ({
           </form>
         </div>
       </div>
+
+      {/* COMPLETED AUSPICIOUS DRIVES (VERIFIED GROUND IMPACT) */}
+      {completedEvents.length > 0 && (
+        <div className="mb-12">
+          <div className="flex items-center justify-between gap-2 mb-4">
+            <h4 className="text-sm sm:text-base font-bold text-neutral-800 flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-emerald-600" />
+              <span>Recently Completed Auspicious Seva Drives</span>
+            </h4>
+            <span className="text-xs text-neutral-500 font-mono">100% Bedside Delivered</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+            {completedEvents.map((ev) => (
+              <div
+                key={ev.id}
+                className="bg-neutral-50 rounded-2xl p-4 border border-neutral-200/80 flex items-start gap-3.5"
+              >
+                {ev.image && (
+                  <div className="w-14 h-14 rounded-xl overflow-hidden shrink-0 border border-neutral-300">
+                    <img src={ev.image} alt={ev.title} className="w-full h-full object-cover" />
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-[9px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
+                      ✅ Completed
+                    </span>
+                    <span className="text-[10px] text-neutral-500 font-mono">{ev.date}</span>
+                  </div>
+                  <h5 className="text-xs font-bold text-neutral-900 mt-1 truncate">{ev.title}</h5>
+                  <p className="text-[11px] text-neutral-600 line-clamp-1 mt-0.5">{ev.description}</p>
+                  <div className="text-[10px] font-bold text-emerald-700 font-mono mt-1">
+                    {ev.sponsoredCoconuts.toLocaleString('en-IN')} {ev.unitLabel ? `${ev.unitLabel}s` : 'Units'} Delivered Bedside
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* 4. EXPANDED GOVERNMENT PARTNER HOSPITALS NETWORK */}
       <div>
