@@ -68,14 +68,11 @@ export function processEkadashiSchedule(events: SevaScheduleEvent[]): ProcessedS
 
     // Event is in the past
     if (eventTime < todayTime) {
-      if (event.status === 'active_today') {
-        return {
-          ...event,
-          status: 'completed' as const,
-          sponsoredCoconuts: Math.max(event.sponsoredCoconuts, event.targetCoconuts),
-        };
-      }
-      return event;
+      return {
+        ...event,
+        status: 'completed' as const,
+        sponsoredCoconuts: Math.max(event.sponsoredCoconuts, event.targetCoconuts),
+      };
     }
 
     // Event is TODAY

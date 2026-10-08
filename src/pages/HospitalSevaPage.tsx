@@ -55,7 +55,20 @@ export const SHRAADH_DATES: SevaDateOption[] = [
   { dateStr: '2026-10-07', label: '07 Oct 2026', day: 'Wed', note: 'Dwadashi Shraadh' },
   { dateStr: '2026-10-08', label: '08 Oct 2026', day: 'Thu', note: 'Trayodashi Shraadh' },
   { dateStr: '2026-10-09', label: '09 Oct 2026', day: 'Fri', note: 'Chaturdashi Shraadh' },
-  { dateStr: '2026-10-10', label: '10 Oct 2026', day: 'Sat', note: 'Sarva Pitru Amavasya' },
+  { dateStr: '2026-10-10', label: '10 Oct 2026', day: 'Sat', note: 'Sarva Pitru Amavasya (Mahalaya)' },
+  { dateStr: '2026-10-11', label: '11 Oct 2026', day: 'Sun', note: 'Navratri Day 1 • Shailaputri' },
+  { dateStr: '2026-10-12', label: '12 Oct 2026', day: 'Mon', note: 'Navratri Day 2 • Brahmacharini' },
+  { dateStr: '2026-10-13', label: '13 Oct 2026', day: 'Tue', note: 'Navratri Day 3 • Chandraghanta' },
+  { dateStr: '2026-10-14', label: '14 Oct 2026', day: 'Wed', note: 'Navratri Day 4 • Kushmanda' },
+  { dateStr: '2026-10-15', label: '15 Oct 2026', day: 'Thu', note: 'Navratri Day 5 • Skandamata' },
+  { dateStr: '2026-10-16', label: '16 Oct 2026', day: 'Fri', note: 'Navratri Day 6 • Katyayani' },
+  { dateStr: '2026-10-17', label: '17 Oct 2026', day: 'Sat', note: 'Navratri Day 7 • Kalaratri' },
+  { dateStr: '2026-10-18', label: '18 Oct 2026', day: 'Sun', note: 'Navratri Day 8 • Durga Ashtami' },
+  { dateStr: '2026-10-19', label: '19 Oct 2026', day: 'Mon', note: 'Navratri Day 9 • Maha Navami (Kanya Pujan)' },
+  { dateStr: '2026-10-20', label: '20 Oct 2026', day: 'Tue', note: 'Vijayadashami (Dussehra)' },
+  { dateStr: '2026-10-21', label: '21 Oct 2026', day: 'Wed', note: 'Papankusha Ekadashi Vrat' },
+  { dateStr: '2026-10-22', label: '22 Oct 2026', day: 'Thu', note: 'Papankusha Ekadashi Parana' },
+  { dateStr: '2026-10-25', label: '25 Oct 2026', day: 'Sun', note: 'Sharad Purnima Mahotsav' },
 ];
 
 interface HospitalSevaPageProps {
@@ -321,7 +334,7 @@ export const HospitalSevaPage: React.FC<HospitalSevaPageProps> = ({
           <div className="min-w-0 flex-1 text-left">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="bg-white/15 text-white text-[10px] font-medium tracking-wider px-2.5 py-0.5 rounded-full border border-white/20 uppercase">
-                {selectedTab === 'meal' ? 'Shraadh Bhojan Seva' : 'Bedside Patient Relief'}
+                {selectedTab === 'meal' ? 'Shraadh & Navratri Bhojan Seva' : 'Bedside Patient Relief'}
               </span>
               <span className="text-[11px] text-white/70 font-medium">
                 RUHS & SMS Medical Oncology
@@ -355,7 +368,7 @@ export const HospitalSevaPage: React.FC<HospitalSevaPageProps> = ({
                 <div className="flex items-center gap-1.5">
                   <Calendar className="w-3.5 h-3.5 text-neutral-600" />
                   <span className="text-xs font-semibold text-neutral-900">
-                    Seva Schedule (26 Sep – 10 Oct):
+                    Hospital Bhojan Seva Schedule:
                   </span>
                   {isSelectedDateCompleted ? (
                     <span className="text-[10px] font-medium text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-md">
