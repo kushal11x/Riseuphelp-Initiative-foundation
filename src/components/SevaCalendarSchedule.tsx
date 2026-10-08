@@ -202,7 +202,7 @@ export const SevaCalendarSchedule: React.FC<SevaCalendarScheduleProps> = ({
                   </span>
                 ) : (
                   <span className="inline-flex items-center gap-1.5 bg-amber-400 text-neutral-950 font-extrabold text-xs px-3.5 py-1 rounded-full shadow-md font-mono">
-                    <span>🗓️ NEXT UPCOMING EKADASHI DRIVE ({daysUntilNext === 1 ? 'TOMORROW' : `IN ${daysUntilNext} DAYS`})</span>
+                    <span>🗓️ NEXT UPCOMING DRIVE ({daysUntilNext === 0 ? 'TODAY' : daysUntilNext === 1 ? 'TOMORROW' : `IN ${daysUntilNext} DAYS`})</span>
                   </span>
                 )}
                 <span className="bg-white/15 backdrop-blur-md px-3 py-1 rounded-full text-xs font-mono text-emerald-200 border border-white/10">
