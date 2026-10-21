@@ -107,51 +107,51 @@ export const HomePage: React.FC<HomePageProps> = ({
         driveItems={driveItems}
       />
 
-      {/* PROMINENT NAVRATRI & KANYA PUJAN FESTIVAL SEVA HIGHLIGHT CARD */}
+      {/* PROMINENT PAPANKUSHA EKADASHI (KAL 22 OCT) LIVE SEVA HIGHLIGHT CARD */}
       <div className="max-w-7xl mx-auto w-full px-2 sm:px-4 pt-1 pb-2">
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#451a03] via-[#78350f] to-[#361304] p-4 sm:p-6 text-white border border-amber-500/40 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4"
+          className="rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#03261a] via-[#084c36] to-[#021c13] p-4 sm:p-6 text-white border border-emerald-400/30 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4"
         >
           {/* Subtle background glow */}
-          <div className="absolute top-0 right-0 w-80 h-80 bg-amber-400/15 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+          <div className="absolute top-0 right-0 w-80 h-80 bg-amber-400/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
 
           <div className="flex items-center gap-4 text-left z-10">
-            <div className="w-13 h-13 sm:w-16 sm:h-16 rounded-2xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center shrink-0 shadow-inner">
-              <span className="text-2xl sm:text-3xl">🌸</span>
+            <div className="w-13 h-13 sm:w-16 sm:h-16 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center shrink-0 shadow-inner">
+              <span className="text-2xl sm:text-3xl">🥥</span>
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap mb-1">
-                <span className="bg-amber-400 text-neutral-950 font-bold text-[10px] sm:text-xs px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                  Live Festival Seva (11 – 19 Oct)
+                <span className="bg-[#FDB813] text-neutral-950 font-bold text-[10px] sm:text-xs px-2.5 py-0.5 rounded-full uppercase tracking-wider font-mono">
+                  Tomorrow • 22 Oct • Papankusha Ekadashi
                 </span>
-                <span className="text-amber-200 text-xs font-medium">
-                  RUHS State Cancer College & JK Lon Children Hospital
+                <span className="text-emerald-200 text-xs font-medium">
+                  RUHS State Cancer College & SMS Hospital, Jaipur
                 </span>
               </div>
               <h3 className="text-lg sm:text-2xl font-bold tracking-tight text-white">
-                Sharad Navratri & Kanya Pujan Hospital Seva
+                Papankusha Ekadashi Hospital Bedside Seva
               </h3>
-              <p className="text-xs sm:text-sm text-amber-100/90 mt-0.5 max-w-2xl leading-relaxed">
-                9-day auspicious hospital drive serving pure taaza anaar juice, fresh tender coconuts, satvik nutrition, and Kanya Pujan gifts to underprivileged pediatric cancer fighters.
+              <p className="text-xs sm:text-sm text-emerald-100/90 mt-0.5 max-w-2xl leading-relaxed">
+                Tomorrow, on sacred Papankusha Ekadashi, fresh tender coconuts (₹65) and 100% pure cold-pressed anaar juice (₹70) will be served bedside to cancer chemotherapy patients across RUHS wards.
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2.5 shrink-0 z-10 w-full md:w-auto">
             <button
-              onClick={() => onNavigateView('hospital-seva')}
-              className="flex-1 md:flex-none bg-amber-400 hover:bg-amber-300 text-neutral-950 font-bold text-xs sm:text-sm px-5 py-3 rounded-full transition-all shadow-md active:scale-95 cursor-pointer text-center"
+              onClick={() => onNavigateView("hospital-seva")}
+              className="flex-1 md:flex-none bg-[#FDB813] hover:bg-amber-400 text-neutral-950 font-bold text-xs sm:text-sm px-5 py-3 rounded-full transition-all shadow-md active:scale-95 cursor-pointer text-center"
             >
-              Sponsor Navratri Seva (₹70)
+              Sponsor Ekadashi Seva (₹65)
             </button>
             <button
-              onClick={() => onNavigateView('ekadashi')}
+              onClick={() => onNavigateView("ekadashi")}
               className="flex-1 md:flex-none bg-white/10 hover:bg-white/20 text-white font-medium text-xs sm:text-sm px-4 py-3 rounded-full border border-white/25 transition-all cursor-pointer text-center"
             >
-              View Calendar
+              Ekadashi Calendar
             </button>
           </div>
         </motion.div>

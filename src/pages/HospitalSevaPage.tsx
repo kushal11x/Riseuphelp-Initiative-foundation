@@ -41,34 +41,20 @@ export const getTodayISTString = (): string => {
 };
 
 export const SHRAADH_DATES: SevaDateOption[] = [
-  { dateStr: '2026-09-26', label: '26 Sep 2026', day: 'Sat', note: 'Pratipada Shraadh' },
-  { dateStr: '2026-09-27', label: '27 Sep 2026', day: 'Sun', note: 'Dwitiya Shraadh' },
-  { dateStr: '2026-09-28', label: '28 Sep 2026', day: 'Mon', note: 'Tritiya Shraadh' },
-  { dateStr: '2026-09-29', label: '29 Sep 2026', day: 'Tue', note: 'Chaturthi Shraadh' },
-  { dateStr: '2026-09-30', label: '30 Sep 2026', day: 'Wed', note: 'Panchami Shraadh' },
-  { dateStr: '2026-10-01', label: '01 Oct 2026', day: 'Thu', note: 'Shasthi Shraadh' },
-  { dateStr: '2026-10-02', label: '02 Oct 2026', day: 'Fri', note: 'Saptami Shraadh' },
-  { dateStr: '2026-10-03', label: '03 Oct 2026', day: 'Sat', note: 'Ashtami Shraadh' },
-  { dateStr: '2026-10-04', label: '04 Oct 2026', day: 'Sun', note: 'Matru Navami' },
-  { dateStr: '2026-10-05', label: '05 Oct 2026', day: 'Mon', note: 'Dashami Shraadh' },
-  { dateStr: '2026-10-06', label: '06 Oct 2026', day: 'Tue', note: 'Indira Ekadashi' },
-  { dateStr: '2026-10-07', label: '07 Oct 2026', day: 'Wed', note: 'Dwadashi Shraadh' },
-  { dateStr: '2026-10-08', label: '08 Oct 2026', day: 'Thu', note: 'Trayodashi Shraadh' },
-  { dateStr: '2026-10-09', label: '09 Oct 2026', day: 'Fri', note: 'Chaturdashi Shraadh' },
-  { dateStr: '2026-10-10', label: '10 Oct 2026', day: 'Sat', note: 'Sarva Pitru Amavasya (Mahalaya)' },
-  { dateStr: '2026-10-11', label: '11 Oct 2026', day: 'Sun', note: 'Navratri Day 1 • Shailaputri' },
-  { dateStr: '2026-10-12', label: '12 Oct 2026', day: 'Mon', note: 'Navratri Day 2 • Brahmacharini' },
-  { dateStr: '2026-10-13', label: '13 Oct 2026', day: 'Tue', note: 'Navratri Day 3 • Chandraghanta' },
-  { dateStr: '2026-10-14', label: '14 Oct 2026', day: 'Wed', note: 'Navratri Day 4 • Kushmanda' },
-  { dateStr: '2026-10-15', label: '15 Oct 2026', day: 'Thu', note: 'Navratri Day 5 • Skandamata' },
-  { dateStr: '2026-10-16', label: '16 Oct 2026', day: 'Fri', note: 'Navratri Day 6 • Katyayani' },
-  { dateStr: '2026-10-17', label: '17 Oct 2026', day: 'Sat', note: 'Navratri Day 7 • Kalaratri' },
-  { dateStr: '2026-10-18', label: '18 Oct 2026', day: 'Sun', note: 'Navratri Day 8 • Durga Ashtami' },
-  { dateStr: '2026-10-19', label: '19 Oct 2026', day: 'Mon', note: 'Navratri Day 9 • Maha Navami (Kanya Pujan)' },
-  { dateStr: '2026-10-20', label: '20 Oct 2026', day: 'Tue', note: 'Vijayadashami (Dussehra)' },
-  { dateStr: '2026-10-21', label: '21 Oct 2026', day: 'Wed', note: 'Papankusha Ekadashi Vrat' },
-  { dateStr: '2026-10-22', label: '22 Oct 2026', day: 'Thu', note: 'Papankusha Ekadashi Parana' },
-  { dateStr: '2026-10-25', label: '25 Oct 2026', day: 'Sun', note: 'Sharad Purnima Mahotsav' },
+  { dateStr: "2026-10-21", label: "21 Oct 2026", day: "Wed", note: "Papankusha Ekadashi Vrat" },
+  { dateStr: "2026-10-22", label: "22 Oct 2026", day: "Thu", note: "Papankusha Ekadashi Maha Seva (Tomorrow)" },
+  { dateStr: "2026-10-23", label: "23 Oct 2026", day: "Fri", note: "Hospital Patient Bhojan Seva" },
+  { dateStr: "2026-10-24", label: "24 Oct 2026", day: "Sat", note: "Weekend Patient Nutrition" },
+  { dateStr: "2026-10-25", label: "25 Oct 2026", day: "Sun", note: "Sharad Purnima Mahotsav" },
+  { dateStr: "2026-10-26", label: "26 Oct 2026", day: "Mon", note: "Post-Purnima Nutrition Seva" },
+  { dateStr: "2026-10-27", label: "27 Oct 2026", day: "Tue", note: "Hospital Bedside Care" },
+  { dateStr: "2026-10-28", label: "28 Oct 2026", day: "Wed", note: "Daily Oncology Relief" },
+  { dateStr: "2026-10-29", label: "29 Oct 2026", day: "Thu", note: "Hospital Patient Nutrition" },
+  { dateStr: "2026-10-30", label: "30 Oct 2026", day: "Fri", note: "Bedside Patient Support" },
+  { dateStr: "2026-10-31", label: "31 Oct 2026", day: "Sat", note: "Weekend Bedside Meal Drive" },
+  { dateStr: "2026-11-01", label: "01 Nov 2026", day: "Sun", note: "November Hospital Relief" },
+  { dateStr: "2026-11-05", label: "05 Nov 2026", day: "Thu", note: "Rama Ekadashi Maha Seva" },
+  { dateStr: "2026-11-20", label: "20 Nov 2026", day: "Fri", note: "Devutthana Ekadashi Maha Yagya" },
 ];
 
 interface HospitalSevaPageProps {
@@ -152,8 +138,8 @@ export const HospitalSevaPage: React.FC<HospitalSevaPageProps> = ({
   const mealItem =
     DRIVE_ITEMS.find((i) => i.id === 'pomegranate-meal') || {
       id: 'pomegranate-meal',
-      name: 'Wholesome Hospital Meal Box (Shraadh Seva)',
-      tagline: 'Daily Hospital Drives (26 Sep - 10 Oct) • RUHS Hospital',
+      name: 'Wholesome Hospital Patient Meal Box',
+      tagline: 'Daily Hospital Drives • RUHS State Cancer Hospital',
       category: 'hospital' as const,
       price: 70,
       unitLabel: 'Meal Box',
@@ -161,7 +147,7 @@ export const HospitalSevaPage: React.FC<HospitalSevaPageProps> = ({
       deliveredCount: '34K Delivered',
       percentage: 68,
       color: '#c2410c',
-      badge: 'Shraadh Bhojan Seva',
+      badge: 'Hospital Bhojan Seva',
       image: '/uploads/slum_packed_thali_tiffin.jpg',
       description: 'Freshly cooked hygienic high-protein meal box containing 4 soft rotis, seasonal sabzi, dal, rice and salad for cancer patients and needy patient attendants.',
       impactMetrics: '34,000+ wholesome nutritious meals distributed across Jaipur government healthcare centers.',
@@ -207,12 +193,12 @@ export const HospitalSevaPage: React.FC<HospitalSevaPageProps> = ({
         `🛡️ 50% Tax Exemption under Section 80G.\n\n` +
         `👉 *Donate Directly in 1 Click:* ${shareableUrl}`;
     } else if (selectedTab === 'meal') {
-      itemTitle = 'Wholesome Hospital Meal Box - Shraadh Seva (₹70/meal)';
+      itemTitle = 'Wholesome Hospital Patient Meal Box (₹70/meal)';
       shareText =
-        `🙏 *Hospital Meal Seva - Shraadh Paksha (26 Sep - 10 Oct)*\n` +
+        `🙏 *Hospital Bedside Patient Bhojan Seva (₹70/meal)*\n` +
         `🏥 State Cancer Medical College (RUHS), Jaipur.\n\n` +
         `🍱 *Seva:* Wholesome fresh meal box (4 rotis, dal, seasonal sabzi, rice, salad) served bedside to cancer patients and attendants.\n` +
-        `✅ 26-29 Sep completed • Upcoming dates open for sponsorship.\n` +
+        `✅ Daily hot, hygienic bedside meals prepared fresh.\n` +
         `🛡️ 50% Tax Exemption under Section 80G.\n\n` +
         `👉 *Select Date & Sponsor Directly:* ${shareableUrl}`;
     } else {
@@ -240,8 +226,7 @@ export const HospitalSevaPage: React.FC<HospitalSevaPageProps> = ({
           : undefined,
       hospitalName: 'State Cancer Medical College (RUHS), Jaipur',
       occasionNote:
-        selectedTab === 'meal'
-          ? `Shraadh Pitru Bhojan Seva (${selectedDateObj.note})`
+        selectedTab === 'meal' ? `Hospital Bedside Bhojan Seva (${selectedDateObj.note})`
           : undefined,
     });
   };
@@ -334,7 +319,7 @@ export const HospitalSevaPage: React.FC<HospitalSevaPageProps> = ({
           <div className="min-w-0 flex-1 text-left">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="bg-white/15 text-white text-[10px] font-medium tracking-wider px-2.5 py-0.5 rounded-full border border-white/20 uppercase">
-                {selectedTab === 'meal' ? 'Shraadh & Navratri Bhojan Seva' : 'Bedside Patient Relief'}
+                {selectedTab === 'meal' ? 'Hospital Patient Bhojan Seva' : 'Bedside Patient Relief'}
               </span>
               <span className="text-[11px] text-white/70 font-medium">
                 RUHS & SMS Medical Oncology

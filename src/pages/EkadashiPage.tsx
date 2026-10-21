@@ -187,7 +187,7 @@ export const EkadashiPage: React.FC<EkadashiPageProps> = ({
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/30 pointer-events-none" />
                 <div className="absolute top-2.5 left-2.5 bg-emerald-700/90 backdrop-blur-md text-white text-[10px] font-mono font-bold px-2.5 py-1 rounded-full border border-emerald-400/40 shadow-xs flex items-center gap-1">
-                  <span>{isTodayActive ? '🔴 Live Bedside Seva' : `🗓️ Drive in ${daysUntilNext} Days (${primaryEvent?.date})`}</span>
+                  <span>{isTodayActive ? '🔴 Live Bedside Seva' : daysUntilNext === 1 ? `🗓️ Drive Tomorrow (${primaryEvent?.date})` : daysUntilNext === 0 ? `🔴 Drive Today (${primaryEvent?.date})` : `🗓️ Drive in ${daysUntilNext} Days (${primaryEvent?.date})`}</span>
                 </div>
                 <div className="absolute bottom-2.5 inset-x-2.5 text-left">
                   <div className="text-white font-extrabold text-xs sm:text-sm leading-snug drop-shadow-xs">
