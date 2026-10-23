@@ -42,7 +42,7 @@ export const getTodayISTString = (): string => {
 
 export const SHRAADH_DATES: SevaDateOption[] = [
   { dateStr: "2026-10-21", label: "21 Oct 2026", day: "Wed", note: "Papankusha Ekadashi Vrat" },
-  { dateStr: "2026-10-22", label: "22 Oct 2026", day: "Thu", note: "Papankusha Ekadashi Maha Seva (Tomorrow)" },
+  { dateStr: "2026-10-22", label: "22 Oct 2026", day: "Thu", note: "Papankusha Ekadashi Maha Seva" },
   { dateStr: "2026-10-23", label: "23 Oct 2026", day: "Fri", note: "Hospital Patient Bhojan Seva" },
   { dateStr: "2026-10-24", label: "24 Oct 2026", day: "Sat", note: "Weekend Patient Nutrition" },
   { dateStr: "2026-10-25", label: "25 Oct 2026", day: "Sun", note: "Sharad Purnima Mahotsav" },

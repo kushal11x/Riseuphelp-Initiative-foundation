@@ -107,7 +107,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         driveItems={driveItems}
       />
 
-      {/* PROMINENT PAPANKUSHA EKADASHI (KAL 22 OCT) LIVE SEVA HIGHLIGHT CARD */}
+      {/* PROMINENT SHARAD PURNIMA (25 OCT) LIVE SEVA HIGHLIGHT CARD */}
       <div className="max-w-7xl mx-auto w-full px-2 sm:px-4 pt-1 pb-2">
         <motion.div
           initial={{ opacity: 0, y: 15 }}
@@ -120,22 +120,22 @@ export const HomePage: React.FC<HomePageProps> = ({
 
           <div className="flex items-center gap-4 text-left z-10">
             <div className="w-13 h-13 sm:w-16 sm:h-16 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center shrink-0 shadow-inner">
-              <span className="text-2xl sm:text-3xl">🥥</span>
+              <span className="text-2xl sm:text-3xl">🌕</span>
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap mb-1">
                 <span className="bg-[#FDB813] text-neutral-950 font-bold text-[10px] sm:text-xs px-2.5 py-0.5 rounded-full uppercase tracking-wider font-mono">
-                  Tomorrow • 22 Oct • Papankusha Ekadashi
+                  This Sunday • 25 Oct • Sharad Purnima Mahotsav
                 </span>
                 <span className="text-emerald-200 text-xs font-medium">
                   RUHS State Cancer College & SMS Hospital, Jaipur
                 </span>
               </div>
               <h3 className="text-lg sm:text-2xl font-bold tracking-tight text-white">
-                Papankusha Ekadashi Hospital Bedside Seva
+                Sharad Purnima Amrit Rasayan Hospital Bedside Seva
               </h3>
               <p className="text-xs sm:text-sm text-emerald-100/90 mt-0.5 max-w-2xl leading-relaxed">
-                Tomorrow, on sacred Papankusha Ekadashi, fresh tender coconuts (₹65) and 100% pure cold-pressed anaar juice (₹70) will be served bedside to cancer chemotherapy patients across RUHS wards.
+                This Sunday, on auspicious Sharad Purnima, fresh whole tender coconuts (₹65) and 100% pure cold-pressed anaar juice (₹70) will be served bedside to cancer chemotherapy patients across RUHS wards.
               </p>
             </div>
           </div>
@@ -145,13 +145,13 @@ export const HomePage: React.FC<HomePageProps> = ({
               onClick={() => onNavigateView("hospital-seva")}
               className="flex-1 md:flex-none bg-[#FDB813] hover:bg-amber-400 text-neutral-950 font-bold text-xs sm:text-sm px-5 py-3 rounded-full transition-all shadow-md active:scale-95 cursor-pointer text-center"
             >
-              Sponsor Ekadashi Seva (₹65)
+              Sponsor Purnima Seva (₹65)
             </button>
             <button
               onClick={() => onNavigateView("ekadashi")}
               className="flex-1 md:flex-none bg-white/10 hover:bg-white/20 text-white font-medium text-xs sm:text-sm px-4 py-3 rounded-full border border-white/25 transition-all cursor-pointer text-center"
             >
-              Ekadashi Calendar
+              Seva Calendar
             </button>
           </div>
         </motion.div>
