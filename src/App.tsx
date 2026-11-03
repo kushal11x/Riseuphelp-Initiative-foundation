@@ -753,14 +753,15 @@ export function App() {
       customBreakdown?: string;
     }
   ) => {
-    setSelectedDriveItem(item || driveItems[0] || DRIVE_ITEMS[0]);
+    const targetItem = item || driveItems[0] || DRIVE_ITEMS[0];
+    setSelectedDriveItem(targetItem);
     if (initialData) {
       setInitialCheckoutData(initialData);
     } else {
       setInitialCheckoutData({
         name: currentUser?.fullName || '',
         phone: currentUser?.phone || '',
-        quantity: 20,
+        quantity: targetItem.price >= 500 ? 1 : 20,
       });
     }
     setCheckoutModalOpen(true);

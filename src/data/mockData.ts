@@ -234,14 +234,31 @@ export const INITIAL_SEVA_SCHEDULE: SevaScheduleEvent[] = [
     hospital: "State Cancer Medical College (RUHS), Jaipur",
     timing: "02:00 PM - 06:00 PM",
     targetCoconuts: 3500,
-    sponsoredCoconuts: 600,
-    status: "upcoming",
-    description: "Auspicious Sharad Purnima bedside distribution delivering natural tender coconut water and wholesome nutrition to patients recovering in oncology and nephrology wards.",
+    sponsoredCoconuts: 3500,
+    status: "completed",
+    description: "Completed with immense gratitude: 3,500 bedside fresh tender coconuts and nutritious meals delivered to cancer chemotherapy patients across RUHS wards on Sharad Purnima.",
     image: "/uploads/nariyal_pani_fresh_coconut.jpg",
     sevaItems: ["🥥 Amrit Nariyal Pani", "🥛 High-Protein Nutrition", "🌿 Healing Bedside Care"],
-    customOfferingsNote: "This Sunday: Tender Coconut Water (₹65) & Pure Nutrition",
+    customOfferingsNote: "Completed: 3,500 Coconuts & Meals Delivered",
     pricePerUnit: 65,
     unitLabel: "Fresh Coconut",
+  },
+  {
+    id: "seva-diwali-ration-2026",
+    title: "Diwali Special Family Ration Kit Maha Vitaran",
+    tithi: "Deepawali & Dhanteras Mahotsav 2026",
+    date: "Oct 30 – Nov 10, 2026",
+    hospital: "Slum Settlements & Patient Families Outside RUHS / SMS Hospitals",
+    timing: "10:00 AM - 05:00 PM Daily",
+    targetCoconuts: 1500,
+    sponsoredCoconuts: 340,
+    status: "upcoming",
+    description: "Delivering complete 13-item festive grocery and nutrition kits (₹1,100/kit) so every struggling family's kitchen lights up with warm meals this Diwali.",
+    image: "/uploads/diwali_ration_kit_2026.jpg",
+    sevaItems: ["🌾 10kg Laxmi Bhog Atta", "🫗 Pure Mustard Oil & Ghee", "🍲 Dal, Rice, Salt & Spices", "🍬 Sugar, Boora & Festive Groceries"],
+    customOfferingsNote: "Diwali Festive Ration Kit: ₹1,100 per complete family kit",
+    pricePerUnit: 1100,
+    unitLabel: "Ration Kit",
   },
   {
     id: "seva-ekadashi-rama",
@@ -604,6 +621,27 @@ export const DRIVE_ITEMS: DriveItem[] = [
       secondary: "Training Share (₹550)"
     },
     status: "active"
+  },
+  {
+    id: "diwali-ration-kit",
+    name: "Diwali Family Ration & Happiness Kit",
+    tagline: "इस दीपावली, खुशियाँ बाँटने का संकल्प • 13 Essential Grocery Items",
+    category: "livelihood",
+    price: 1100,
+    unitLabel: "Family Kit",
+    targetCount: "1,500 Kits Target",
+    deliveredCount: "340 Distributed",
+    percentage: 23,
+    color: "#b45309",
+    badge: "Diwali Special Seva",
+    image: "/uploads/diwali_ration_kit_2026.jpg",
+    description: "Complete festive ration kit containing 13 everyday essentials: Laxmi Bhog Atta, Mustard Oil, Tata Salt, Mix Dal, Fortune Soya Chunks, Rice, Sugar, Boora, Tea, Haldi, Mirch, Dhaniya, and Jeera to bring light and warm food to underprivileged families this Diwali.",
+    impactMetrics: "1,500+ needy families gifted complete monthly provisions for Diwali.",
+    options: {
+      primary: "1 Ration Kit (₹1,100)",
+      secondary: "Multiple Family Kits"
+    },
+    status: "active"
   }
 ];
 
@@ -799,6 +837,19 @@ export const INITIAL_LEADERBOARD_DONORS: LeaderboardDonor[] = [
 ];
 
 export const INITIAL_MEDIA_CARDS_ROW_1: MediaPhotoCard[] = [
+  {
+    id: "m-diwali-ration",
+    title: "Diwali Family Ration & Happiness Kit Seva",
+    category: "Diwali Festive Seva",
+    location: "Slum Settlements & RUHS Shelter, Jaipur",
+    image: "/uploads/diwali_ration_kit_2026.jpg",
+    stats: "1,500 Kits Target (₹1,100/kit)",
+    description: "13 essential grocery items ensuring underprivileged families celebrate Diwali with warm food.",
+    fullStory: "Under Rise Up Help Foundation Diwali campaign, complete monthly grocery kits (Atta, Oil, Salt, Dal, Soya Chunks, Rice, Sugar, Spices, and Tea) are provided to underprivileged families across Jaipur so no child sleeps hungry on Diwali.",
+    defaultPrice: 1100,
+    unitLabel: "Family Kit",
+    driveItemIndex: 9,
+  },
   {
     id: 'm1',
     title: 'Har Ekadashi Bedside Coconut Seva',
