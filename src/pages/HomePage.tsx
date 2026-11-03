@@ -8,7 +8,7 @@ import { ImpactLedger } from '../components/ImpactLedger';
 import { ImpactSimulator } from '../components/ImpactSimulator';
 import { ClosingEcosystem } from '../components/ClosingEcosystem';
 import { Footer } from '../components/Footer';
-import { DiwaliRationSection } from '../components/DiwaliRationSection';
+import { DiwaliRationSection, DiwaliDiya } from '../components/DiwaliRationSection';
 import { DRIVE_ITEMS } from '../data/mockData';
 import type {
   DriveItem,
@@ -124,9 +124,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           <div className="absolute top-0 right-0 w-80 h-80 bg-amber-400/15 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
 
           <div className="flex items-center gap-4 text-left z-10">
-            <div className="w-13 h-13 sm:w-16 sm:h-16 rounded-2xl bg-amber-500/20 border border-amber-400/30 flex items-center justify-center shrink-0 shadow-inner">
-              <span className="text-2xl sm:text-3xl">🪔</span>
-            </div>
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-amber-500/30 to-orange-600/20 border border-amber-400/40 flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(253,184,19,0.3)] relative"><DiwaliDiya size="sm" /></div>
             <div>
               <div className="flex items-center gap-2 flex-wrap mb-1">
                 <span className="bg-[#FDB813] text-neutral-950 font-bold text-[10px] sm:text-xs px-2.5 py-0.5 rounded-full uppercase tracking-wider font-mono">
@@ -148,7 +146,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           <div className="flex items-center gap-2.5 shrink-0 z-10 w-full md:w-auto">
             <button
               onClick={() => onOpenSponsorModal(diwaliItem, { name: '', phone: '', quantity: 1 })}
-              className="flex-1 md:flex-none bg-[#FDB813] hover:bg-amber-400 text-neutral-950 font-bold text-xs sm:text-sm px-5 py-3 rounded-full transition-all shadow-md active:scale-95 cursor-pointer text-center"
+              className="diwali-gold-shimmer-btn flex-1 md:flex-none bg-gradient-to-r from-[#FDB813] via-amber-400 to-[#FDB813] hover:brightness-105 text-neutral-950 font-bold text-xs sm:text-sm px-5 py-3 rounded-full transition-all shadow-[0_0_20px_rgba(253,184,19,0.4)] active:scale-95 cursor-pointer text-center"
             >
               Sponsor 1 Diwali Kit (₹1,100)
             </button>

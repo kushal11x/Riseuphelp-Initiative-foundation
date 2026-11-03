@@ -241,3 +241,101 @@
     display: none !important;
   }
 }
+
+/* =========================================================================
+   DIWALI FESTIVE ATMOSPHERE & DIYA FLAME ANIMATIONS
+   ========================================================================= */
+@keyframes diya-flicker {
+  0%, 100% {
+    transform: scale(1) translateY(0) rotate(0deg);
+    filter: drop-shadow(0 0 8px rgba(253, 184, 19, 0.85)) drop-shadow(0 0 18px rgba(245, 158, 11, 0.45));
+    opacity: 0.95;
+  }
+  25% {
+    transform: scale(1.06, 0.94) translateY(-1px) rotate(1.5deg);
+    filter: drop-shadow(0 0 12px rgba(253, 184, 19, 0.95)) drop-shadow(0 0 24px rgba(234, 88, 12, 0.5));
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.95, 1.05) translateY(-2px) rotate(-1.5deg);
+    filter: drop-shadow(0 0 7px rgba(253, 184, 19, 0.75)) drop-shadow(0 0 14px rgba(245, 158, 11, 0.4));
+    opacity: 0.9;
+  }
+  75% {
+    transform: scale(1.03, 0.97) translateY(-0.5px) rotate(0.8deg);
+    filter: drop-shadow(0 0 14px rgba(253, 184, 19, 1)) drop-shadow(0 0 22px rgba(245, 158, 11, 0.5));
+    opacity: 1;
+  }
+}
+
+@keyframes diya-aura-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 0.65;
+  }
+}
+
+@keyframes festive-fairy-lights {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(0.9);
+    filter: drop-shadow(0 0 2px rgba(253, 184, 19, 0.4));
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.25);
+    filter: drop-shadow(0 0 8px rgba(253, 184, 19, 0.95)) drop-shadow(0 0 14px rgba(245, 158, 11, 0.6));
+  }
+}
+
+@keyframes diwali-gold-shimmer {
+  0% {
+    transform: translateX(-150%) skewX(-20deg);
+  }
+  40%, 100% {
+    transform: translateX(250%) skewX(-20deg);
+  }
+}
+
+@keyframes diwali-sparkle-drift {
+  0% {
+    transform: translateY(0) scale(0.6) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.9;
+  }
+  80% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-80px) scale(1.2) rotate(45deg);
+    opacity: 0;
+  }
+}
+
+.diwali-gold-shimmer-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.diwali-gold-shimmer-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: diwali-gold-shimmer 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
