@@ -8,7 +8,7 @@ import { ImpactLedger } from '../components/ImpactLedger';
 import { ImpactSimulator } from '../components/ImpactSimulator';
 import { ClosingEcosystem } from '../components/ClosingEcosystem';
 import { Footer } from '../components/Footer';
-import { DiwaliRationSection } from '../components/DiwaliRationSection';
+import { DiwaliRationSection, AestheticDiya } from '../components/DiwaliRationSection';
 import { DRIVE_ITEMS } from '../data/mockData';
 import type {
   DriveItem,
@@ -124,8 +124,8 @@ export const HomePage: React.FC<HomePageProps> = ({
           <div className="absolute top-0 right-0 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="flex items-center gap-3.5 text-left z-10">
-            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center shrink-0 text-xl shadow-xs">
-              🪔
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center shrink-0 shadow-xs relative">
+              <AestheticDiya size="sm" />
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap mb-1">
@@ -148,7 +148,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           <div className="flex items-center gap-2.5 shrink-0 z-10 w-full md:w-auto">
             <button
               onClick={() => onOpenSponsorModal(diwaliItem, { name: '', phone: '', quantity: 1 })}
-              className="flex-1 md:flex-none bg-[#FDB813] hover:bg-amber-400 text-neutral-950 font-bold text-xs sm:text-sm px-5 py-2.5 rounded-full transition-all shadow-sm active:scale-95 cursor-pointer text-center"
+              className="gold-shimmer-btn flex-1 md:flex-none bg-gradient-to-r from-[#FDB813] via-amber-400 to-[#FDB813] hover:brightness-105 text-neutral-950 font-bold text-xs sm:text-sm px-5 py-2.5 rounded-full transition-all shadow-[0_0_15px_rgba(253,184,19,0.3)] active:scale-95 cursor-pointer text-center"
             >
               Sponsor 1 Kit (₹1,100)
             </button>
