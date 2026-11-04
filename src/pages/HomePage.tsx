@@ -118,7 +118,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="rounded-2xl sm:rounded-3xl bg-[#141210] p-4 sm:p-5 text-white border border-neutral-800 shadow-md relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4"
+          className="rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#2a1306] via-[#1f0d04] to-[#140802] p-4 sm:p-5 text-white border border-amber-500/35 shadow-[0_0_35px_rgba(245,158,11,0.15)] relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4"
         >
           {/* Subtle warm ember glow */}
           <div className="absolute top-0 right-0 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
