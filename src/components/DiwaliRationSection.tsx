@@ -32,7 +32,7 @@ export const AestheticDiya: React.FC<{ size?: 'sm' | 'md' | 'lg'; className?: st
   size = 'md',
   className = '',
 }) => {
-  const dims = size === 'sm' ? 'w-7 h-7' : size === 'lg' ? 'w-12 h-12' : 'w-9 h-9';
+  const dims = size === 'sm' ? 'w-7 h-7 sm:w-8 sm:h-8' : size === 'lg' ? 'w-12 h-12' : 'w-9 h-9 sm:w-10 sm:h-10';
   return (
     <div className={`relative ${dims} flex items-center justify-center shrink-0 select-none ${className}`}>
       {/* Warm Breathing Candlelight Aura */}
@@ -89,6 +89,67 @@ export const AestheticDiya: React.FC<{ size?: 'sm' | 'md' | 'lg'; className?: st
           />
         </g>
       </svg>
+    </div>
+  );
+};
+
+/**
+ * Twinkling Festive Fairy Lights Garland (दीपावली की रंग-बिरंगी लड़ियां)
+ * Elegantly suspended across the top of the card with glowing jewel-toned bulbs.
+ */
+const FestiveFairyGarland: React.FC = () => {
+  const bulbs = [
+    { color: '#FDB813', delay: '0s' },
+    { color: '#F97316', delay: '0.4s' },
+    { color: '#10B981', delay: '0.8s' },
+    { color: '#EF4444', delay: '0.2s' },
+    { color: '#06B6D4', delay: '0.6s' },
+    { color: '#FDB813', delay: '1.0s' },
+    { color: '#EC4899', delay: '0.3s' },
+    { color: '#F59E0B', delay: '0.7s' },
+    { color: '#10B981', delay: '0.1s' },
+    { color: '#F97316', delay: '0.5s' },
+    { color: '#06B6D4', delay: '0.9s' },
+    { color: '#EF4444', delay: '0.35s' },
+    { color: '#FDB813', delay: '0.75s' },
+    { color: '#10B981', delay: '0.15s' },
+    { color: '#EC4899', delay: '0.55s' },
+    { color: '#F59E0B', delay: '0.95s' },
+    { color: '#06B6D4', delay: '0.25s' },
+    { color: '#F97316', delay: '0.65s' },
+    { color: '#10B981', delay: '0.05s' },
+    { color: '#FDB813', delay: '0.45s' },
+    { color: '#EF4444', delay: '0.85s' },
+  ];
+
+  return (
+    <div className="absolute top-0 left-0 right-0 h-8 overflow-hidden pointer-events-none z-20 flex items-start justify-between px-3 sm:px-6">
+      {/* Delicate Garland Wire */}
+      <svg className="absolute top-0 left-0 w-full h-5 stroke-neutral-700/60 fill-none" preserveAspectRatio="none">
+        <path d="M 0 3 Q 150 7, 300 3 T 600 3 T 900 3 T 1200 3" strokeWidth="1" />
+      </svg>
+
+      {bulbs.map((b, i) => (
+        <div
+          key={i}
+          className="flex flex-col items-center shrink-0"
+          style={{
+            color: b.color,
+            animation: `festive-fairy-lights 1.8s ease-in-out infinite ${b.delay}`,
+          }}
+        >
+          {/* Socket Cap */}
+          <div className="w-1.5 h-1 bg-neutral-900 rounded-t-xs" />
+          {/* Glowing Glass Bulb */}
+          <div
+            className="w-2.5 sm:w-3 h-3.5 sm:h-4 rounded-b-full rounded-t-xs"
+            style={{
+              backgroundColor: b.color,
+              boxShadow: `0 0 10px ${b.color}, 0 0 20px ${b.color}`,
+            }}
+          />
+        </div>
+      ))}
     </div>
   );
 };
@@ -183,12 +244,15 @@ https://riseuphelp.org/#diwali-seva
 
   return (
     <section id="diwali-seva" className="py-6 sm:py-10 px-2.5 sm:px-4 max-w-7xl mx-auto text-neutral-900 relative">
-      {/* Warm Diwali Illuminated Card (Rich Warm Amber/Terracotta festive theme, NOT pitch black) */}
-      <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[#2a1306] via-[#1f0d04] to-[#140802] border border-amber-500/40 text-white shadow-[0_0_50px_rgba(245,158,11,0.18)] overflow-hidden p-4 sm:p-6 lg:p-7 relative transition-all duration-300">
+      {/* Warm Diwali Illuminated Card */}
+      <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[#2a1306] via-[#1f0d04] to-[#140802] border-2 border-amber-500/40 text-white shadow-[0_0_50px_rgba(245,158,11,0.2)] overflow-hidden p-4 sm:p-6 lg:p-7 relative transition-all duration-300">
         
+        {/* Festive Colorful Fairy Lights Garland Across Top */}
+        <FestiveFairyGarland />
+
         {/* Warm Radiant Diwali Ambient Lighting in Background */}
         <div
-          className="absolute -top-20 left-1/2 -translate-x-1/2 w-[550px] h-64 bg-amber-500/20 rounded-full blur-3xl pointer-events-none"
+          className="absolute -top-16 left-1/2 -translate-x-1/2 w-[550px] h-64 bg-amber-500/20 rounded-full blur-3xl pointer-events-none"
           style={{ animation: 'candle-glow-pulse 4s ease-in-out infinite' }}
         />
         <div
@@ -196,45 +260,28 @@ https://riseuphelp.org/#diwali-seva
           style={{ animation: 'candle-glow-pulse 5s ease-in-out infinite 1s' }}
         />
 
-        {/* Delicate Golden Sparkles in Background */}
-        {[
-          { top: '15%', left: '4%', delay: '0s' },
-          { top: '35%', left: '96%', delay: '1.2s' },
-          { top: '75%', left: '6%', delay: '2.1s' },
-          { top: '85%', left: '94%', delay: '0.8s' },
-        ].map((ember, i) => (
-          <div
-            key={i}
-            className="absolute w-1.5 h-1.5 rounded-full bg-amber-300 pointer-events-none"
-            style={{
-              top: ember.top,
-              left: ember.left,
-              boxShadow: '0 0 8px #FDB813',
-              animation: `golden-ember-float 4s ease-in-out infinite ${ember.delay}`,
-            }}
-          />
-        ))}
-
-        {/* Section Header: Compact, Warm, Readable */}
-        <div className="relative z-10 max-w-3xl mb-5 sm:mb-6 text-left">
-          <div className="inline-flex items-center gap-1.5 bg-amber-500/20 border border-amber-400/40 text-amber-300 px-3 py-0.5 rounded-full text-[11px] sm:text-xs font-mono font-medium mb-2 shadow-xs">
+        {/* Section Header: Centered, Festive, Flanked by Diyas as shown in screenshot */}
+        <div className="relative z-10 max-w-3xl mx-auto mb-6 sm:mb-8 text-center pt-3 sm:pt-4">
+          <div className="inline-flex items-center gap-1.5 bg-gradient-to-r from-amber-500/25 via-orange-500/20 to-amber-500/25 border border-amber-400/40 text-amber-300 px-3.5 py-1 rounded-full text-xs font-mono font-medium mb-3 shadow-[0_0_15px_rgba(253,184,19,0.18)]">
             <span>✨</span>
-            <span className="tracking-wide">शुभ दीपावली सेवा २०२६ • JAIPUR GROUND RELIEF</span>
+            <span className="tracking-wide">शुभ दीपावली महापर्व सेवा महाभियान २०२६</span>
+            <span>✨</span>
           </div>
 
-          <div className="flex items-center gap-2.5 my-0.5">
+          <div className="flex items-center justify-center gap-3 sm:gap-4 my-1">
             <AestheticDiya size="sm" />
             <h2 className="text-xl sm:text-3xl lg:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-amber-100 to-[#FDB813] tracking-tight leading-tight">
               इस दीपावली, खुशियाँ बाँटने का संकल्प लें
             </h2>
+            <AestheticDiya size="sm" />
           </div>
 
-          <p className="text-xs sm:text-sm text-amber-100/85 mt-1.5 leading-relaxed max-w-2xl font-normal">
-            हर जरूरतमंद परिवार के घर में चूल्हा जले और कोई भी त्योहार की खुशियों से वंचित न रहे। आपका छोटा-सा सहयोग किसी परिवार तक 13 आवश्यक सामग्रियों वाली राशन किट पहुँचाता है।
+          <p className="text-xs sm:text-sm text-amber-100/90 mt-2 leading-relaxed max-w-2xl mx-auto font-normal">
+            हमारा उद्देश्य है कि इस दीपावली हर जरूरतमंद परिवार के घर में चूल्हा जले और कोई भी परिवार त्योहार की खुशियों से वंचित न रहे।
           </p>
         </div>
 
-        {/* Main Grid: Height-Balanced Two-Column Layout (Compact on Phone & Desktop) */}
+        {/* Main Grid: Balanced Two-Column Layout (Compact on Phone & Desktop) */}
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-stretch">
           
           {/* Left Column: Compact Photo & Quick Ground Progress */}
@@ -308,7 +355,7 @@ https://riseuphelp.org/#diwali-seva
           {/* Right Column: Compact 13-Item Manifest & Tactile 1-Click Sponsorship */}
           <div className="lg:col-span-7 flex flex-col justify-between gap-3 text-left">
             
-            {/* Compact 13 Items Manifest Card (3-4 columns of slim chips, NOT tall 7 rows!) */}
+            {/* Compact 13 Items Manifest Card */}
             <div className="bg-amber-950/30 border border-amber-500/30 rounded-xl sm:rounded-2xl p-3.5 sm:p-4 shadow-sm">
               <div className="flex items-center justify-between gap-2 mb-2">
                 <div className="flex items-center gap-1.5">
@@ -322,7 +369,7 @@ https://riseuphelp.org/#diwali-seva
                 </span>
               </div>
 
-              {/* Compact Aesthetic Chips: 2 cols on tiny screens, 3 cols on sm, 4 cols on lg */}
+              {/* Compact Aesthetic Chips: 2 cols on mobile, 3-4 cols on desktop */}
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-1.5">
                 {COMPACT_RATION_ITEMS.map((entry, idx) => (
                   <div

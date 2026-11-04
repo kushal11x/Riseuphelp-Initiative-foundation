@@ -326,3 +326,19 @@
   animation: gold-light-sweep 3.5s ease-in-out infinite;
   pointer-events: none;
 }
+
+/* =========================================================================
+   DIWALI FESTIVE FAIRY LIGHTS (लड़ियाँ) TWINKLE KEYFRAMES
+   ========================================================================= */
+@keyframes festive-fairy-lights {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(0.92);
+    filter: drop-shadow(0 0 3px currentColor);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 10px currentColor) drop-shadow(0 0 20px currentColor);
+  }
+}
