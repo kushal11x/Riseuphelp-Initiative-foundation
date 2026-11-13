@@ -54,7 +54,10 @@ export const SHRAADH_DATES: SevaDateOption[] = [
   { dateStr: "2026-10-31", label: "31 Oct 2026", day: "Sat", note: "Weekend Bedside Meal Drive" },
   { dateStr: "2026-11-01", label: "01 Nov 2026", day: "Sun", note: "November Hospital Relief" },
   { dateStr: "2026-11-05", label: "05 Nov 2026", day: "Thu", note: "Rama Ekadashi Maha Seva" },
-  { dateStr: "2026-11-20", label: "20 Nov 2026", day: "Fri", note: "Devutthana Ekadashi Maha Yagya" },
+  { dateStr: "2026-11-20", label: "20 Nov 2026", day: "Fri", note: "Devutthana Ekadashi Maha Yagya (Upcoming)" },
+  { dateStr: "2026-11-21", label: "21 Nov 2026", day: "Sat", note: "Devutthana Parana & Bedside Seva" },
+  { dateStr: "2026-11-22", label: "22 Nov 2026", day: "Sun", note: "Tulsi Vivah Patient Nutrition" },
+  { dateStr: "2026-12-04", label: "04 Dec 2026", day: "Fri", note: "Utpanna Ekadashi Seva Drive" },
 ];
 
 interface HospitalSevaPageProps {

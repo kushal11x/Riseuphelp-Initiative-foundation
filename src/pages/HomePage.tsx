@@ -8,8 +8,6 @@ import { ImpactLedger } from '../components/ImpactLedger';
 import { ImpactSimulator } from '../components/ImpactSimulator';
 import { ClosingEcosystem } from '../components/ClosingEcosystem';
 import { Footer } from '../components/Footer';
-import { DiwaliRationSection, AestheticDiya } from '../components/DiwaliRationSection';
-import { DRIVE_ITEMS } from '../data/mockData';
 import type {
   DriveItem,
   ChildSpotlightProfile,
@@ -73,8 +71,6 @@ export const HomePage: React.FC<HomePageProps> = ({
   rightProfiles,
 }) => {
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
-  const currentDrives = driveItems && driveItems.length > 0 ? driveItems : DRIVE_ITEMS;
-  const diwaliItem = currentDrives.find((d) => d.id === 'diwali-ration-kit') || currentDrives[0] || DRIVE_ITEMS[0];
 
   const handleSimulatedSponsor = (amount: number, _description: string) => {
     const qty = Math.max(1, Math.floor(amount / 65));
@@ -111,53 +107,52 @@ export const HomePage: React.FC<HomePageProps> = ({
         driveItems={driveItems}
       />
 
-      {/* PROMINENT SHARAD PURNIMA (25 OCT) LIVE SEVA HIGHLIGHT CARD */}
-      {/* DIWALI CAMPAIGN BANNER (HUMAN, CLEAN, EDITORIAL AESTHETIC) */}
+      {/* PROMINENT DEVUTTHANA EKADASHI (20 NOV) LIVE SEVA HIGHLIGHT CARD */}
       <div className="max-w-7xl mx-auto w-full px-2 sm:px-4 pt-1 pb-2">
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#2a1306] via-[#1f0d04] to-[#140802] p-4 sm:p-5 text-white border border-amber-500/35 shadow-[0_0_35px_rgba(245,158,11,0.15)] relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4"
+          transition={{ duration: 0.6 }}
+          className="rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#03261a] via-[#084c36] to-[#021c13] p-4 sm:p-6 text-white border border-emerald-400/30 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4"
         >
-          {/* Subtle warm ember glow */}
-          <div className="absolute top-0 right-0 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+          {/* Subtle background glow */}
+          <div className="absolute top-0 right-0 w-80 h-80 bg-amber-400/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
 
-          <div className="flex items-center gap-3.5 text-left z-10">
-            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center shrink-0 shadow-xs relative">
-              <AestheticDiya size="sm" />
+          <div className="flex items-center gap-4 text-left z-10">
+            <div className="w-13 h-13 sm:w-16 sm:h-16 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center shrink-0 shadow-inner">
+              <span className="text-2xl sm:text-3xl">🥥</span>
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap mb-1">
-                <span className="bg-amber-400/15 text-amber-300 font-bold text-[10px] sm:text-xs px-2.5 py-0.5 rounded-full uppercase tracking-wider font-mono border border-amber-400/30">
-                  Diwali Drive • ₹1,100 / Kit
+                <span className="bg-[#FDB813] text-neutral-950 font-bold text-[10px] sm:text-xs px-2.5 py-0.5 rounded-full uppercase tracking-wider font-mono">
+                  Upcoming • 20 Nov • Devutthana Ekadashi
                 </span>
-                <span className="text-neutral-400 text-xs hidden sm:inline">
-                  Jaipur Slum Settlements & Patient Families
+                <span className="text-emerald-200 text-xs font-medium">
+                  RUHS State Cancer College & SMS Hospital, Jaipur
                 </span>
               </div>
-              <h3 className="text-base sm:text-xl font-bold tracking-tight text-white">
-                इस दीपावली, खुशियाँ बाँटने का संकल्प लें
+              <h3 className="text-lg sm:text-2xl font-bold tracking-tight text-white">
+                Devutthana (Prabodhini) Ekadashi Maha Seva
               </h3>
-              <p className="text-xs sm:text-sm text-neutral-300 mt-0.5 max-w-2xl leading-relaxed">
-                13 आवश्यक सामग्रियों वाली राशन किट पहुँचाकर 1,500 जरूरतमंद परिवारों के घर में खुशियों का चूल्हा जलाएँ।
+              <p className="text-xs sm:text-sm text-emerald-100/90 mt-0.5 max-w-2xl leading-relaxed">
+                On sacred Devutthana Ekadashi (Dev Uthani Gyaras), fresh tender green coconuts (₹65) & pure taaza anaar juice (₹70) will be served bedside to cancer patients across government hospital wards.
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2.5 shrink-0 z-10 w-full md:w-auto">
             <button
-              onClick={() => onOpenSponsorModal(diwaliItem, { name: '', phone: '', quantity: 1 })}
-              className="gold-shimmer-btn flex-1 md:flex-none bg-gradient-to-r from-[#FDB813] via-amber-400 to-[#FDB813] hover:brightness-105 text-neutral-950 font-bold text-xs sm:text-sm px-5 py-2.5 rounded-full transition-all shadow-[0_0_15px_rgba(253,184,19,0.3)] active:scale-95 cursor-pointer text-center"
+              onClick={() => onNavigateView('hospital-seva')}
+              className="flex-1 md:flex-none bg-[#FDB813] hover:bg-amber-400 text-neutral-950 font-bold text-xs sm:text-sm px-5 py-3 rounded-full transition-all shadow-md active:scale-95 cursor-pointer text-center"
             >
-              Sponsor 1 Kit (₹1,100)
+              Sponsor Ekadashi Seva (₹65)
             </button>
-            <a
-              href="#diwali-seva"
-              className="flex-1 md:flex-none bg-white/5 hover:bg-white/10 text-white font-medium text-xs sm:text-sm px-4 py-2.5 rounded-full border border-white/15 transition-all cursor-pointer text-center"
+            <button
+              onClick={() => onNavigateView('ekadashi')}
+              className="flex-1 md:flex-none bg-white/10 hover:bg-white/20 text-white font-medium text-xs sm:text-sm px-4 py-3 rounded-full border border-white/25 transition-all cursor-pointer text-center"
             >
-              Kit Details
-            </a>
+              Ekadashi Calendar
+            </button>
           </div>
         </motion.div>
       </div>
@@ -283,9 +278,6 @@ export const HomePage: React.FC<HomePageProps> = ({
           </motion.div>
         </div>
       </div>
-
-      {/* DEDICATED DIWALI FAMILY RATION KIT SHOWCASE SECTION */}
-      <DiwaliRationSection onOpenSponsorModal={onOpenSponsorModal} />
 
       {/* Below the Fold Matte Gradient Canvas */}
       <div className="w-full matte-gradient-canvas rounded-2xl sm:rounded-3xl border border-neutral-300/80 shadow-sm relative overflow-hidden">
