@@ -1115,7 +1115,6 @@ export function App() {
       {activeView === 'internship' && (
         <InternshipPage
           onBackToHome={() => handleNavigateView('home')}
-          onOpenAdmin={() => setAdminPortalOpen(true)}
           onSubmitInternship={(newSub) => {
             setInternships((prev) => [newSub, ...prev]);
           }}

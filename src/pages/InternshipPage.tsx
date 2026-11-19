@@ -145,13 +145,11 @@ export const AGE_BRACKET_OPTIONS = [
 
 interface InternshipPageProps {
   onBackToHome: () => void;
-  onOpenAdmin?: () => void;
   onSubmitInternship?: (submission: InternshipSubmission) => void;
 }
 
 export const InternshipPage: React.FC<InternshipPageProps> = ({
   onBackToHome,
-  onOpenAdmin,
   onSubmitInternship,
 }) => {
   const { count } = useFellowshipCounter(584);
@@ -421,17 +419,6 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
         </button>
 
         <div className="flex items-center gap-2 flex-wrap">
-          {onOpenAdmin && (
-            <button
-              onClick={onOpenAdmin}
-              className="inline-flex items-center gap-1.5 bg-neutral-900 hover:bg-neutral-800 text-white font-mono font-bold text-xs px-3 py-1.5 rounded-full border border-neutral-700 transition-all cursor-pointer shadow-xs active:scale-95"
-              title="Open Admin Portal"
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-              <span>Admin Portal</span>
-            </button>
-          )}
-
           <button
             onClick={() => setShowLaunchIntro(true)}
             className="inline-flex items-center gap-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 font-mono font-bold text-xs px-3 py-1.5 rounded-full border border-amber-200 transition-all cursor-pointer"
@@ -750,22 +737,13 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
                     </div>
                   </div>
 
-                  <div className="pt-4 flex items-center justify-center gap-3 flex-wrap">
+                  <div className="pt-4 flex items-center justify-center gap-3">
                     <button
                       onClick={onBackToHome}
                       className="bg-[#090f1d] hover:bg-neutral-900 text-white font-bold text-xs sm:text-sm px-8 py-3.5 rounded-full border border-amber-400/40 transition-all shadow-md cursor-pointer"
                     >
                       Return to Home
                     </button>
-                    {onOpenAdmin && (
-                      <button
-                        onClick={onOpenAdmin}
-                        className="bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs sm:text-sm px-6 py-3.5 rounded-full border border-emerald-500/40 transition-all shadow-md cursor-pointer flex items-center gap-2"
-                      >
-                        <ShieldCheck className="w-4 h-4 text-emerald-300" />
-                        <span>Open Admin Portal</span>
-                      </button>
-                    )}
                   </div>
                 </motion.div>
               ) : (
