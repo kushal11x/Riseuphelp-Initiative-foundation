@@ -1,32 +1,33 @@
 import { useState, useEffect } from 'react';
 
 /**
- * Calculates a dynamic, organic national applicant counter starting above 500+
- * and smoothly increasing in real-time.
+ * Calculates a realistic, organic national applicant counter starting above 500+
+ * (e.g. 584+) and smoothly increasing in real-time without fake crazy epoch jumps.
  */
-export function useFellowshipCounter(initialBase = 562) {
+export function useFellowshipCounter(initialBase = 584) {
+  const STORAGE_KEY = 'ruh_fellowship_counter_v3';
+
   const [count, setCount] = useState(() => {
     try {
-      const stored = localStorage.getItem('ruh_fellowship_counter');
+      const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsed = parseInt(stored, 10);
-        if (!isNaN(parsed) && parsed >= initialBase) return parsed;
+        if (!isNaN(parsed) && parsed >= 500 && parsed < 5000) {
+          return parsed;
+        }
       }
     } catch {}
-    // Calculate based on epoch to ensure natural realistic progression
-    const epoch = 1731500000000; // Reference date in Nov 2026
-    const elapsedHours = Math.max(0, (Date.now() - epoch) / (1000 * 60 * 60));
-    return Math.floor(initialBase + elapsedHours * 1.6);
+    return initialBase;
   });
 
   useEffect(() => {
-    // Increment smoothly every 45 to 90 seconds
-    const intervalTime = Math.floor(Math.random() * 45000) + 45000;
+    // Increment smoothly every 45 to 80 seconds to simulate real-time national incoming applications
+    const intervalTime = Math.floor(Math.random() * 35000) + 45000;
     const timer = setInterval(() => {
       setCount((prev) => {
         const next = prev + 1;
         try {
-          localStorage.setItem('ruh_fellowship_counter', String(next));
+          localStorage.setItem(STORAGE_KEY, String(next));
         } catch {}
         return next;
       });

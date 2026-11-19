@@ -20,6 +20,8 @@ import {
   Heart,
   Lightbulb,
   Check,
+  ArrowDown,
+  TrendingUp,
 } from 'lucide-react';
 import { Footer } from '../components/Footer';
 import type { InternshipSubmission } from '../types';
@@ -223,76 +225,167 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
           onClick={onBackToHome}
           className="inline-flex items-center gap-2 bg-white hover:bg-neutral-50 text-neutral-800 font-bold text-xs sm:text-sm px-4 py-2 rounded-full border border-neutral-300 shadow-xs hover:shadow-md transition-all cursor-pointer group"
         >
-          <ArrowLeft className="w-4 h-4 text-[#084c36] group-hover:-translate-x-1 transition-transform" />
+          <ArrowLeft className="w-4 h-4 text-neutral-700 group-hover:-translate-x-1 transition-transform" />
           <span>Back to Home</span>
         </button>
 
-        <div className="inline-flex items-center gap-2 bg-white text-[#084c36] font-mono font-bold text-xs px-3.5 py-1.5 rounded-full border border-neutral-200 shadow-xs">
-          <GraduationCap className="w-4 h-4 text-[#084c36]" />
+        <div className="inline-flex items-center gap-2 bg-[#0d1627] text-amber-300 font-mono font-bold text-xs px-3.5 py-1.5 rounded-full border border-neutral-800 shadow-xs">
+          <GraduationCap className="w-4 h-4 text-amber-400" />
           <span>National Fellowship Admissions 2026-2027</span>
         </div>
       </div>
 
-      {/* Hero Header Banner (Grand, Prestigious National Scale) */}
+      {/* Hero Header Banner (Grand, Prestigious National Scale - Midnight Obsidian & Gold Luxury Theme) */}
       <div className="max-w-7xl mx-auto w-full px-3 sm:px-6">
-        <div className="rounded-3xl bg-gradient-to-br from-[#021e14] via-[#084c36] to-[#03271b] text-white p-6 sm:p-10 lg:p-12 shadow-2xl border-2 border-amber-500/35 relative overflow-hidden">
-          {/* Animated Background Light Halo */}
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-amber-400/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20 animate-pulse" />
-          <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="rounded-3xl bg-gradient-to-br from-[#090f1d] via-[#0d1627] to-[#060a12] text-white p-6 sm:p-10 lg:p-12 shadow-2xl border border-white/10 ring-1 ring-amber-400/20 relative overflow-hidden">
+          {/* Ambient Lighting Halos */}
+          <div className="absolute -top-24 -right-24 w-[480px] h-[480px] bg-amber-400/12 rounded-full blur-3xl pointer-events-none animate-pulse" />
+          <div className="absolute -bottom-24 -left-24 w-[480px] h-[480px] bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(#ffffff06_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" />
 
-          <div className="relative z-10 max-w-4xl space-y-4 text-left">
+          {/* 2-Column Balanced Grid: Left Content (7 cols) + Right Admissions Snapshot (5 cols) */}
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
             
-            {/* Accreditation Badges */}
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="bg-[#FDB813] text-neutral-950 font-mono font-extrabold text-xs px-3.5 py-1 rounded-full uppercase tracking-wider shadow-xs">
-                Pan-India Winter 2026 Intake
-              </span>
-              <span className="bg-white/15 backdrop-blur-md text-emerald-200 font-mono text-xs px-3 py-1 rounded-full border border-white/20">
-                Government Section 8 Registered • 80G Certified
-              </span>
-              <span className="bg-white/10 text-white/80 font-mono text-xs px-3 py-1 rounded-full border border-white/15 hidden sm:inline">
-                CIN: U88900RJ2024NPL093120
-              </span>
+            {/* Left Column: Mission, Title, Accreditations & Recognition */}
+            <div className="lg:col-span-7 space-y-4 text-left">
+              {/* Accreditation Badges */}
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="bg-gradient-to-r from-[#FDB813] to-amber-400 text-neutral-950 font-mono font-black text-xs px-3.5 py-1 rounded-full uppercase tracking-wider shadow-sm flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-neutral-950" />
+                  <span>Pan-India Winter 2026 Intake</span>
+                </span>
+                <span className="bg-white/10 backdrop-blur-md text-emerald-300 font-mono text-xs px-3 py-1 rounded-full border border-white/15 flex items-center gap-1">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Govt Section 8 Registered • 80G Certified</span>
+                </span>
+                <span className="bg-white/5 text-neutral-300 font-mono text-xs px-3 py-1 rounded-full border border-white/10 hidden sm:inline">
+                  CIN: U88900RJ2024NPL093120
+                </span>
+              </div>
+
+              {/* Main Headline */}
+              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-neutral-100 to-amber-200 tracking-tight leading-[1.15]">
+                National Youth Social Impact & Policy Fellowship
+              </h1>
+
+              <p className="text-xs sm:text-base text-neutral-300 leading-relaxed font-normal">
+                A prestigious pan-India social leadership initiative by Rise Up Help Initiative Foundation. Uniting passionate high-school & college students and young researchers across all 28 States & 8 UTs to lead frontline healthcare relief in Jaipur or author strategic maternal nutrition policy files from home.
+              </p>
+
+              {/* Dynamic Social Proof Live Counter: 500+ and Increasing */}
+              <div className="pt-1 flex items-center gap-3 flex-wrap">
+                <div className="inline-flex items-center gap-2.5 bg-black/50 backdrop-blur-md px-4 py-2 rounded-full border border-amber-400/35 text-amber-300 font-mono text-xs font-bold shadow-inner">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping shrink-0" />
+                  <span className="text-white font-black text-sm">{count}+</span>
+                  <span className="text-neutral-200">Candidates Applied Across 26 States</span>
+                </div>
+                <span className="text-xs text-amber-200/90 font-mono flex items-center gap-1">
+                  <Clock className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Admissions Open • Direct Email Selection</span>
+                </span>
+              </div>
+
+              {/* 4 Pillars of Recognition */}
+              <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs font-semibold">
+                <div className="bg-white/[0.07] backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/10 flex items-center gap-2.5">
+                  <Award className="w-4 h-4 text-[#FDB813] shrink-0" />
+                  <span>Verified Section 8 Certificate</span>
+                </div>
+                <div className="bg-white/[0.07] backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/10 flex items-center gap-2.5">
+                  <FileText className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>Founder's LOR for Top 10%</span>
+                </div>
+                <div className="bg-white/[0.07] backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/10 flex items-center gap-2.5">
+                  <Compass className="w-4 h-4 text-sky-400 shrink-0" />
+                  <span>Dual Track: Jaipur Ground & Research</span>
+                </div>
+                <div className="bg-white/[0.07] backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/10 flex items-center gap-2.5">
+                  <Mail className="w-4 h-4 text-amber-300 shrink-0" />
+                  <span>Strictly 100% Free Application</span>
+                </div>
+              </div>
             </div>
 
-            {/* Main Headline */}
-            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-neutral-100 to-[#FDB813] tracking-tight leading-tight">
-              National Youth Social Impact & Policy Fellowship
-            </h1>
+            {/* Right Column: Executive Admissions Snapshot Card (No Empty Space) */}
+            <div className="lg:col-span-5 w-full">
+              <div className="bg-white/[0.06] backdrop-blur-xl border border-white/15 rounded-3xl p-6 sm:p-7 shadow-2xl relative overflow-hidden text-left space-y-5">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
 
-            <p className="text-xs sm:text-base text-emerald-100/90 leading-relaxed max-w-3xl font-normal">
-              A prestigious pan-India social leadership initiative by Rise Up Help Initiative Foundation. Inviting high-school, college students & young researchers across all 28 States & 8 UTs to lead grassroots healthcare relief in Jaipur or author strategic maternal nutrition policy files.
-            </p>
+                {/* Card Header */}
+                <div className="flex items-center justify-between pb-3 border-b border-white/10">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="text-[11px] font-mono font-bold tracking-wider uppercase text-neutral-300">
+                      Admissions Telemetry
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-mono text-emerald-400 font-bold bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
+                    Live Registry
+                  </span>
+                </div>
 
-            {/* Dynamic Social Proof Live Counter: 500+ and Increasing */}
-            <div className="pt-2 flex items-center gap-3 flex-wrap">
-              <div className="inline-flex items-center gap-2 bg-black/45 backdrop-blur-md px-4 py-2 rounded-full border border-amber-400/35 text-amber-300 font-mono text-xs font-bold shadow-inner">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping shrink-0" />
-                <span className="text-white font-black text-sm">{count}+</span>
-                <span className="text-neutral-200">Candidates Applied from 26 States</span>
-              </div>
-              <span className="text-xs text-emerald-200/90 font-mono">
-                ⚡ Admissions Registry Active • Selection Dispatched via Official Email
-              </span>
-            </div>
+                {/* Big Metric Display */}
+                <div>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-4xl sm:text-5xl font-black text-white tracking-tight">
+                      {count}+
+                    </span>
+                    <span className="text-xs text-amber-300 font-mono font-bold flex items-center gap-0.5">
+                      <TrendingUp className="w-3.5 h-3.5" />
+                      Organic Live
+                    </span>
+                  </div>
+                  <p className="text-xs text-neutral-400 mt-1">
+                    Verified candidate portfolios submitted across Delhi, Rajasthan, UP, Maharashtra, Karnataka & 21 other regions.
+                  </p>
+                </div>
 
-            {/* 4 Pillars of Recognition */}
-            <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 text-xs font-semibold">
-              <div className="bg-white/10 backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/20 flex items-center gap-2">
-                <Award className="w-4 h-4 text-[#FDB813] shrink-0" />
-                <span>Verified Section 8 Certificate</span>
-              </div>
-              <div className="bg-white/10 backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/20 flex items-center gap-2">
-                <FileText className="w-4 h-4 text-emerald-300 shrink-0" />
-                <span>Founder's LOR for Toppers</span>
-              </div>
-              <div className="bg-white/10 backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/20 flex items-center gap-2">
-                <Compass className="w-4 h-4 text-sky-300 shrink-0" />
-                <span>Dual Mode: Ground & Research</span>
-              </div>
-              <div className="bg-white/10 backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/20 flex items-center gap-2">
-                <Mail className="w-4 h-4 text-amber-300 shrink-0" />
-                <span>Strictly 100% Free Application</span>
+                {/* Track Participation Breakdown */}
+                <div className="space-y-2 pt-1">
+                  <div className="flex items-center justify-between text-[11px] font-mono text-neutral-300">
+                    <span>Ground Healthcare (Jaipur)</span>
+                    <span className="text-emerald-400 font-bold">38%</span>
+                  </div>
+                  <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden flex">
+                    <div className="bg-emerald-400 h-full w-[38%]" />
+                    <div className="bg-sky-400 h-full w-[62%]" />
+                  </div>
+                  <div className="flex items-center justify-between text-[11px] font-mono text-neutral-300">
+                    <span>Maternal Nutrition Policy (Outstation)</span>
+                    <span className="text-sky-400 font-bold">62%</span>
+                  </div>
+                </div>
+
+                {/* Verification Checkmarks */}
+                <div className="pt-2 border-t border-white/10 space-y-1.5 text-xs text-neutral-300">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>Pure Merit-Based Selection (No bias, 100% free)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>Official Selection Letter dispatched to Email</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>Certificate issued under Section 8 Registered Seal</span>
+                  </div>
+                </div>
+
+                {/* Fast-Track CTA Button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    const formElement = document.getElementById('application-form');
+                    if (formElement) {
+                      formElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
+                  className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#FDB813] to-amber-400 hover:from-amber-300 hover:to-amber-400 text-neutral-950 font-black text-xs sm:text-sm py-3.5 px-6 rounded-2xl shadow-lg transition-all cursor-pointer group"
+                >
+                  <span>Begin Fellowship Application</span>
+                  <ArrowDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
+                </button>
               </div>
             </div>
 
@@ -358,7 +451,7 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
       </div>
 
       {/* Main Application Form Container */}
-      <div className="max-w-7xl mx-auto w-full px-3 sm:px-6">
+      <div id="application-form" className="max-w-7xl mx-auto w-full px-3 sm:px-6 scroll-mt-6">
         <div className="bg-white rounded-3xl p-6 sm:p-10 lg:p-12 border border-neutral-300 shadow-xl">
           
           {submittedData ? (
@@ -691,7 +784,7 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
                             onClick={() => toggleSkill(skill)}
                             className={`text-xs px-3.5 py-2 rounded-xl border transition-all cursor-pointer font-medium flex items-center gap-1.5 ${
                               isSelected
-                                ? 'bg-[#084c36] text-white border-emerald-900 shadow-xs'
+                                ? 'bg-[#0d1627] text-white border-neutral-800 shadow-xs ring-1 ring-amber-400/40'
                                 : 'bg-white text-neutral-700 border-neutral-300 hover:border-neutral-400'
                             }`}
                           >
@@ -707,7 +800,7 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
                 {/* SECTION 4: Analytical Problem-Solving & Fellowship Statement */}
                 <div className="space-y-4 bg-[#faf8f5] p-5 sm:p-7 rounded-3xl border border-neutral-200">
                   <div className="flex items-center justify-between pb-2 border-b border-neutral-200">
-                    <span className="text-xs font-bold uppercase tracking-wider text-emerald-900 flex items-center gap-2 font-mono">
+                    <span className="text-xs font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2 font-mono">
                       <span>4. Analytical Thinking & Personal Statement</span>
                     </span>
                     <span className="text-[10px] font-mono text-neutral-500 font-semibold">Merit Evaluation</span>
@@ -727,7 +820,7 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
                       value={analyticalResponse}
                       onChange={(e) => setAnalyticalResponse(e.target.value)}
                       placeholder="Share your structured thoughts or observations on grassroots healthcare, clinical nutrition, or slum development..."
-                      className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl p-4 text-neutral-900 placeholder:text-neutral-400 focus:border-[#084c36] focus:outline-none transition-all resize-none shadow-2xs"
+                      className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl p-4 text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-800 focus:outline-none transition-all resize-none shadow-2xs"
                     />
                   </div>
 
@@ -741,14 +834,14 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
                       value={whyJoin}
                       onChange={(e) => setWhyJoin(e.target.value)}
                       placeholder="Explain your goals, academic vision, and what you aim to achieve through this national fellowship..."
-                      className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl p-4 text-neutral-900 placeholder:text-neutral-400 focus:border-[#084c36] focus:outline-none transition-all resize-none shadow-2xs"
+                      className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl p-4 text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-800 focus:outline-none transition-all resize-none shadow-2xs"
                     />
                   </div>
                 </div>
 
                 {/* Transparent Selection Guarantee Notice */}
-                <div className="bg-emerald-50/70 border border-emerald-200/90 rounded-3xl p-5 flex items-start gap-3 text-xs text-neutral-700">
-                  <ShieldCheck className="w-5 h-5 text-[#084c36] shrink-0 mt-0.5" />
+                <div className="bg-amber-50/60 border border-amber-200/80 rounded-3xl p-5 flex items-start gap-3 text-xs text-neutral-700">
+                  <ShieldCheck className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
                   <p className="leading-relaxed">
                     <strong>Merit-Based National Intake:</strong> Every application is assessed by the foundation's academic review panel. <strong>No registration fees or hidden charges are ever charged.</strong> Official selection letters, assigned fellowship guides & verification dockets will be dispatched strictly via Email to maintain corporate integrity.
                   </p>
@@ -759,7 +852,7 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-gradient-to-r from-[#03261a] via-[#084c36] to-[#03261a] hover:brightness-110 text-white font-black text-sm sm:text-base py-4 rounded-full transition-all shadow-xl active:scale-98 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                    className="w-full bg-gradient-to-r from-[#090f1d] via-[#131f36] to-[#090f1d] hover:brightness-115 text-white font-black text-sm sm:text-base py-4 rounded-full border-2 border-amber-400/40 hover:border-amber-400 transition-all shadow-xl active:scale-98 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                   >
                     {isSubmitting ? (
                       <>
