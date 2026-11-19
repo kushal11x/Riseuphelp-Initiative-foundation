@@ -214,6 +214,21 @@ export interface VolunteerSubmission {
   timestamp: string;
 }
 
+export interface InternshipSubmission {
+  id: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  city: string;
+  institution: string;
+  course: string;
+  whyJoin?: string;
+  status: 'pending' | 'under_review' | 'selected_ground' | 'selected_remote' | 'completed';
+  assignedTrack?: string;
+  adminNotes?: string;
+  timestamp: string;
+}
+
 export interface CareerFormData {
   id?: string;
   fullName: string;

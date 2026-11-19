@@ -11,6 +11,7 @@ import type {
   HeroContentConfig,
   StoryContentConfig,
   VolunteerSubmission,
+  InternshipSubmission,
 } from '../types';
 
 export const OFFICIAL_INFO = {
@@ -1307,6 +1308,47 @@ export const INITIAL_VOLUNTEERS: VolunteerSubmission[] = [
     availability: "On-Call Emergency Squad",
     status: "pending",
     timestamp: "2026-09-13T11:45:00.000Z"
+  }
+];
+
+export const INITIAL_INTERNSHIPS: InternshipSubmission[] = [
+  {
+    id: "int-seed-01",
+    fullName: "Priya Choudhary",
+    email: "priya.choudhary@gmail.com",
+    phone: "9829123450",
+    city: "Jaipur",
+    institution: "University of Rajasthan",
+    course: "BBA (2nd Year)",
+    whyJoin: "I want to gain hands-on experience in healthcare relief and hospital coordination for cancer chemotherapy patients.",
+    status: "selected_ground",
+    assignedTrack: "Ground Hospital & Patient Relief (RUHS & SMS)",
+    timestamp: "2026-11-14T09:30:00.000Z"
+  },
+  {
+    id: "int-seed-02",
+    fullName: "Aman Verma",
+    email: "aman.verma.eco@delhi.ac.in",
+    phone: "9811456782",
+    city: "Delhi",
+    institution: "Delhi University (Kirori Mal College)",
+    course: "BA Economics Hons (3rd Year)",
+    whyJoin: "Interested in preparing policy and research proposals on supplementary nutrition models for slum pregnant women and infants.",
+    status: "selected_remote",
+    assignedTrack: "Research & Strategy Proposal: Slum Maternal Nutrition",
+    timestamp: "2026-11-16T14:15:00.000Z"
+  },
+  {
+    id: "int-seed-03",
+    fullName: "Kavya Sharma",
+    email: "kavya.sharma99@gmail.com",
+    phone: "9784561230",
+    city: "Jaipur",
+    institution: "JECRC University",
+    course: "B.Tech Computer Science",
+    whyJoin: "Passionate about education cells in slums and weekend digital literacy drives.",
+    status: "under_review",
+    timestamp: "2026-11-18T16:40:00.000Z"
   }
 ];
 

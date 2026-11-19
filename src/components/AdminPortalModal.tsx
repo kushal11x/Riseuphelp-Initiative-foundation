@@ -16,6 +16,8 @@ import {
   Award,
   Settings,
   HeartHandshake,
+  GraduationCap,
+  FileText,
   Download,
   AlertCircle,
   Calendar as CalendarIcon,
@@ -55,6 +57,7 @@ import type {
   GalleryItem,
   VolunteerSubmission,
   InaugurationConfig,
+  InternshipSubmission,
 } from '../types';
 import { compressImageFile, safeLocalStorageSet } from '../utils/imageUtils';
 import { uploadImageToServer, pushServerState, type ReceiptConfig, type SiteStatePayload } from '../utils/serverSync';
@@ -96,6 +99,8 @@ interface AdminPortalModalProps {
   setReceiptConfig?: React.Dispatch<React.SetStateAction<ReceiptConfig>>;
   volunteers?: VolunteerSubmission[];
   setVolunteers?: React.Dispatch<React.SetStateAction<VolunteerSubmission[]>>;
+  internships?: InternshipSubmission[];
+  setInternships?: React.Dispatch<React.SetStateAction<InternshipSubmission[]>>;
   showDonationTicker?: boolean;
   setShowDonationTicker?: (val: boolean) => void;
   inaugurationConfig?: InaugurationConfig;
@@ -138,6 +143,8 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
   setReceiptConfig,
   volunteers = [],
   setVolunteers,
+  internships = [],
+  setInternships,
   showDonationTicker = false,
   setShowDonationTicker,
   inaugurationConfig,
@@ -169,6 +176,7 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
     | 'children'
     | 'patients'
     | 'volunteers'
+    | 'internships'
     | 'hospitals'
     | 'calendar'
     | 'telemetry'
@@ -178,6 +186,60 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
   >('branding');
   const [saveToast, setSaveToast] = useState('');
   const [isSyncing, setIsSyncing] = useState(false);
+
+  // Internship Management States
+  const [intSearchQuery, setIntSearchQuery] = useState('');
+  const [intCityFilter, setIntCityFilter] = useState<'all' | 'jaipur' | 'outside'>('all');
+  const [intStatusFilter, setIntStatusFilter] = useState<string>('all');
+  const [viewingCandidate, setViewingCandidate] = useState<InternshipSubmission | null>(null);
+
+  const handleExportInternshipsCSV = () => {
+    if (!internships || internships.length === 0) {
+      showToast('No internship applications to export.');
+      return;
+    }
+    const headers = ['ID', 'Candidate Name', 'Official Email', 'Contact Phone', 'City / Location', 'Institution', 'Course / Year', 'Status', 'Assigned Track', 'Statement of Purpose', 'Submission Date'];
+    const rows = internships.map((item) => [
+      `"${item.id}"`,
+      `"${(item.fullName || '').replace(/"/g, '""')}"`,
+      `"${(item.email || '').replace(/"/g, '""')}"`,
+      `"${(item.phone || '').replace(/"/g, '""')}"`,
+      `"${(item.city || '').replace(/"/g, '""')}"`,
+      `"${(item.institution || '').replace(/"/g, '""')}"`,
+      `"${(item.course || '').replace(/"/g, '""')}"`,
+      `"${(item.status || 'pending').replace(/"/g, '""')}"`,
+      `"${(item.assignedTrack || 'Not Assigned').replace(/"/g, '""')}"`,
+      `"${(item.whyJoin || '').replace(/"/g, '""')}"`,
+      `"${new Date(item.timestamp).toLocaleString('en-IN')}"`,
+    ]);
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `RiseUpHelp_Internship_Applications_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    showToast('Internship applications exported to CSV!');
+  };
+
+  const handleUpdateInternshipStatus = (id: string, newStatus: InternshipSubmission['status'], assignedTrack?: string) => {
+    if (!setInternships) return;
+    setInternships((prev) => {
+      const updated = prev.map((item) =>
+        item.id === id ? { ...item, status: newStatus, assignedTrack: assignedTrack ?? item.assignedTrack } : item
+      );
+      try {
+        localStorage.setItem('ruh_internships_v1', JSON.stringify(updated));
+      } catch (e) {
+        console.warn(e);
+      }
+      return updated;
+    });
+    showToast(`Candidate status updated to ${newStatus.replace('_', ' ')}!`);
+  };
 
   // Volunteer Management States
   const [volSearchQuery, setVolSearchQuery] = useState('');
@@ -1705,6 +1767,25 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                   {volunteers && volunteers.length > 0 && (
                     <span className="bg-[#FDB813] text-neutral-950 font-mono text-[10px] px-1.5 py-0.5 rounded-full font-bold">
                       {volunteers.length}
+                    </span>
+                  )}
+                </button>
+
+                <button
+                  onClick={() => setActiveTab('internships')}
+                  className={`flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all text-left whitespace-nowrap cursor-pointer ${
+                    activeTab === 'internships'
+                      ? 'bg-[#084c36] text-white shadow-xs'
+                      : 'text-neutral-700 hover:bg-neutral-200/80'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <GraduationCap className="w-4 h-4 text-[#FDB813]" />
+                    <span>Internship Applications</span>
+                  </div>
+                  {internships && internships.length > 0 && (
+                    <span className="bg-[#FDB813] text-neutral-950 font-mono text-[10px] px-1.5 py-0.5 rounded-full font-bold">
+                      {internships.length}
                     </span>
                   )}
                 </button>
@@ -5827,6 +5908,310 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                 )}
 
                 {/* 5. PARTNER HOSPITALS TAB */}
+                {activeTab === 'internships' && (
+                  <div className="space-y-6">
+                    {/* Header & Action Bar */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-neutral-200">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                          <h3 className="text-base sm:text-lg font-bold text-neutral-900 flex items-center gap-2">
+                            <span>Rise Up Youth Internship Cohort Applications</span>
+                            <span className="bg-[#084c36] text-[#FDB813] text-xs font-mono font-bold px-2.5 py-0.5 rounded-full">
+                              {internships.length} Applicants
+                            </span>
+                          </h3>
+                        </div>
+                        <p className="text-xs text-neutral-500 mt-0.5">
+                          Direct student applications. Review location to assign Ground Seva (Jaipur) or Strategic Research proposals (Outstation).
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={handleExportInternshipsCSV}
+                          className="inline-flex items-center gap-1.5 bg-neutral-900 hover:bg-neutral-800 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95"
+                          title="Export CSV for Excel / Google Sheets"
+                        >
+                          <Download className="w-3.5 h-3.5 text-[#FDB813]" />
+                          <span>Export CSV (Excel)</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Quick Metric Cards */}
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                      <div className="bg-[#faf8f5] p-3.5 rounded-2xl border border-neutral-200/80">
+                        <span className="text-[10px] uppercase font-mono font-bold text-neutral-500 block">Total Applicants</span>
+                        <div className="text-xl sm:text-2xl font-black text-neutral-900 mt-0.5">{internships.length}</div>
+                        <span className="text-[10px] text-emerald-700 font-medium mt-0.5 block">Active Cohort 2026</span>
+                      </div>
+                      <div className="bg-emerald-50/60 p-3.5 rounded-2xl border border-emerald-200/80">
+                        <span className="text-[10px] uppercase font-mono font-bold text-emerald-800 block">Jaipur (Local)</span>
+                        <div className="text-xl sm:text-2xl font-black text-emerald-950 mt-0.5">
+                          {internships.filter((i) => (i.city || '').toLowerCase().includes('jaipur')).length}
+                        </div>
+                        <span className="text-[10px] text-emerald-700 font-medium mt-0.5 block">For Ground Hospital & Slums</span>
+                      </div>
+                      <div className="bg-sky-50/60 p-3.5 rounded-2xl border border-sky-200/80">
+                        <span className="text-[10px] uppercase font-mono font-bold text-sky-800 block">Outstation (Pan-India)</span>
+                        <div className="text-xl sm:text-2xl font-black text-sky-950 mt-0.5">
+                          {internships.filter((i) => !(i.city || '').toLowerCase().includes('jaipur')).length}
+                        </div>
+                        <span className="text-[10px] text-sky-700 font-medium mt-0.5 block">For Research & Policy Files</span>
+                      </div>
+                      <div className="bg-amber-50/60 p-3.5 rounded-2xl border border-amber-200/80">
+                        <span className="text-[10px] uppercase font-mono font-bold text-amber-800 block">Selected / Active</span>
+                        <div className="text-xl sm:text-2xl font-black text-amber-950 mt-0.5">
+                          {internships.filter((i) => (i.status || '').startsWith('selected')).length}
+                        </div>
+                        <span className="text-[10px] text-amber-700 font-medium mt-0.5 block">Certificate Track</span>
+                      </div>
+                    </div>
+
+                    {/* Search & Filters */}
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-neutral-50 p-3 rounded-2xl border border-neutral-200">
+                      <div className="relative flex-1">
+                        <Search className="w-3.5 h-3.5 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                        <input
+                          type="text"
+                          value={intSearchQuery}
+                          onChange={(e) => setIntSearchQuery(e.target.value)}
+                          placeholder="Search candidate by name, email, college, city..."
+                          className="w-full text-xs pl-8 pr-3 py-2 bg-white rounded-xl border border-neutral-300 focus:outline-none focus:border-[#084c36]"
+                        />
+                      </div>
+
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {/* City Filter */}
+                        <select
+                          value={intCityFilter}
+                          onChange={(e) => setIntCityFilter(e.target.value as any)}
+                          className="text-xs bg-white border border-neutral-300 rounded-xl px-2.5 py-2 font-medium focus:outline-none"
+                        >
+                          <option value="all">📍 All Locations</option>
+                          <option value="jaipur">Jaipur Only (Ground Candidates)</option>
+                          <option value="outside">Outstation Only (Remote Research)</option>
+                        </select>
+
+                        {/* Status Filter */}
+                        <select
+                          value={intStatusFilter}
+                          onChange={(e) => setIntStatusFilter(e.target.value)}
+                          className="text-xs bg-white border border-neutral-300 rounded-xl px-2.5 py-2 font-medium focus:outline-none"
+                        >
+                          <option value="all">⚡ All Statuses</option>
+                          <option value="pending">Pending</option>
+                          <option value="under_review">Under Review</option>
+                          <option value="selected_ground">Selected - Ground</option>
+                          <option value="selected_remote">Selected - Remote Research</option>
+                          <option value="completed">Completed</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Applications Table */}
+                    <div className="overflow-x-auto rounded-2xl border border-neutral-200 bg-white">
+                      <table className="w-full text-left text-xs text-neutral-700">
+                        <thead className="bg-[#faf8f5] text-[11px] font-bold text-neutral-700 uppercase tracking-wider border-b border-neutral-200">
+                          <tr>
+                            <th className="py-3 px-4">Candidate Details</th>
+                            <th className="py-3 px-3">Location & Track Fit</th>
+                            <th className="py-3 px-3">College & Course</th>
+                            <th className="py-3 px-3">Status</th>
+                            <th className="py-3 px-4 text-right">Actions & Email</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-neutral-100 font-normal">
+                          {internships
+                            .filter((item) => {
+                              const q = intSearchQuery.toLowerCase();
+                              const matchQ =
+                                !q ||
+                                item.fullName.toLowerCase().includes(q) ||
+                                item.email.toLowerCase().includes(q) ||
+                                item.institution.toLowerCase().includes(q) ||
+                                item.city.toLowerCase().includes(q);
+
+                              const isJaipur = (item.city || '').toLowerCase().includes('jaipur');
+                              const matchCity =
+                                intCityFilter === 'all' ||
+                                (intCityFilter === 'jaipur' && isJaipur) ||
+                                (intCityFilter === 'outside' && !isJaipur);
+
+                              const matchStatus = intStatusFilter === 'all' || item.status === intStatusFilter;
+
+                              return matchQ && matchCity && matchStatus;
+                            })
+                            .map((candidate) => {
+                              const isJaipur = (candidate.city || '').toLowerCase().includes('jaipur');
+                              const emailSubject = encodeURIComponent(
+                                `Selection Letter: Rise Up Social Impact Internship 2026 (${candidate.fullName})`
+                              );
+                              const emailBody = encodeURIComponent(
+                                `Dear ${candidate.fullName},\n\nCongratulations! On behalf of Rise Up Help Initiative Foundation (Section 8 Registered Non-Profit), we are pleased to inform you that your application for the Youth Social Leadership & Research Internship Cohort 2026 has been shortlisted.\n\nCandidate Profile:\n- Name: ${candidate.fullName}\n- Institution: ${candidate.institution} (${candidate.course})\n- Location: ${candidate.city}\n- Assigned Track: ${isJaipur ? 'On-Ground Hospital Bedside Seva & Slum Relief (Jaipur)' : 'Strategic Research & Proposal File Track (Remote / Maternal & Child Nutrition)'}\n\nPlease reply to this email confirming your acceptance, and our project coordinator will dispatch your task guidelines and orientation schedule.\n\nWarm regards,\nSecretariat & Fellowship Cell\nRise Up Help Initiative Foundation\nWebsite: https://riseuphelp.org\nContact: +91 9828291119`
+                              );
+
+                              return (
+                                <tr key={candidate.id} className="hover:bg-neutral-50/70 transition-colors">
+                                  {/* Candidate Column */}
+                                  <td className="py-3 px-4">
+                                    <div className="font-bold text-neutral-900 text-xs sm:text-sm">
+                                      {candidate.fullName}
+                                    </div>
+                                    <div className="flex items-center gap-2 mt-0.5 text-[11px] text-neutral-500">
+                                      <a
+                                        href={`mailto:${candidate.email}`}
+                                        className="text-[#084c36] hover:underline font-mono"
+                                      >
+                                        {candidate.email}
+                                      </a>
+                                      <span>•</span>
+                                      <span className="font-mono">{candidate.phone}</span>
+                                    </div>
+                                    <div className="text-[10px] text-neutral-400 font-mono mt-0.5">
+                                      Applied: {new Date(candidate.timestamp).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                    </div>
+                                  </td>
+
+                                  {/* Location & Track Column */}
+                                  <td className="py-3 px-3">
+                                    <div className="flex items-center gap-1.5">
+                                      <span className="font-semibold text-neutral-800 text-xs">
+                                        {candidate.city}
+                                      </span>
+                                    </div>
+                                    <div className="mt-1">
+                                      {isJaipur ? (
+                                        <span className="inline-block text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md border border-emerald-300">
+                                          🏛️ Ground Fit (Jaipur)
+                                        </span>
+                                      ) : (
+                                        <span className="inline-block text-[10px] font-mono font-bold bg-sky-100 text-sky-800 px-2 py-0.5 rounded-md border border-sky-300">
+                                          📄 Remote Research File
+                                        </span>
+                                      )}
+                                    </div>
+                                  </td>
+
+                                  {/* College Column */}
+                                  <td className="py-3 px-3">
+                                    <div className="font-semibold text-neutral-900 text-xs max-w-[200px] truncate" title={candidate.institution}>
+                                      {candidate.institution}
+                                    </div>
+                                    <div className="text-[11px] text-neutral-500 max-w-[200px] truncate">
+                                      {candidate.course}
+                                    </div>
+                                  </td>
+
+                                  {/* Status Column */}
+                                  <td className="py-3 px-3">
+                                    <select
+                                      value={candidate.status}
+                                      onChange={(e) =>
+                                        handleUpdateInternshipStatus(
+                                          candidate.id,
+                                          e.target.value as any,
+                                          e.target.value === 'selected_ground'
+                                            ? 'Ground Hospital & Slum Seva'
+                                            : e.target.value === 'selected_remote'
+                                            ? 'Research: Maternal & Child Nutrition'
+                                            : undefined
+                                        )
+                                      }
+                                      className="text-xs font-semibold rounded-lg px-2 py-1 border border-neutral-300 bg-white focus:outline-none cursor-pointer"
+                                    >
+                                      <option value="pending">⏳ Pending</option>
+                                      <option value="under_review">🔍 Under Review</option>
+                                      <option value="selected_ground">✅ Selected - Ground (Jaipur)</option>
+                                      <option value="selected_remote">📑 Selected - Remote Research</option>
+                                      <option value="completed">⭐ Completed (Issue Cert)</option>
+                                    </select>
+                                    {candidate.assignedTrack && (
+                                      <div className="text-[10px] text-neutral-500 mt-1 italic">
+                                        {candidate.assignedTrack}
+                                      </div>
+                                    )}
+                                  </td>
+
+                                  {/* Action Buttons Column */}
+                                  <td className="py-3 px-4 text-right">
+                                    <div className="flex items-center justify-end gap-1.5">
+                                      {/* View Statement button */}
+                                      {candidate.whyJoin && (
+                                        <button
+                                          type="button"
+                                          onClick={() => setViewingCandidate(candidate)}
+                                          className="text-neutral-700 hover:text-neutral-950 p-1.5 rounded-lg border border-neutral-200 hover:bg-neutral-100 transition-colors"
+                                          title="View candidate's statement"
+                                        >
+                                          <FileText className="w-3.5 h-3.5 text-neutral-600" />
+                                        </button>
+                                      )}
+
+                                      {/* Send Official Selection Email via mailto */}
+                                      <a
+                                        href={`mailto:${candidate.email}?subject=${emailSubject}&body=${emailBody}`}
+                                        className="inline-flex items-center gap-1 bg-[#084c36] hover:bg-emerald-900 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all shadow-xs"
+                                        title="Send Official Selection Letter directly from your email"
+                                      >
+                                        <Mail className="w-3 h-3 text-[#FDB813]" />
+                                        <span className="hidden sm:inline">Dispatch Email</span>
+                                      </a>
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Candidate Statement Viewer Modal */}
+                    {viewingCandidate && (
+                      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+                        <div className="bg-white rounded-2xl max-w-lg w-full p-5 sm:p-6 shadow-2xl border border-neutral-200 space-y-4">
+                          <div className="flex items-center justify-between pb-3 border-b border-neutral-200">
+                            <div>
+                              <h4 className="font-bold text-neutral-900 text-sm">
+                                {viewingCandidate.fullName}
+                              </h4>
+                              <p className="text-xs text-neutral-500">
+                                {viewingCandidate.institution} • {viewingCandidate.city}
+                              </p>
+                            </div>
+                            <button
+                              onClick={() => setViewingCandidate(null)}
+                              className="text-neutral-400 hover:text-neutral-700 p-1 rounded-full hover:bg-neutral-100"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+
+                          <div>
+                            <span className="text-[11px] font-bold text-neutral-500 uppercase tracking-wider block mb-1">
+                              Statement of Purpose / Why Join
+                            </span>
+                            <div className="bg-neutral-50 p-3.5 rounded-xl border border-neutral-200 text-xs text-neutral-800 leading-relaxed max-h-60 overflow-y-auto">
+                              {viewingCandidate.whyJoin || 'No custom statement provided.'}
+                            </div>
+                          </div>
+
+                          <div className="flex justify-end pt-2">
+                            <button
+                              onClick={() => setViewingCandidate(null)}
+                              className="bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-bold px-4 py-2 rounded-xl"
+                            >
+                              Close
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {activeTab === 'hospitals' && partnerHospitals && setPartnerHospitals && (
                   <div className="space-y-6">
                     <div>

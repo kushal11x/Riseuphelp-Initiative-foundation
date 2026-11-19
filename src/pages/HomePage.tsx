@@ -15,6 +15,7 @@ import type {
   MediaPhotoCard,
   HeroContentConfig,
   StoryContentConfig,
+  InternshipSubmission,
 } from '../types';
 import type { AppView } from '../components/Navbar';
 import type { LanguageMode } from '../data/translations';
@@ -45,6 +46,7 @@ interface HomePageProps {
   driveItems?: DriveItem[];
   leftProfiles?: ChildSpotlightProfile[];
   rightProfiles?: ChildSpotlightProfile[];
+  onInternshipSubmit?: (submission: InternshipSubmission) => void;
 }
 
 export const HomePage: React.FC<HomePageProps> = ({
@@ -69,6 +71,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   driveItems,
   leftProfiles,
   rightProfiles,
+  onInternshipSubmit,
 }) => {
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
 
@@ -300,7 +303,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
       {/* Closing Ecosystem (Full Video Background - Deferred Rendering) */}
       <div className="w-full">
-        <ClosingEcosystem onOpenSponsorModal={() => onOpenSponsorModal()} />
+        <ClosingEcosystem onOpenSponsorModal={() => onOpenSponsorModal()} onInternshipSubmit={onInternshipSubmit} />
       </div>
 
       {/* Section 8 Credentials & Foundation Footer */}

@@ -48,6 +48,7 @@ import {
   GALLERY_ITEMS,
   RUHS_CHILDREN_WARD_PROFILES,
   INITIAL_VOLUNTEERS,
+  INITIAL_INTERNSHIPS,
 } from './data/mockData';
 import type {
   DriveItem,
@@ -64,6 +65,7 @@ import type {
   GalleryItem,
   VolunteerSubmission,
   InaugurationConfig,
+  InternshipSubmission,
 } from './types';
 
 const sanitizeGalleryItems = (items: GalleryItem[]): GalleryItem[] => {
@@ -382,6 +384,19 @@ export function App() {
     }
     return INITIAL_VOLUNTEERS;
   });
+
+  const [internships, setInternships] = useState<InternshipSubmission[]>(() => {
+    try {
+      const s = localStorage.getItem('ruh_internships_v1');
+      return s ? JSON.parse(s) : INITIAL_INTERNSHIPS;
+    } catch {
+      return INITIAL_INTERNSHIPS;
+    }
+  });
+
+  useEffect(() => {
+    safeLocalStorageSet('ruh_internships_v1', internships);
+  }, [internships]);
 
   // Sync states to LocalStorage safely (crash-proof)
   useEffect(() => {
@@ -949,6 +964,7 @@ export function App() {
           heroContent={heroContent}
           storyContent={storyContent}
           driveItems={driveItems}
+          onInternshipSubmit={(newSub) => setInternships((prev) => [newSub, ...prev])}
         />
       )}
 
@@ -1091,6 +1107,8 @@ export function App() {
         setReceiptConfig={setReceiptConfig}
         volunteers={volunteers}
         setVolunteers={setVolunteers}
+        internships={internships}
+        setInternships={setInternships}
         showDonationTicker={showDonationTicker}
         setShowDonationTicker={handleToggleTicker}
         onResetToDefaults={handleResetToDefaults}

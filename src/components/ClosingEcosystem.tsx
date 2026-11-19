@@ -1,18 +1,25 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { HeartHandshake, Briefcase, ArrowUpRight, CheckCircle2, ShieldCheck, Mail, Globe, ExternalLink, X, Send } from 'lucide-react';
+import { HeartHandshake, Briefcase, ArrowUpRight, CheckCircle2, ShieldCheck, Mail, Globe, ExternalLink, X, Send, GraduationCap } from 'lucide-react';
 import { OFFICIAL_INFO } from '../data/mockData';
 import { useLanguage } from '../context/LanguageContext';
+import { InternshipModal } from './InternshipModal';
+import type { InternshipSubmission } from '../types';
 
 interface ClosingEcosystemProps {
   onOpenSponsorModal?: () => void;
+  onInternshipSubmit?: (submission: InternshipSubmission) => void;
 }
 
-export const ClosingEcosystem: React.FC<ClosingEcosystemProps> = () => {
+export const ClosingEcosystem: React.FC<ClosingEcosystemProps> = ({
+  onOpenSponsorModal: _onOpenSponsorModal,
+  onInternshipSubmit,
+}) => {
   const { t } = useLanguage();
   const [emailInput, setEmailInput] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [activeModal, setActiveModal] = useState<'volunteer' | 'career' | null>(null);
+  const [isInternshipModalOpen, setIsInternshipModalOpen] = useState(false);
 
   // Form states for modals
   const [volunteerName, setVolunteerName] = useState('');
@@ -222,7 +229,27 @@ export const ClosingEcosystem: React.FC<ClosingEcosystemProps> = () => {
               {/* Multi-Path Action Navigation Blocks */}
               <div className="mt-3 space-y-2.5">
                 
-                {/* Path 1: Frontline Volunteering Hub */}
+                {/* Path 1: Youth Internship Cohort (FEATURED INTAKE) */}
+                <button
+                  type="button"
+                  onClick={() => setIsInternshipModalOpen(true)}
+                  className="w-full bg-gradient-to-r from-amber-500/25 via-white/20 to-white/15 hover:from-amber-500/35 hover:to-white/25 p-3 rounded-xl border border-amber-400/40 text-left transition-all group cursor-pointer shadow-sm relative overflow-hidden"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-xs sm:text-sm text-white flex items-center gap-1.5">
+                      <GraduationCap className="w-4 h-4 text-[#FDB813]" />
+                      <span>Youth Internship Cohort</span>
+                    </span>
+                    <span className="text-[9px] font-mono font-bold bg-[#FDB813] text-neutral-950 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                      Certificate & LOR
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-white/85 mt-1 leading-snug">
+                    Social leadership & research internship for students with official Section 8 NGO certification.
+                  </p>
+                </button>
+
+                {/* Path 2: Frontline Volunteering Hub */}
                 <button
                   type="button"
                   onClick={() => {
@@ -243,7 +270,7 @@ export const ClosingEcosystem: React.FC<ClosingEcosystemProps> = () => {
                   </p>
                 </button>
 
-                {/* Path 2: Career Recruitment Cell */}
+                {/* Path 3: Career Recruitment Cell */}
                 <button
                   type="button"
                   onClick={() => {
@@ -267,10 +294,10 @@ export const ClosingEcosystem: React.FC<ClosingEcosystemProps> = () => {
               </div>
             </div>
 
-            {/* WhatsApp Webhook Notification Indicator */}
+            {/* Professional Email Communication Indicator */}
             <div className="mt-3 pt-2.5 border-t border-white/15 flex items-center gap-1.5 text-[10px] text-emerald-300">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-              <span>Automated interview notifications pushed directly to WhatsApp.</span>
+              <Mail className="w-3.5 h-3.5 text-emerald-300 shrink-0" />
+              <span>Official selection letters & project assignments sent directly via Email.</span>
             </div>
           </div>
 
@@ -416,6 +443,13 @@ export const ClosingEcosystem: React.FC<ClosingEcosystemProps> = () => {
           </div>
         )}
       </AnimatePresence>
+
+      {/* Official Youth Internship Cohort Application Modal */}
+      <InternshipModal
+        isOpen={isInternshipModalOpen}
+        onClose={() => setIsInternshipModalOpen(false)}
+        onSubmitInternship={onInternshipSubmit}
+      />
     </section>
   );
 };
