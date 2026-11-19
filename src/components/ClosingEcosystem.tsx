@@ -3,24 +3,21 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { HeartHandshake, Briefcase, ArrowUpRight, CheckCircle2, ShieldCheck, Mail, Globe, ExternalLink, X, Send, GraduationCap } from 'lucide-react';
 import { OFFICIAL_INFO } from '../data/mockData';
 import { useLanguage } from '../context/LanguageContext';
-import { InternshipModal } from './InternshipModal';
-import type { InternshipSubmission } from '../types';
 
 interface ClosingEcosystemProps {
   onOpenSponsorModal?: () => void;
-  onInternshipSubmit?: (submission: InternshipSubmission) => void;
+  onNavigateView?: (view: any) => void;
 }
 
 export const ClosingEcosystem: React.FC<ClosingEcosystemProps> = ({
   onOpenSponsorModal: _onOpenSponsorModal,
-  onInternshipSubmit,
+  onNavigateView,
 }) => {
   const { t } = useLanguage();
   const [emailInput, setEmailInput] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [activeModal, setActiveModal] = useState<'volunteer' | 'career' | null>(null);
-  const [isInternshipModalOpen, setIsInternshipModalOpen] = useState(false);
-
+  
   // Form states for modals
   const [volunteerName, setVolunteerName] = useState('');
   const [volunteerPhone, setVolunteerPhone] = useState('');
@@ -232,7 +229,7 @@ export const ClosingEcosystem: React.FC<ClosingEcosystemProps> = ({
                 {/* Path 1: Youth Internship Cohort (FEATURED INTAKE) */}
                 <button
                   type="button"
-                  onClick={() => setIsInternshipModalOpen(true)}
+                  onClick={() => onNavigateView ? onNavigateView('internship') : (window.location.href = '/fellowship')}
                   className="w-full bg-gradient-to-r from-amber-500/25 via-white/20 to-white/15 hover:from-amber-500/35 hover:to-white/25 p-3 rounded-xl border border-amber-400/40 text-left transition-all group cursor-pointer shadow-sm relative overflow-hidden"
                 >
                   <div className="flex items-center justify-between">
@@ -444,12 +441,6 @@ export const ClosingEcosystem: React.FC<ClosingEcosystemProps> = ({
         )}
       </AnimatePresence>
 
-      {/* Official Youth Internship Cohort Application Modal */}
-      <InternshipModal
-        isOpen={isInternshipModalOpen}
-        onClose={() => setIsInternshipModalOpen(false)}
-        onSubmitInternship={onInternshipSubmit}
-      />
-    </section>
+          </section>
   );
 };

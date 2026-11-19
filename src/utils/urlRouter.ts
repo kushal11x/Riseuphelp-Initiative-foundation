@@ -182,6 +182,8 @@ export function getPathForView(view: AppView): string {
       return '/cancer-warriors';
     case 'education':
       return '/education';
+    case 'internship':
+      return '/fellowship';
     case 'volunteer':
       return '/volunteer';
     case 'gallery':

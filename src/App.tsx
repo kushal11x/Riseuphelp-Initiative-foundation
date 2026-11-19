@@ -19,6 +19,7 @@ import { EkadashiPage } from './pages/EkadashiPage';
 import { CancerWarriorsPage } from './pages/CancerWarriorsPage';
 import { EducationLivelihoodPage } from './pages/EducationLivelihoodPage';
 import { VolunteerPage } from './pages/VolunteerPage';
+import { InternshipPage } from './pages/InternshipPage';
 import { Navbar, type AppView } from './components/Navbar';
 import { getRouteFromLocation, pushViewToHistory } from './utils/urlRouter';
 import { useLanguage } from './context/LanguageContext';
@@ -964,7 +965,6 @@ export function App() {
           heroContent={heroContent}
           storyContent={storyContent}
           driveItems={driveItems}
-          onInternshipSubmit={(newSub) => setInternships((prev) => [newSub, ...prev])}
         />
       )}
 
@@ -1043,6 +1043,16 @@ export function App() {
           onOpenAdmin={() => setAdminPortalOpen(true)}
           onSubmitVolunteer={(newVol) => {
             setVolunteers((prev) => [newVol, ...prev]);
+          }}
+        />
+      )}
+
+      {activeView === 'internship' && (
+        <InternshipPage
+          onBackToHome={() => handleNavigateView('home')}
+          onOpenAdmin={() => setAdminPortalOpen(true)}
+          onSubmitInternship={(newSub) => {
+            setInternships((prev) => [newSub, ...prev]);
           }}
         />
       )}

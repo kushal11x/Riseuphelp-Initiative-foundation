@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, ShoppingBag, Menu, X, Flame, Heart, BookOpen, Camera, Home, Users, User } from 'lucide-react';
+import { ChevronRight, ShoppingBag, Menu, X, Flame, Heart, BookOpen, Camera, Home, Users, User, GraduationCap } from 'lucide-react';
 import type { DonorProfile } from '../types';
 import type { LanguageMode } from '../data/translations';
 import { TRANSLATIONS } from '../data/translations';
 
-export type AppView = 'home' | 'hospital-seva' | 'nariyal-pani' | 'ekadashi' | 'cancer-warriors' | 'education' | 'gallery' | 'volunteer';
+export type AppView = 'home' | 'hospital-seva' | 'nariyal-pani' | 'ekadashi' | 'cancer-warriors' | 'education' | 'gallery' | 'volunteer' | 'internship';
 
 interface NavbarProps {
   activeView: AppView;
@@ -211,6 +211,19 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Camera className="w-3.5 h-3.5 text-emerald-600" />
               <span>{t.navGallery}</span>
+            </button>
+
+            {/* 6. National Youth Fellowship Page */}
+            <button
+              onClick={() => handleNavClick('internship')}
+              className={`relative px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                activeView === 'internship'
+                  ? 'bg-[#084c36] text-white shadow-xs'
+                  : 'text-amber-800 hover:text-amber-950 hover:bg-amber-50/80 font-medium'
+              }`}
+            >
+              <GraduationCap className="w-3.5 h-3.5 text-[#FDB813]" />
+              <span>Fellowship</span>
             </button>
           </div>
         </nav>
