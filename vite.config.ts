@@ -1412,6 +1412,46 @@ function sitePersistencePlugin(): Plugin {
           return;
         }
 
+        // 14. POST /api/update-internship -> Update status or delete internship
+        if (req.method === 'POST' && req.url.startsWith('/api/update-internship')) {
+          res.setHeader('Content-Type', 'application/json');
+          res.setHeader('Access-Control-Allow-Origin', '*');
+
+          let body = '';
+          req.on('data', (chunk) => { body += chunk.toString(); });
+          req.on('end', () => {
+            try {
+              const { action, id, status, assignedTrack, updatedList } = JSON.parse(body);
+              const internshipsFile = path.resolve(configDir, 'internships.json');
+              let list: any[] = [];
+              if (fs.existsSync(internshipsFile)) {
+                try { list = JSON.parse(fs.readFileSync(internshipsFile, 'utf-8')); } catch {}
+              }
+              if (Array.isArray(updatedList)) {
+                list = updatedList;
+              } else if (action === 'delete' && id) {
+                list = list.filter((i) => i.id !== id);
+              } else if (action === 'update_status' && id) {
+                list = list.map((i) => i.id === id ? { ...i, status, assignedTrack: assignedTrack ?? i.assignedTrack } : i);
+              }
+              fs.writeFileSync(internshipsFile, JSON.stringify(list, null, 2), 'utf-8');
+              if (fs.existsSync(stateFile)) {
+                try {
+                  const stateContent = JSON.parse(fs.readFileSync(stateFile, 'utf-8'));
+                  stateContent.internships = list;
+                  fs.writeFileSync(stateFile, JSON.stringify(stateContent, null, 2), 'utf-8');
+                } catch {}
+              }
+              res.statusCode = 200;
+              res.end(JSON.stringify({ success: true, internships: list }));
+            } catch (err: any) {
+              res.statusCode = 500;
+              res.end(JSON.stringify({ success: false, error: err?.message }));
+            }
+          });
+          return;
+        }
+
         // 12. GET /api/users -> Fetch all registered users / donor login accounts
         if (req.method === 'GET' && req.url.startsWith('/api/users')) {
           res.setHeader('Content-Type', 'application/json');

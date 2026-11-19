@@ -272,6 +272,11 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
       } catch (e) {
         console.warn(e);
       }
+      fetch('/api/update-internship', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'delete', id, updatedList: updated }),
+      }).catch(() => {});
       return updated;
     });
     showToast("Application removed from directory.");

@@ -266,12 +266,19 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
       window.dispatchEvent(new CustomEvent('ruh_internship_submitted', { detail: newSubmission }));
     } catch {}
 
-    // 3. Background Server Sync
+    // 3. Background Server Sync (Permanent Cross-Device Record)
     fetch('/api/submit-internship', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newSubmission),
-    }).catch((err) => console.warn('Background server submit warning:', err));
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && Array.isArray(data.internships)) {
+          localStorage.setItem('ruh_internships_v1', JSON.stringify(data.internships));
+        }
+      })
+      .catch((err) => console.warn('Background server submit warning:', err));
 
     // 4. Inform parent App state
     if (onSubmitInternship) {
