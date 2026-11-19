@@ -25,6 +25,8 @@ import {
   Link2,
   ChevronUp,
   FileQuestion,
+  Share2,
+  Copy,
 } from 'lucide-react';
 import { Footer } from '../components/Footer';
 import type { InternshipSubmission } from '../types';
@@ -186,6 +188,39 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedData, setSubmittedData] = useState<InternshipSubmission | null>(null);
+  const [copiedLink, setCopiedLink] = useState(false);
+
+  const handleShare = async () => {
+    const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/fellowship` : 'https://riseuphelp.org/fellowship';
+    const shareData = {
+      title: 'National Youth Social Impact & Policy Fellowship 2026-27',
+      text: 'Apply for the National Youth Fellowship by Rise Up Help Initiative Foundation (Govt Registered Section 8 • 80G Certified). Dual track with verified certificates & Founder LOR:',
+      url: shareUrl,
+    };
+
+    try {
+      if (navigator.share && /mobile|android|iphone/i.test(navigator.userAgent)) {
+        await navigator.share(shareData);
+        return;
+      }
+    } catch {}
+
+    // Fallback to Clipboard copy
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2600);
+    } catch {
+      const textarea = document.createElement('textarea');
+      textarea.value = shareUrl;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2600);
+    }
+  };
 
   const handleOpenForm = () => {
     setIsFormOpen(true);
@@ -267,17 +302,44 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
   };
 
   return (
-    <div className="w-full flex flex-col gap-6 animate-in fade-in duration-300 bg-[#fbf9f6] min-h-screen text-neutral-900">
+    <div className="w-full flex flex-col gap-6 animate-in fade-in duration-300 bg-[#fbf9f6] min-h-screen text-neutral-900 relative">
       
-      {/* Top Back Navigation Bar */}
-      <div className="max-w-7xl mx-auto w-full pt-4 px-3 sm:px-6 flex items-center justify-between">
-        <button
-          onClick={onBackToHome}
-          className="inline-flex items-center gap-2 bg-white hover:bg-neutral-50 text-neutral-800 font-bold text-xs sm:text-sm px-4 py-2 rounded-full border border-neutral-300 shadow-xs hover:shadow-md transition-all cursor-pointer group"
-        >
-          <ArrowLeft className="w-4 h-4 text-neutral-700 group-hover:-translate-x-1 transition-transform" />
-          <span>Back to Home</span>
-        </button>
+      {/* Floating Share Toast Notification */}
+      <AnimatePresence>
+        {copiedLink && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -15, scale: 0.95 }}
+            className="fixed top-6 right-6 z-50 bg-[#090f1d]/95 text-amber-300 font-mono text-xs font-bold px-4 py-3 rounded-2xl shadow-2xl border border-amber-400/40 flex items-center gap-2 backdrop-blur-md"
+          >
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <span>Fellowship link copied to clipboard!</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Top Navigation Bar with Back & Share Actions */}
+      <div className="max-w-7xl mx-auto w-full pt-4 px-3 sm:px-6 flex items-center justify-between gap-2 flex-wrap">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={onBackToHome}
+            className="inline-flex items-center gap-2 bg-white hover:bg-neutral-50 text-neutral-800 font-bold text-xs sm:text-sm px-4 py-2 rounded-full border border-neutral-300 shadow-xs hover:shadow-md transition-all cursor-pointer group"
+          >
+            <ArrowLeft className="w-4 h-4 text-neutral-700 group-hover:-translate-x-1 transition-transform" />
+            <span>Back to Home</span>
+          </button>
+
+          {/* Quick Share Link Button */}
+          <button
+            onClick={handleShare}
+            className="inline-flex items-center gap-2 bg-white hover:bg-neutral-50 text-neutral-800 font-bold text-xs sm:text-sm px-4 py-2 rounded-full border border-neutral-300 shadow-xs hover:shadow-md transition-all cursor-pointer group"
+            title="Share or Copy Fellowship Link"
+          >
+            <Share2 className="w-4 h-4 text-emerald-700 group-hover:scale-110 transition-transform" />
+            <span>{copiedLink ? 'Link Copied! ✓' : 'Share Fellowship'}</span>
+          </button>
+        </div>
 
         <div className="inline-flex items-center gap-2 bg-[#0d1627] text-amber-300 font-mono font-bold text-xs px-3.5 py-1.5 rounded-full border border-neutral-800 shadow-xs">
           <GraduationCap className="w-4 h-4 text-amber-400" />
@@ -285,9 +347,14 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
         </div>
       </div>
 
-      {/* Hero Header Banner (User Uploaded Forest Video & Transparent Glassmorphic Aesthetics) */}
+      {/* Hero Header Banner (Sunlit Natural Forest Video & Radiant Frosted Glassmorphism) */}
       <div className="max-w-7xl mx-auto w-full px-3 sm:px-6">
-        <div className="rounded-3xl relative overflow-hidden shadow-2xl border border-white/20 ring-1 ring-amber-400/25 text-white min-h-[580px] flex items-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="rounded-3xl relative overflow-hidden shadow-2xl border border-white/35 ring-1 ring-amber-400/25 text-white min-h-[580px] flex items-center"
+        >
           
           {/* User's Custom Forest Background Video */}
           <div className="absolute inset-0 z-0 select-none pointer-events-none overflow-hidden">
@@ -303,93 +370,114 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
             >
               <source src="/fellowship-bg.mp4" type="video/mp4" />
             </video>
-            {/* Transparent Cinematic Overlay so Forest Video is Clearly Visible */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/50 pointer-events-none z-0" />
-            <div className="absolute inset-0 bg-black/15 pointer-events-none z-0" />
+            {/* Sunlit Crisp Natural Overlay - No Heavy Black Tinting */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/20 pointer-events-none z-0" />
           </div>
 
           {/* Ambient Lighting Halos */}
-          <div className="absolute -top-24 -right-24 w-[480px] h-[480px] bg-amber-400/15 rounded-full blur-3xl pointer-events-none animate-pulse" />
-          <div className="absolute -bottom-24 -left-24 w-[480px] h-[480px] bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -top-24 -right-24 w-[480px] h-[480px] bg-amber-400/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
+          <div className="absolute -bottom-24 -left-24 w-[480px] h-[480px] bg-emerald-400/15 rounded-full blur-3xl pointer-events-none" />
 
-          {/* 2-Column Balanced Grid: Left Content (7 cols) + Right Transparent Admissions Telemetry (5 cols) */}
+          {/* 2-Column Balanced Grid: Left Content (7 cols) + Right Radiant Frosted Admissions Telemetry (5 cols) */}
           <div className="relative z-10 w-full p-6 sm:p-10 lg:p-12">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
               
               {/* Left Column: Mission, Title, Accreditations & Recognition */}
-              <div className="lg:col-span-7 space-y-4 text-left">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="lg:col-span-7 space-y-4 text-left"
+              >
                 {/* Accreditation Badges */}
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="bg-gradient-to-r from-[#FDB813] to-amber-400 text-neutral-950 font-mono font-black text-xs px-3.5 py-1 rounded-full uppercase tracking-wider shadow-sm flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 text-neutral-950" />
                     <span>Pan-India Winter 2026 Intake</span>
                   </span>
-                  <span className="bg-black/35 backdrop-blur-md text-emerald-300 font-mono text-xs px-3 py-1 rounded-full border border-white/20 flex items-center gap-1">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="bg-white/20 backdrop-blur-md text-white font-mono text-xs px-3 py-1 rounded-full border border-white/35 flex items-center gap-1 shadow-xs">
+                    <ShieldCheck className="w-3.5 h-3.5 text-amber-300" />
                     <span>Govt Section 8 Registered • 80G Certified</span>
                   </span>
-                  <span className="bg-black/30 text-neutral-200 font-mono text-xs px-3 py-1 rounded-full border border-white/15 hidden sm:inline">
+                  <span className="bg-white/15 backdrop-blur-md text-white/95 font-mono text-xs px-3 py-1 rounded-full border border-white/25 hidden sm:inline shadow-xs">
                     CIN: U88900RJ2024NPL093120
                   </span>
                 </div>
 
                 {/* Main Headline */}
-                <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-neutral-100 to-amber-200 tracking-tight leading-[1.15] drop-shadow-md">
+                <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-[1.15] drop-shadow-[0_2px_12px_rgba(0,0,0,0.7)]">
                   National Youth Social Impact & Policy Fellowship
                 </h1>
 
-                <p className="text-xs sm:text-base text-neutral-100 leading-relaxed font-normal max-w-2xl drop-shadow-sm">
+                <p className="text-xs sm:text-base text-white/95 leading-relaxed font-normal max-w-2xl drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)]">
                   A prestigious pan-India social leadership initiative by Rise Up Help Initiative Foundation. Uniting passionate high-school & college students and young researchers across all 28 States & 8 UTs to lead frontline healthcare relief in Jaipur or author strategic maternal nutrition policy files from home.
                 </p>
 
                 {/* Dynamic Social Proof Live Counter: 500+ and Increasing */}
                 <div className="pt-1 flex items-center gap-3 flex-wrap">
-                  <div className="inline-flex items-center gap-2.5 bg-black/45 backdrop-blur-md px-4 py-2 rounded-full border border-amber-400/40 text-amber-300 font-mono text-xs font-bold shadow-inner">
+                  <div className="inline-flex items-center gap-2.5 bg-white/25 backdrop-blur-md px-4 py-2 rounded-full border border-white/40 text-amber-300 font-mono text-xs font-bold shadow-lg ring-1 ring-white/30">
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping shrink-0" />
                     <span className="text-white font-black text-sm">{count}+</span>
-                    <span className="text-neutral-200">Candidates Applied Across 26 States</span>
+                    <span className="text-white/95">Candidates Applied Across 26 States</span>
                   </div>
-                  <span className="text-xs text-amber-200/90 font-mono flex items-center gap-1 drop-shadow-sm">
-                    <Clock className="w-3.5 h-3.5 text-amber-400" />
+                  <span className="text-xs text-amber-200 font-mono flex items-center gap-1 drop-shadow-md">
+                    <Clock className="w-3.5 h-3.5 text-amber-300" />
                     <span>Admissions Open • Direct Email Selection</span>
                   </span>
                 </div>
 
-                {/* 4 Pillars of Recognition */}
+                {/* 4 Pillars of Recognition in Radiant Frosted Glass */}
                 <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs font-semibold">
-                  <div className="bg-black/30 backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/20 flex items-center gap-2.5">
+                  <motion.div
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    className="bg-white/20 hover:bg-white/30 backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/35 flex items-center gap-2.5 text-white shadow-md transition-all"
+                  >
                     <Award className="w-4 h-4 text-[#FDB813] shrink-0" />
                     <span>Verified Section 8 Certificate</span>
-                  </div>
-                  <div className="bg-black/30 backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/20 flex items-center gap-2.5">
-                    <FileText className="w-4 h-4 text-emerald-400 shrink-0" />
+                  </motion.div>
+                  <motion.div
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    className="bg-white/20 hover:bg-white/30 backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/35 flex items-center gap-2.5 text-white shadow-md transition-all"
+                  >
+                    <FileText className="w-4 h-4 text-emerald-300 shrink-0" />
                     <span>Founder's LOR for Top 10%</span>
-                  </div>
-                  <div className="bg-black/30 backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/20 flex items-center gap-2.5">
-                    <Compass className="w-4 h-4 text-sky-400 shrink-0" />
+                  </motion.div>
+                  <motion.div
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    className="bg-white/20 hover:bg-white/30 backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/35 flex items-center gap-2.5 text-white shadow-md transition-all"
+                  >
+                    <Compass className="w-4 h-4 text-sky-300 shrink-0" />
                     <span>Dual Track: Jaipur Ground & Research</span>
-                  </div>
-                  <div className="bg-black/30 backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/20 flex items-center gap-2.5">
+                  </motion.div>
+                  <motion.div
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    className="bg-white/20 hover:bg-white/30 backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/35 flex items-center gap-2.5 text-white shadow-md transition-all"
+                  >
                     <Mail className="w-4 h-4 text-amber-300 shrink-0" />
                     <span>Strictly 100% Free Application</span>
-                  </div>
+                  </motion.div>
                 </div>
-              </div>
+              </motion.div>
 
-              {/* Right Column: Transparent Admissions Telemetry Card (Video Shows Through Beautifully) */}
-              <div className="lg:col-span-5 w-full">
-                <div className="bg-black/25 backdrop-blur-md border border-white/25 hover:border-white/35 rounded-3xl p-6 sm:p-7 shadow-2xl relative overflow-hidden text-left space-y-5 transition-all">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
+              {/* Right Column: Radiant Translucent Frosted Glass Admissions Telemetry Card */}
+              <motion.div
+                initial={{ opacity: 0, x: 25 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.15 }}
+                className="lg:col-span-5 w-full"
+              >
+                <div className="bg-white/20 hover:bg-white/25 backdrop-blur-xl border border-white/40 hover:border-white/50 rounded-3xl p-6 sm:p-7 shadow-2xl relative overflow-hidden text-left space-y-4 transition-all text-white">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-amber-400/15 rounded-full blur-2xl pointer-events-none" />
 
                   {/* Card Header */}
-                  <div className="flex items-center justify-between pb-3 border-b border-white/20">
+                  <div className="flex items-center justify-between pb-3 border-b border-white/25">
                     <div className="flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                      <span className="text-[11px] font-mono font-bold tracking-wider uppercase text-neutral-200">
+                      <span className="text-[11px] font-mono font-bold tracking-wider uppercase text-white">
                         Admissions Telemetry
                       </span>
                     </div>
-                    <span className="text-[11px] font-mono text-emerald-300 font-bold bg-white/10 px-2.5 py-0.5 rounded-full border border-white/20">
+                    <span className="text-[11px] font-mono text-emerald-200 font-bold bg-emerald-500/30 px-2.5 py-0.5 rounded-full border border-emerald-300/40">
                       Live Registry
                     </span>
                   </div>
@@ -405,39 +493,39 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
                         Organic Live
                       </span>
                     </div>
-                    <p className="text-xs text-neutral-200 mt-1">
+                    <p className="text-xs text-white/90 mt-1">
                       Verified candidate portfolios submitted across Delhi, Rajasthan, UP, Maharashtra, Karnataka & 21 other states.
                     </p>
                   </div>
 
                   {/* Track Participation Breakdown */}
                   <div className="space-y-2 pt-1">
-                    <div className="flex items-center justify-between text-[11px] font-mono text-neutral-200">
+                    <div className="flex items-center justify-between text-[11px] font-mono text-white">
                       <span>Ground Healthcare (Jaipur)</span>
                       <span className="text-emerald-300 font-bold">38%</span>
                     </div>
-                    <div className="w-full bg-white/20 h-1.5 rounded-full overflow-hidden flex">
+                    <div className="w-full bg-white/30 h-2 rounded-full overflow-hidden flex">
                       <div className="bg-emerald-400 h-full w-[38%]" />
                       <div className="bg-sky-400 h-full w-[62%]" />
                     </div>
-                    <div className="flex items-center justify-between text-[11px] font-mono text-neutral-200">
+                    <div className="flex items-center justify-between text-[11px] font-mono text-white">
                       <span>Maternal Nutrition Policy (Outstation)</span>
                       <span className="text-sky-300 font-bold">62%</span>
                     </div>
                   </div>
 
                   {/* Verification Checkmarks */}
-                  <div className="pt-2 border-t border-white/20 space-y-1.5 text-xs text-neutral-100">
+                  <div className="pt-2 border-t border-white/25 space-y-1.5 text-xs text-white">
                     <div className="flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <CheckCircle2 className="w-4 h-4 text-emerald-300 shrink-0" />
                       <span>Pure Merit-Based Selection (No bias, 100% free)</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <CheckCircle2 className="w-4 h-4 text-emerald-300 shrink-0" />
                       <span>Official Selection Letter dispatched to Email</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <CheckCircle2 className="w-4 h-4 text-emerald-300 shrink-0" />
                       <span>Certificate issued under Section 8 Registered Seal</span>
                     </div>
                   </div>
@@ -446,17 +534,40 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
                   <button
                     type="button"
                     onClick={handleOpenForm}
-                    className="w-full flex items-center justify-center gap-2 bg-[#FDB813] hover:bg-amber-400 text-neutral-950 font-black text-xs sm:text-sm py-4 px-6 rounded-2xl shadow-xl transition-all cursor-pointer group transform hover:scale-[1.01] active:scale-98"
+                    className="w-full flex items-center justify-center gap-2 bg-[#FDB813] hover:bg-amber-300 text-neutral-950 font-black text-xs sm:text-sm py-4 px-6 rounded-2xl shadow-xl transition-all cursor-pointer group transform hover:scale-[1.02] active:scale-98"
                   >
                     <span>Begin Fellowship Application</span>
                     <ArrowDown className="w-4 h-4 group-hover:translate-y-1 transition-transform" />
                   </button>
+
+                  {/* Quick Share Strip */}
+                  <div className="flex items-center gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={handleShare}
+                      className="flex-1 flex items-center justify-center gap-1.5 bg-white/25 hover:bg-white/35 border border-white/40 text-white text-xs font-bold py-2.5 px-3 rounded-xl transition-all cursor-pointer shadow-sm"
+                    >
+                      <Copy className="w-3.5 h-3.5 text-amber-300" />
+                      <span>{copiedLink ? 'Link Copied! ✓' : 'Copy Share Link'}</span>
+                    </button>
+                    <a
+                      href={`https://api.whatsapp.com/send?text=${encodeURIComponent('Apply for National Youth Social Impact & Policy Fellowship 2026-27 by Rise Up Help Initiative Foundation (Govt Section 8 Registered • 80G Certified). Dual track: Jaipur Ground Oncology Care or Remote Policy Research Dossiers with Section 8 Certificate & Founder LOR: https://riseuphelp.org/fellowship')}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center justify-center gap-1.5 bg-emerald-600/90 hover:bg-emerald-500 border border-emerald-300/50 text-white text-xs font-bold py-2.5 px-3.5 rounded-xl transition-all shadow-sm"
+                      title="Share on WhatsApp"
+                    >
+                      <Share2 className="w-3.5 h-3.5" />
+                      <span>WhatsApp</span>
+                    </a>
+                  </div>
+
                 </div>
-              </div>
+              </motion.div>
 
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Dual Tracks Explainer (Ground vs Remote Research) */}
