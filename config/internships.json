@@ -1,5 +1,21 @@
 [
   {
+    "id": "RUH-INT-KUSHAL-TEST",
+    "fullName": "Kushal",
+    "email": "kushal@riseuphelp.org",
+    "phone": "9828291119",
+    "state": "Rajasthan",
+    "city": "Jaipur",
+    "qualification": "Leadership & Project Lead",
+    "institution": "RiseUpHelp Foundation",
+    "course": "Youth Impact Fellow",
+    "interestTrack": "Hospital Oncology & Bedside Nutrition Relief",
+    "status": "selected_ground",
+    "assignedTrack": "Ground Hospital & Patient Relief (RUHS & SMS)",
+    "whyJoin": "Testing permanent cross-device persistence for pan-India student fellowship applicants.",
+    "timestamp": "2026-11-19T16:41:15.353Z"
+  },
+  {
     "id": "int-seed-01",
     "fullName": "Priya Choudhary",
     "email": "priya.choudhary@gmail.com",
