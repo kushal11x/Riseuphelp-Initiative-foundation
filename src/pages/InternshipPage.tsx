@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft,
@@ -187,6 +187,18 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedData, setSubmittedData] = useState<InternshipSubmission | null>(null);
 
+  // Official Fellowship Launch Opening Animation State
+  const [showLaunchIntro, setShowLaunchIntro] = useState(true);
+
+  // Auto-dismiss launch sequence after 2.8s
+  useEffect(() => {
+    if (!showLaunchIntro) return;
+    const timer = setTimeout(() => {
+      setShowLaunchIntro(false);
+    }, 2800);
+    return () => clearTimeout(timer);
+  }, [showLaunchIntro]);
+
   const handleOpenForm = () => {
     setIsFormOpen(true);
     setTimeout(() => {
@@ -267,10 +279,125 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
   };
 
   return (
-    <div className="w-full flex flex-col gap-6 animate-in fade-in duration-300 bg-[#fbf9f6] min-h-screen text-neutral-900">
+    <div className="w-full flex flex-col gap-6 animate-in fade-in duration-300 bg-[#fbf9f6] min-h-screen text-neutral-900 relative">
       
+      {/* 🚀 Grand Official Fellowship Launch Opening Animation Overlay */}
+      <AnimatePresence>
+        {showLaunchIntro && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, scale: 1.05 }}
+            transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#070b14]/95 backdrop-blur-2xl text-white select-none overflow-hidden"
+          >
+            {/* Ambient Background Lights */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-amber-400/20 rounded-full blur-[140px] pointer-events-none animate-pulse" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-emerald-500/15 rounded-full blur-[100px] pointer-events-none" />
+
+            <div className="relative z-10 max-w-lg w-full text-center space-y-6">
+              
+              {/* Spinning Golden Seal */}
+              <motion.div
+                initial={{ scale: 0.4, rotate: -30, opacity: 0 }}
+                animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                transition={{ duration: 0.7, type: 'spring', bounce: 0.4 }}
+                className="w-24 h-24 rounded-3xl bg-gradient-to-br from-amber-300 via-[#FDB813] to-amber-600 p-0.5 mx-auto shadow-2xl shadow-amber-500/30 flex items-center justify-center"
+              >
+                <div className="w-full h-full bg-[#0a0f1d] rounded-3xl flex items-center justify-center relative overflow-hidden">
+                  <div className="absolute inset-0 bg-[radial-gradient(#FDB813_1px,transparent_1px)] [background-size:12px_12px] opacity-30" />
+                  <GraduationCap className="w-12 h-12 text-[#FDB813] animate-pulse relative z-10" />
+                </div>
+              </motion.div>
+
+              {/* Inaugural Tags */}
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="flex items-center justify-center gap-2 flex-wrap"
+              >
+                <span className="bg-gradient-to-r from-[#FDB813] to-amber-400 text-neutral-950 font-mono font-black text-xs px-3.5 py-1 rounded-full uppercase tracking-wider shadow-md flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Official National Launch</span>
+                </span>
+                <span className="bg-white/10 backdrop-blur-md text-emerald-300 font-mono text-xs px-3 py-1 rounded-full border border-white/20">
+                  Winter 2026 Cohort
+                </span>
+              </motion.div>
+
+              {/* Title & Organization */}
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.35 }}
+                className="space-y-2"
+              >
+                <p className="text-xs font-mono text-neutral-400 uppercase tracking-widest">
+                  Rise Up Help Initiative Foundation
+                </p>
+                <h1 className="text-2xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-neutral-100 to-amber-200 tracking-tight leading-tight">
+                  National Youth Social Impact & Policy Fellowship
+                </h1>
+                <p className="text-xs sm:text-sm text-neutral-300 max-w-md mx-auto">
+                  A prestigious leadership program uniting student changemakers across all 28 States & 8 UTs.
+                </p>
+              </motion.div>
+
+              {/* 3 Core Pillars Pill */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+                className="grid grid-cols-3 gap-2 text-[11px] font-mono text-neutral-200 bg-white/5 border border-white/10 rounded-2xl p-3 backdrop-blur-md"
+              >
+                <div>
+                  <div className="font-bold text-[#FDB813]">Dual Mode</div>
+                  <div className="text-[10px] text-neutral-400">Ground & Remote</div>
+                </div>
+                <div>
+                  <div className="font-bold text-emerald-300">Section 8</div>
+                  <div className="text-[10px] text-neutral-400">Govt Certified</div>
+                </div>
+                <div>
+                  <div className="font-bold text-sky-300">Merit Intake</div>
+                  <div className="text-[10px] text-neutral-400">100% Free</div>
+                </div>
+              </motion.div>
+
+              {/* Progress & Quick Entry Button */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.65 }}
+                className="space-y-3 pt-2"
+              >
+                <div className="w-48 h-1 bg-white/10 rounded-full mx-auto overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: '100%' }}
+                    transition={{ duration: 2.2, ease: 'easeInOut' }}
+                    className="h-full bg-gradient-to-r from-[#FDB813] to-amber-400 rounded-full"
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setShowLaunchIntro(false)}
+                  className="inline-flex items-center gap-2 bg-[#FDB813] hover:bg-amber-400 text-neutral-950 font-black text-xs sm:text-sm px-7 py-3 rounded-full shadow-xl transition-all cursor-pointer transform hover:scale-105 active:scale-95"
+                >
+                  <span>Enter Admissions Portal</span>
+                  <ArrowDown className="w-4 h-4" />
+                </button>
+              </motion.div>
+
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Top Back Navigation Bar */}
-      <div className="max-w-7xl mx-auto w-full pt-4 px-3 sm:px-6 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto w-full pt-4 px-3 sm:px-6 flex items-center justify-between gap-2 flex-wrap">
         <button
           onClick={onBackToHome}
           className="inline-flex items-center gap-2 bg-white hover:bg-neutral-50 text-neutral-800 font-bold text-xs sm:text-sm px-4 py-2 rounded-full border border-neutral-300 shadow-xs hover:shadow-md transition-all cursor-pointer group"
@@ -279,9 +406,20 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
           <span>Back to Home</span>
         </button>
 
-        <div className="inline-flex items-center gap-2 bg-[#0d1627] text-amber-300 font-mono font-bold text-xs px-3.5 py-1.5 rounded-full border border-neutral-800 shadow-xs">
-          <GraduationCap className="w-4 h-4 text-amber-400" />
-          <span>National Fellowship Admissions 2026-2027</span>
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={() => setShowLaunchIntro(true)}
+            className="inline-flex items-center gap-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 font-mono font-bold text-xs px-3 py-1.5 rounded-full border border-amber-200 transition-all cursor-pointer"
+            title="Replay Inaugural Launch Animation"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+            <span>Launch Sequence</span>
+          </button>
+
+          <div className="inline-flex items-center gap-2 bg-[#0d1627] text-amber-300 font-mono font-bold text-xs px-3.5 py-1.5 rounded-full border border-neutral-800 shadow-xs">
+            <GraduationCap className="w-4 h-4 text-amber-400" />
+            <span>National Fellowship Admissions 2026-2027</span>
+          </div>
         </div>
       </div>
 

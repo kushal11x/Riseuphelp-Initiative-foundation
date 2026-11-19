@@ -163,6 +163,22 @@ export function getRouteFromLocation(): RouteResolution {
     return { view: 'gallery', autoOpenCheckout: false };
   }
 
+  // National Youth Fellowship / Internship Application Page
+  if (
+    path === '/fellowship' ||
+    path === '/internship' ||
+    path === '/youth-fellowship' ||
+    path === '/apply' ||
+    hash === '#fellowship' ||
+    hash === '#/fellowship' ||
+    hash === '#internship' ||
+    hash === '#/internship' ||
+    viewParam === 'fellowship' ||
+    viewParam === 'internship'
+  ) {
+    return { view: 'internship', autoOpenCheckout: false };
+  }
+
   // Default Home
   return { view: 'home', autoOpenCheckout: false };
 }
