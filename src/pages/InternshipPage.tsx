@@ -285,11 +285,11 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
         </div>
       </div>
 
-      {/* Hero Header Banner (Cinematic Background Video & Obsidian Gold Aesthetics) */}
+      {/* Hero Header Banner (User Uploaded Forest Video & Transparent Glassmorphic Aesthetics) */}
       <div className="max-w-7xl mx-auto w-full px-3 sm:px-6">
-        <div className="rounded-3xl relative overflow-hidden shadow-2xl border border-white/15 ring-1 ring-amber-400/20 text-white min-h-[580px] flex items-center">
+        <div className="rounded-3xl relative overflow-hidden shadow-2xl border border-white/20 ring-1 ring-amber-400/25 text-white min-h-[580px] flex items-center">
           
-          {/* Cinematic Background Video with Rich Atmospheric Layering */}
+          {/* User's Custom Forest Background Video */}
           <div className="absolute inset-0 z-0 select-none pointer-events-none overflow-hidden">
             <video
               autoPlay
@@ -298,21 +298,21 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
               playsInline
               preload="auto"
               disableRemotePlayback
-              poster="/hero-poster.jpg"
+              poster="/fellowship-poster.jpg"
               className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0"
             >
-              <source src="/hero-bg.mp4" type="video/mp4" />
+              <source src="/fellowship-bg.mp4" type="video/mp4" />
             </video>
-            {/* Dark Cinematic Vignette & Ambient Layer for Crystal-Clear Text Contrast */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/80 pointer-events-none z-0" />
-            <div className="absolute inset-0 bg-[#090f1d]/35 backdrop-blur-[1px] pointer-events-none z-0" />
+            {/* Transparent Cinematic Overlay so Forest Video is Clearly Visible */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/50 pointer-events-none z-0" />
+            <div className="absolute inset-0 bg-black/15 pointer-events-none z-0" />
           </div>
 
           {/* Ambient Lighting Halos */}
           <div className="absolute -top-24 -right-24 w-[480px] h-[480px] bg-amber-400/15 rounded-full blur-3xl pointer-events-none animate-pulse" />
           <div className="absolute -bottom-24 -left-24 w-[480px] h-[480px] bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
-          {/* 2-Column Balanced Grid: Left Content (7 cols) + Right Admissions Telemetry (5 cols) */}
+          {/* 2-Column Balanced Grid: Left Content (7 cols) + Right Transparent Admissions Telemetry (5 cols) */}
           <div className="relative z-10 w-full p-6 sm:p-10 lg:p-12">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
               
@@ -324,32 +324,32 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
                     <Sparkles className="w-3.5 h-3.5 text-neutral-950" />
                     <span>Pan-India Winter 2026 Intake</span>
                   </span>
-                  <span className="bg-white/10 backdrop-blur-md text-emerald-300 font-mono text-xs px-3 py-1 rounded-full border border-white/15 flex items-center gap-1">
+                  <span className="bg-black/35 backdrop-blur-md text-emerald-300 font-mono text-xs px-3 py-1 rounded-full border border-white/20 flex items-center gap-1">
                     <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                     <span>Govt Section 8 Registered • 80G Certified</span>
                   </span>
-                  <span className="bg-white/5 text-neutral-300 font-mono text-xs px-3 py-1 rounded-full border border-white/10 hidden sm:inline">
+                  <span className="bg-black/30 text-neutral-200 font-mono text-xs px-3 py-1 rounded-full border border-white/15 hidden sm:inline">
                     CIN: U88900RJ2024NPL093120
                   </span>
                 </div>
 
                 {/* Main Headline */}
-                <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-neutral-100 to-amber-200 tracking-tight leading-[1.15]">
+                <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-neutral-100 to-amber-200 tracking-tight leading-[1.15] drop-shadow-md">
                   National Youth Social Impact & Policy Fellowship
                 </h1>
 
-                <p className="text-xs sm:text-base text-neutral-200 leading-relaxed font-normal max-w-2xl">
+                <p className="text-xs sm:text-base text-neutral-100 leading-relaxed font-normal max-w-2xl drop-shadow-sm">
                   A prestigious pan-India social leadership initiative by Rise Up Help Initiative Foundation. Uniting passionate high-school & college students and young researchers across all 28 States & 8 UTs to lead frontline healthcare relief in Jaipur or author strategic maternal nutrition policy files from home.
                 </p>
 
                 {/* Dynamic Social Proof Live Counter: 500+ and Increasing */}
                 <div className="pt-1 flex items-center gap-3 flex-wrap">
-                  <div className="inline-flex items-center gap-2.5 bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-amber-400/40 text-amber-300 font-mono text-xs font-bold shadow-inner">
+                  <div className="inline-flex items-center gap-2.5 bg-black/45 backdrop-blur-md px-4 py-2 rounded-full border border-amber-400/40 text-amber-300 font-mono text-xs font-bold shadow-inner">
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping shrink-0" />
                     <span className="text-white font-black text-sm">{count}+</span>
                     <span className="text-neutral-200">Candidates Applied Across 26 States</span>
                   </div>
-                  <span className="text-xs text-amber-200/90 font-mono flex items-center gap-1">
+                  <span className="text-xs text-amber-200/90 font-mono flex items-center gap-1 drop-shadow-sm">
                     <Clock className="w-3.5 h-3.5 text-amber-400" />
                     <span>Admissions Open • Direct Email Selection</span>
                   </span>
@@ -357,39 +357,39 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
 
                 {/* 4 Pillars of Recognition */}
                 <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs font-semibold">
-                  <div className="bg-white/[0.08] backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/15 flex items-center gap-2.5">
+                  <div className="bg-black/30 backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/20 flex items-center gap-2.5">
                     <Award className="w-4 h-4 text-[#FDB813] shrink-0" />
                     <span>Verified Section 8 Certificate</span>
                   </div>
-                  <div className="bg-white/[0.08] backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/15 flex items-center gap-2.5">
+                  <div className="bg-black/30 backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/20 flex items-center gap-2.5">
                     <FileText className="w-4 h-4 text-emerald-400 shrink-0" />
                     <span>Founder's LOR for Top 10%</span>
                   </div>
-                  <div className="bg-white/[0.08] backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/15 flex items-center gap-2.5">
+                  <div className="bg-black/30 backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/20 flex items-center gap-2.5">
                     <Compass className="w-4 h-4 text-sky-400 shrink-0" />
                     <span>Dual Track: Jaipur Ground & Research</span>
                   </div>
-                  <div className="bg-white/[0.08] backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/15 flex items-center gap-2.5">
+                  <div className="bg-black/30 backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/20 flex items-center gap-2.5">
                     <Mail className="w-4 h-4 text-amber-300 shrink-0" />
                     <span>Strictly 100% Free Application</span>
                   </div>
                 </div>
               </div>
 
-              {/* Right Column: Executive Admissions Snapshot Card */}
+              {/* Right Column: Transparent Admissions Telemetry Card (Video Shows Through Beautifully) */}
               <div className="lg:col-span-5 w-full">
-                <div className="bg-black/55 backdrop-blur-xl border border-white/20 rounded-3xl p-6 sm:p-7 shadow-2xl relative overflow-hidden text-left space-y-5">
+                <div className="bg-black/25 backdrop-blur-md border border-white/25 hover:border-white/35 rounded-3xl p-6 sm:p-7 shadow-2xl relative overflow-hidden text-left space-y-5 transition-all">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
 
                   {/* Card Header */}
-                  <div className="flex items-center justify-between pb-3 border-b border-white/15">
+                  <div className="flex items-center justify-between pb-3 border-b border-white/20">
                     <div className="flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                      <span className="text-[11px] font-mono font-bold tracking-wider uppercase text-neutral-300">
+                      <span className="text-[11px] font-mono font-bold tracking-wider uppercase text-neutral-200">
                         Admissions Telemetry
                       </span>
                     </div>
-                    <span className="text-[11px] font-mono text-emerald-400 font-bold bg-emerald-950/70 px-2.5 py-0.5 rounded-full border border-emerald-500/35">
+                    <span className="text-[11px] font-mono text-emerald-300 font-bold bg-white/10 px-2.5 py-0.5 rounded-full border border-white/20">
                       Live Registry
                     </span>
                   </div>
@@ -397,7 +397,7 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
                   {/* Big Metric Display */}
                   <div>
                     <div className="flex items-baseline gap-2">
-                      <span className="text-4xl sm:text-5xl font-black text-white tracking-tight">
+                      <span className="text-4xl sm:text-5xl font-black text-white tracking-tight drop-shadow-md">
                         {count}+
                       </span>
                       <span className="text-xs text-amber-300 font-mono font-bold flex items-center gap-0.5">
@@ -405,29 +405,29 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
                         Organic Live
                       </span>
                     </div>
-                    <p className="text-xs text-neutral-300 mt-1">
+                    <p className="text-xs text-neutral-200 mt-1">
                       Verified candidate portfolios submitted across Delhi, Rajasthan, UP, Maharashtra, Karnataka & 21 other states.
                     </p>
                   </div>
 
                   {/* Track Participation Breakdown */}
                   <div className="space-y-2 pt-1">
-                    <div className="flex items-center justify-between text-[11px] font-mono text-neutral-300">
+                    <div className="flex items-center justify-between text-[11px] font-mono text-neutral-200">
                       <span>Ground Healthcare (Jaipur)</span>
-                      <span className="text-emerald-400 font-bold">38%</span>
+                      <span className="text-emerald-300 font-bold">38%</span>
                     </div>
-                    <div className="w-full bg-white/15 h-1.5 rounded-full overflow-hidden flex">
+                    <div className="w-full bg-white/20 h-1.5 rounded-full overflow-hidden flex">
                       <div className="bg-emerald-400 h-full w-[38%]" />
                       <div className="bg-sky-400 h-full w-[62%]" />
                     </div>
-                    <div className="flex items-center justify-between text-[11px] font-mono text-neutral-300">
+                    <div className="flex items-center justify-between text-[11px] font-mono text-neutral-200">
                       <span>Maternal Nutrition Policy (Outstation)</span>
-                      <span className="text-sky-400 font-bold">62%</span>
+                      <span className="text-sky-300 font-bold">62%</span>
                     </div>
                   </div>
 
                   {/* Verification Checkmarks */}
-                  <div className="pt-2 border-t border-white/15 space-y-1.5 text-xs text-neutral-300">
+                  <div className="pt-2 border-t border-white/20 space-y-1.5 text-xs text-neutral-100">
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                       <span>Pure Merit-Based Selection (No bias, 100% free)</span>
