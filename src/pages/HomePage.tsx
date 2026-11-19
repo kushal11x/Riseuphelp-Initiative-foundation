@@ -8,6 +8,8 @@ import { ImpactLedger } from '../components/ImpactLedger';
 import { ImpactSimulator } from '../components/ImpactSimulator';
 import { ClosingEcosystem } from '../components/ClosingEcosystem';
 import { Footer } from '../components/Footer';
+import { NationalFellowshipBanner } from '../components/NationalFellowshipBanner';
+import { InternshipModal } from '../components/InternshipModal';
 import type {
   DriveItem,
   ChildSpotlightProfile,
@@ -74,6 +76,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   onInternshipSubmit,
 }) => {
   const t = TRANSLATIONS[language] || TRANSLATIONS.en;
+  const [isInternshipModalOpen, setIsInternshipModalOpen] = React.useState(false);
 
   const handleSimulatedSponsor = (amount: number, _description: string) => {
     const qty = Math.max(1, Math.floor(amount / 65));
@@ -109,6 +112,9 @@ export const HomePage: React.FC<HomePageProps> = ({
         heroContent={heroContent}
         driveItems={driveItems}
       />
+
+      {/* NATIONAL YOUTH FELLOWSHIP & RESEARCH INTAKE BANNER (TOP OF SITE) */}
+      <NationalFellowshipBanner onOpenApplyModal={() => setIsInternshipModalOpen(true)} />
 
       {/* PROMINENT DEVUTTHANA EKADASHI (20 NOV) LIVE SEVA HIGHLIGHT CARD */}
       <div className="max-w-7xl mx-auto w-full px-2 sm:px-4 pt-1 pb-2">
@@ -308,6 +314,13 @@ export const HomePage: React.FC<HomePageProps> = ({
 
       {/* Section 8 Credentials & Foundation Footer */}
       <Footer onOpenAdmin={onOpenAdmin} />
+
+      {/* National Fellowship Modal (Accessible from Top Banner & Everywhere) */}
+      <InternshipModal
+        isOpen={isInternshipModalOpen}
+        onClose={() => setIsInternshipModalOpen(false)}
+        onSubmitInternship={onInternshipSubmit}
+      />
     </main>
   );
 };

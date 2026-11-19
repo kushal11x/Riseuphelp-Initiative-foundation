@@ -198,15 +198,39 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
       showToast('No internship applications to export.');
       return;
     }
-    const headers = ['ID', 'Candidate Name', 'Official Email', 'Contact Phone', 'City / Location', 'Institution', 'Course / Year', 'Status', 'Assigned Track', 'Statement of Purpose', 'Submission Date'];
+    const headers = [
+      'ID',
+      'Candidate Name',
+      'Official Email',
+      'WhatsApp Phone',
+      'Alternate Phone',
+      'Age Bracket',
+      'Gender',
+      'State / UT',
+      'City',
+      'Qualification',
+      'Institution',
+      'Interest Track',
+      'Weekly Availability',
+      'Status',
+      'Assigned Track',
+      'Statement of Purpose',
+      'Submission Date',
+    ];
     const rows = internships.map((item) => [
       `"${item.id}"`,
       `"${(item.fullName || '').replace(/"/g, '""')}"`,
       `"${(item.email || '').replace(/"/g, '""')}"`,
       `"${(item.phone || '').replace(/"/g, '""')}"`,
+      `"${(item.alternatePhone || '').replace(/"/g, '""')}"`,
+      `"${(item.ageBracket || '').replace(/"/g, '""')}"`,
+      `"${(item.gender || '').replace(/"/g, '""')}"`,
+      `"${(item.state || 'Rajasthan').replace(/"/g, '""')}"`,
       `"${(item.city || '').replace(/"/g, '""')}"`,
+      `"${(item.qualification || item.course || '').replace(/"/g, '""')}"`,
       `"${(item.institution || '').replace(/"/g, '""')}"`,
-      `"${(item.course || '').replace(/"/g, '""')}"`,
+      `"${(item.interestTrack || '').replace(/"/g, '""')}"`,
+      `"${(item.weeklyAvailability || '').replace(/"/g, '""')}"`,
       `"${(item.status || 'pending').replace(/"/g, '""')}"`,
       `"${(item.assignedTrack || 'Not Assigned').replace(/"/g, '""')}"`,
       `"${(item.whyJoin || '').replace(/"/g, '""')}"`,
@@ -6031,7 +6055,7 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                                 !q ||
                                 item.fullName.toLowerCase().includes(q) ||
                                 item.email.toLowerCase().includes(q) ||
-                                item.institution.toLowerCase().includes(q) ||
+                                (item.institution || '').toLowerCase().includes(q) ||
                                 item.city.toLowerCase().includes(q);
 
                               const isJaipur = (item.city || '').toLowerCase().includes('jaipur');
@@ -6079,7 +6103,7 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                                   <td className="py-3 px-3">
                                     <div className="flex items-center gap-1.5">
                                       <span className="font-semibold text-neutral-800 text-xs">
-                                        {candidate.city}
+                                        {candidate.city}, {candidate.state || 'Rajasthan'}
                                       </span>
                                     </div>
                                     <div className="mt-1">
@@ -6095,14 +6119,19 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                                     </div>
                                   </td>
 
-                                  {/* College Column */}
+                                  {/* Qualification & College Column */}
                                   <td className="py-3 px-3">
-                                    <div className="font-semibold text-neutral-900 text-xs max-w-[200px] truncate" title={candidate.institution}>
-                                      {candidate.institution}
+                                    <div className="font-bold text-neutral-900 text-xs max-w-[220px] truncate" title={candidate.qualification || candidate.course}>
+                                      {candidate.qualification || candidate.course}
                                     </div>
-                                    <div className="text-[11px] text-neutral-500 max-w-[200px] truncate">
-                                      {candidate.course}
+                                    <div className="text-[11px] text-neutral-600 max-w-[220px] truncate" title={candidate.institution}>
+                                      {candidate.institution || 'Independent'}
                                     </div>
+                                    {candidate.interestTrack && (
+                                      <div className="text-[10px] text-emerald-800 font-semibold truncate mt-0.5" title={candidate.interestTrack}>
+                                        🎯 {candidate.interestTrack}
+                                      </div>
+                                    )}
                                   </td>
 
                                   {/* Status Column */}

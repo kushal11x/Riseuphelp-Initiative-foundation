@@ -219,9 +219,16 @@ export interface InternshipSubmission {
   fullName: string;
   email: string;
   phone: string;
+  alternatePhone?: string;
+  ageBracket?: string;
+  gender?: string;
+  state: string;
   city: string;
-  institution: string;
-  course: string;
+  qualification: string;
+  institution?: string;
+  course?: string;
+  interestTrack?: string;
+  weeklyAvailability?: string;
   whyJoin?: string;
   status: 'pending' | 'under_review' | 'selected_ground' | 'selected_remote' | 'completed';
   assignedTrack?: string;
