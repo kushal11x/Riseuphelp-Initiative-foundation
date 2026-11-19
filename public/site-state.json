@@ -1029,5 +1029,66 @@
     "inaugurationTitle": "RiseUpHelp Website Inauguration"
   },
   "lastUpdated": 1790663124824,
-  "initialized": true
+  "initialized": true,
+  "internships": [
+    {
+      "id": "int-seed-01",
+      "fullName": "Priya Choudhary",
+      "email": "priya.choudhary@gmail.com",
+      "phone": "9829123450",
+      "alternatePhone": "9829123451",
+      "ageBracket": "19-21 Years",
+      "gender": "Female",
+      "state": "Rajasthan",
+      "city": "Jaipur",
+      "qualification": "Undergraduate (Bachelor's - 2nd Year)",
+      "institution": "University of Rajasthan",
+      "course": "BBA",
+      "interestTrack": "Healthcare & Hospital Bedside Patient Relief",
+      "weeklyAvailability": "8-12 Hours / Week (Standard Fellowship)",
+      "whyJoin": "I want to gain hands-on experience in healthcare relief and hospital coordination for cancer chemotherapy patients.",
+      "status": "selected_ground",
+      "assignedTrack": "Ground Hospital & Patient Relief (RUHS & SMS)",
+      "timestamp": "2026-11-14T09:30:00.000Z"
+    },
+    {
+      "id": "int-seed-02",
+      "fullName": "Aman Verma",
+      "email": "aman.verma.eco@delhi.ac.in",
+      "phone": "9811456782",
+      "alternatePhone": "9811456783",
+      "ageBracket": "19-21 Years",
+      "gender": "Male",
+      "state": "Delhi NCR",
+      "city": "Delhi",
+      "qualification": "Undergraduate (Final Year / Graduating)",
+      "institution": "Delhi University (Kirori Mal College)",
+      "course": "BA Economics Hons",
+      "interestTrack": "Slum Maternal & Infant Nutrition Policy Research",
+      "weeklyAvailability": "4-6 Hours / Week (Flexible Weekend)",
+      "whyJoin": "Interested in preparing policy and research proposals on supplementary nutrition models for slum pregnant women and infants.",
+      "status": "selected_remote",
+      "assignedTrack": "Research & Strategy Proposal: Slum Maternal Nutrition",
+      "timestamp": "2026-11-16T14:15:00.000Z"
+    },
+    {
+      "id": "int-seed-03",
+      "fullName": "Kavya Sharma",
+      "email": "kavya.sharma99@gmail.com",
+      "phone": "9784561230",
+      "alternatePhone": "9784561231",
+      "ageBracket": "22-25 Years",
+      "gender": "Female",
+      "state": "Rajasthan",
+      "city": "Jaipur",
+      "qualification": "Engineering / Technical Degree",
+      "institution": "JECRC University",
+      "course": "B.Tech Computer Science",
+      "interestTrack": "Underprivileged Child Education & STEM Mentorship",
+      "weeklyAvailability": "8-12 Hours / Week (Standard Fellowship)",
+      "whyJoin": "Passionate about education cells in slums and weekend digital literacy drives.",
+      "status": "under_review",
+      "timestamp": "2026-11-18T16:40:00.000Z"
+    }
+  ]
 }

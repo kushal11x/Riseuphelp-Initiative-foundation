@@ -151,6 +151,7 @@ interface InternshipPageProps {
 
 export const InternshipPage: React.FC<InternshipPageProps> = ({
   onBackToHome,
+  onOpenAdmin,
   onSubmitInternship,
 }) => {
   const { count } = useFellowshipCounter(584);
@@ -249,24 +250,30 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
       timestamp: new Date().toISOString(),
     };
 
-    // 1. LocalStorage Persistence
+    // 1. LocalStorage Persistence with deduplication
     try {
       const stored = localStorage.getItem('ruh_internships_v1');
       const list: InternshipSubmission[] = stored ? JSON.parse(stored) : [];
-      list.unshift(newSubmission);
-      localStorage.setItem('ruh_internships_v1', JSON.stringify(list));
+      const filtered = list.filter((item) => item.id !== newSubmission.id);
+      filtered.unshift(newSubmission);
+      localStorage.setItem('ruh_internships_v1', JSON.stringify(filtered));
     } catch (err) {
       console.warn('Failed to save internship to localStorage', err);
     }
 
-    // 2. Background Server Sync
+    // 2. Dispatch cross-component and cross-tab window event
+    try {
+      window.dispatchEvent(new CustomEvent('ruh_internship_submitted', { detail: newSubmission }));
+    } catch {}
+
+    // 3. Background Server Sync
     fetch('/api/submit-internship', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newSubmission),
     }).catch((err) => console.warn('Background server submit warning:', err));
 
-    // 3. Inform parent App state
+    // 4. Inform parent App state
     if (onSubmitInternship) {
       onSubmitInternship(newSubmission);
     }
@@ -407,6 +414,17 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
         </button>
 
         <div className="flex items-center gap-2 flex-wrap">
+          {onOpenAdmin && (
+            <button
+              onClick={onOpenAdmin}
+              className="inline-flex items-center gap-1.5 bg-neutral-900 hover:bg-neutral-800 text-white font-mono font-bold text-xs px-3 py-1.5 rounded-full border border-neutral-700 transition-all cursor-pointer shadow-xs active:scale-95"
+              title="Open Admin Portal"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+              <span>Admin Portal</span>
+            </button>
+          )}
+
           <button
             onClick={() => setShowLaunchIntro(true)}
             className="inline-flex items-center gap-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 font-mono font-bold text-xs px-3 py-1.5 rounded-full border border-amber-200 transition-all cursor-pointer"
@@ -725,13 +743,22 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
                     </div>
                   </div>
 
-                  <div className="pt-4 flex items-center justify-center gap-3">
+                  <div className="pt-4 flex items-center justify-center gap-3 flex-wrap">
                     <button
                       onClick={onBackToHome}
                       className="bg-[#090f1d] hover:bg-neutral-900 text-white font-bold text-xs sm:text-sm px-8 py-3.5 rounded-full border border-amber-400/40 transition-all shadow-md cursor-pointer"
                     >
                       Return to Home
                     </button>
+                    {onOpenAdmin && (
+                      <button
+                        onClick={onOpenAdmin}
+                        className="bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs sm:text-sm px-6 py-3.5 rounded-full border border-emerald-500/40 transition-all shadow-md cursor-pointer flex items-center gap-2"
+                      >
+                        <ShieldCheck className="w-4 h-4 text-emerald-300" />
+                        <span>Open Admin Portal</span>
+                      </button>
+                    )}
                   </div>
                 </motion.div>
               ) : (

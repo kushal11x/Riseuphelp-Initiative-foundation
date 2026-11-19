@@ -18,6 +18,7 @@ import type {
   GalleryItem,
   VolunteerSubmission,
   InaugurationConfig,
+  InternshipSubmission,
 } from '../types';
 import { compressImageFile } from './imageUtils';
 
@@ -47,6 +48,7 @@ export interface SiteStatePayload {
   partnerHospitals?: HospitalNode[];
   receiptConfig?: ReceiptConfig;
   volunteers?: VolunteerSubmission[];
+  internships?: InternshipSubmission[];
   inaugurationConfig?: InaugurationConfig;
   lastUpdated?: number;
   initialized?: boolean;

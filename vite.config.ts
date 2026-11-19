@@ -1309,6 +1309,109 @@ function sitePersistencePlugin(): Plugin {
           return;
         }
 
+        // 12. POST /api/submit-internship -> Public Internship Application Submission
+        if (req.method === 'POST' && req.url.startsWith('/api/submit-internship')) {
+          res.setHeader('Content-Type', 'application/json');
+          res.setHeader('Access-Control-Allow-Origin', '*');
+
+          let body = '';
+          req.on('data', (chunk) => {
+            body += chunk.toString();
+          });
+
+          req.on('end', () => {
+            try {
+              const data = JSON.parse(body);
+              const internshipsFile = path.resolve(configDir, 'internships.json');
+              let internshipsList: any[] = [];
+              if (fs.existsSync(internshipsFile)) {
+                try {
+                  internshipsList = JSON.parse(fs.readFileSync(internshipsFile, 'utf-8'));
+                } catch {}
+              }
+
+              const newSubmission = {
+                id: data.id || `RUH-INT-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 5).toUpperCase()}`,
+                fullName: data.fullName || 'Anonymous Scholar',
+                email: data.email || '',
+                phone: data.phone || '',
+                alternatePhone: data.alternatePhone || '',
+                ageBracket: data.ageBracket || '',
+                gender: data.gender || '',
+                state: data.state || 'Rajasthan',
+                city: data.city || 'Jaipur',
+                qualification: data.qualification || '',
+                academicDiscipline: data.academicDiscipline || '',
+                institution: data.institution || 'Independent Scholar',
+                course: data.course || data.qualification || '',
+                graduationYear: data.graduationYear || '',
+                linkedInOrPortfolio: data.linkedInOrPortfolio || undefined,
+                priorExperience: data.priorExperience || '',
+                interestTrack: data.interestTrack || '',
+                weeklyHours: data.weeklyHours || data.weeklyAvailability || '',
+                coreSkills: data.coreSkills || [],
+                analyticalResponse: data.analyticalResponse || undefined,
+                groundDignityResponse: data.groundDignityResponse || undefined,
+                researchTopicPreference: data.researchTopicPreference || undefined,
+                whyJoin: data.whyJoin || undefined,
+                status: data.status || 'pending',
+                assignedTrack: data.assignedTrack || undefined,
+                timestamp: data.timestamp || new Date().toISOString(),
+              };
+
+              // Deduplicate by id if re-submitted
+              internshipsList = internshipsList.filter((i) => i.id !== newSubmission.id);
+              internshipsList.unshift(newSubmission);
+              fs.writeFileSync(internshipsFile, JSON.stringify(internshipsList, null, 2), 'utf-8');
+
+              // Also persist into site-state.json
+              if (fs.existsSync(stateFile)) {
+                try {
+                  const stateContent = JSON.parse(fs.readFileSync(stateFile, 'utf-8'));
+                  stateContent.internships = internshipsList;
+                  stateContent.lastUpdated = Date.now();
+                  fs.writeFileSync(stateFile, JSON.stringify(stateContent, null, 2), 'utf-8');
+                } catch (stateErr) {
+                  console.error('[Persistence] Error syncing internship to site-state.json:', stateErr);
+                }
+              }
+
+              console.log(`[Internship] New application registered: ${newSubmission.fullName} (${newSubmission.email}, ${newSubmission.city})`);
+              res.statusCode = 200;
+              res.end(JSON.stringify({ success: true, submission: newSubmission, internships: internshipsList }));
+            } catch (err: any) {
+              console.error('[Internship] submit-internship handler error:', err);
+              res.statusCode = 500;
+              res.end(JSON.stringify({ success: false, error: err?.message }));
+            }
+          });
+          return;
+        }
+
+        // 13. GET /api/internships -> Fetch registered internship applications
+        if (req.method === 'GET' && req.url.startsWith('/api/internships')) {
+          res.setHeader('Content-Type', 'application/json');
+          res.setHeader('Access-Control-Allow-Origin', '*');
+
+          const internshipsFile = path.resolve(configDir, 'internships.json');
+          let list: any[] = [];
+          if (fs.existsSync(internshipsFile)) {
+            try {
+              list = JSON.parse(fs.readFileSync(internshipsFile, 'utf-8'));
+            } catch {}
+          } else if (fs.existsSync(stateFile)) {
+            try {
+              const stateContent = JSON.parse(fs.readFileSync(stateFile, 'utf-8'));
+              if (Array.isArray(stateContent.internships)) {
+                list = stateContent.internships;
+              }
+            } catch {}
+          }
+          res.statusCode = 200;
+          res.end(JSON.stringify({ success: true, internships: list }));
+          return;
+        }
+
         // 12. GET /api/users -> Fetch all registered users / donor login accounts
         if (req.method === 'GET' && req.url.startsWith('/api/users')) {
           res.setHeader('Content-Type', 'application/json');

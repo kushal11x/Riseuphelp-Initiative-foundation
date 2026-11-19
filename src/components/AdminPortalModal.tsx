@@ -42,6 +42,7 @@ import {
   Star,
   Flame,
   Pencil,
+  RefreshCw,
 } from 'lucide-react';
 import type {
   DriveItem,
@@ -192,6 +193,89 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
   const [intCityFilter, setIntCityFilter] = useState<'all' | 'jaipur' | 'outside'>('all');
   const [intStatusFilter, setIntStatusFilter] = useState<string>('all');
   const [viewingCandidate, setViewingCandidate] = useState<InternshipSubmission | null>(null);
+
+  const [isRefreshingInternships, setIsRefreshingInternships] = useState(false);
+
+  const fetchAndMergeInternships = async () => {
+    setIsRefreshingInternships(true);
+    try {
+      let localList: InternshipSubmission[] = [];
+      try {
+        const stored = localStorage.getItem("ruh_internships_v1");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed)) localList = parsed;
+        }
+      } catch {}
+
+      let serverList: InternshipSubmission[] = [];
+      try {
+        const res = await fetch(`/api/internships?t=${Date.now()}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && Array.isArray(data.internships)) {
+            serverList = data.internships;
+          }
+        }
+      } catch {}
+
+      if (serverList.length === 0) {
+        try {
+          const sRes = await fetch(`/site-state.json?t=${Date.now()}`);
+          if (sRes.ok) {
+            const sData = await sRes.json();
+            if (sData && Array.isArray(sData.internships)) {
+              serverList = sData.internships;
+            }
+          }
+        } catch {}
+      }
+
+      if (setInternships) {
+        setInternships((prev) => {
+          const map = new Map<string, InternshipSubmission>();
+          for (const item of serverList) {
+            if (item && item.id) map.set(item.id, item);
+          }
+          for (const item of prev) {
+            if (item && item.id) map.set(item.id, item);
+          }
+          for (const item of localList) {
+            if (item && item.id) map.set(item.id, item);
+          }
+          const merged = Array.from(map.values()).sort((a, b) => {
+            const timeA = new Date(a.timestamp || 0).getTime();
+            const timeB = new Date(b.timestamp || 0).getTime();
+            return timeB - timeA;
+          });
+          safeLocalStorageSet("ruh_internships_v1", merged);
+          return merged;
+        });
+      }
+    } finally {
+      setIsRefreshingInternships(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen && activeTab === "internships") {
+      fetchAndMergeInternships();
+    }
+  }, [isOpen, activeTab]);
+
+  const handleDeleteInternship = (id: string) => {
+    if (!setInternships) return;
+    setInternships((prev) => {
+      const updated = prev.filter((item) => item.id !== id);
+      try {
+        localStorage.setItem("ruh_internships_v1", JSON.stringify(updated));
+      } catch (e) {
+        console.warn(e);
+      }
+      return updated;
+    });
+    showToast("Application removed from directory.");
+  };
 
   const handleExportInternshipsCSV = () => {
     if (!internships || internships.length === 0) {
@@ -5962,6 +6046,19 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                       <div className="flex items-center gap-2">
                         <button
                           type="button"
+                          onClick={() => {
+                            fetchAndMergeInternships();
+                            showToast('🔄 Applications refreshed from server & storage!');
+                          }}
+                          disabled={isRefreshingInternships}
+                          className="inline-flex items-center gap-1.5 bg-[#084c36] hover:bg-[#063b2a] text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95 disabled:opacity-50"
+                          title="Fetch latest applications from server and local storage"
+                        >
+                          <RefreshCw className={`w-3.5 h-3.5 text-[#FDB813] ${isRefreshingInternships ? 'animate-spin' : ''}`} />
+                          <span>{isRefreshingInternships ? 'Refreshing...' : 'Refresh Applications'}</span>
+                        </button>
+                        <button
+                          type="button"
                           onClick={handleExportInternshipsCSV}
                           className="inline-flex items-center gap-1.5 bg-neutral-900 hover:bg-neutral-800 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95"
                           title="Export CSV for Excel / Google Sheets"
@@ -6196,6 +6293,14 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                                         <Mail className="w-3 h-3 text-[#FDB813]" />
                                         <span className="hidden sm:inline">Dispatch Email</span>
                                       </a>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleDeleteInternship(candidate.id)}
+                                        className="text-neutral-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 rounded-lg border border-neutral-200 transition-colors"
+                                        title="Delete Application from Directory"
+                                      >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                      </button>
                                     </div>
                                   </td>
                                 </tr>

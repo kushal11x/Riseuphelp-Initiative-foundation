@@ -389,7 +389,11 @@ export function App() {
   const [internships, setInternships] = useState<InternshipSubmission[]>(() => {
     try {
       const s = localStorage.getItem('ruh_internships_v1');
-      return s ? JSON.parse(s) : INITIAL_INTERNSHIPS;
+      if (s) {
+        const parsed = JSON.parse(s);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+      return INITIAL_INTERNSHIPS;
     } catch {
       return INITIAL_INTERNSHIPS;
     }
@@ -398,6 +402,46 @@ export function App() {
   useEffect(() => {
     safeLocalStorageSet('ruh_internships_v1', internships);
   }, [internships]);
+
+  // Real-time cross-tab and cross-component sync for Fellowship & Volunteer submissions
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'ruh_internships_v1' && e.newValue) {
+        try {
+          const updated = JSON.parse(e.newValue);
+          if (Array.isArray(updated) && updated.length > 0) {
+            setInternships(updated);
+          }
+        } catch {}
+      }
+      if (e.key === 'ruh_volunteers_v1' && e.newValue) {
+        try {
+          const updated = JSON.parse(e.newValue);
+          if (Array.isArray(updated) && updated.length > 0) {
+            setVolunteers(updated);
+          }
+        } catch {}
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+
+    const handleCustomInternship = (e: any) => {
+      if (e?.detail) {
+        setInternships((prev) => {
+          if (prev.some((i) => i.id === e.detail.id)) return prev;
+          const merged = [e.detail, ...prev];
+          safeLocalStorageSet('ruh_internships_v1', merged);
+          return merged;
+        });
+      }
+    };
+    window.addEventListener('ruh_internship_submitted', handleCustomInternship);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('ruh_internship_submitted', handleCustomInternship);
+    };
+  }, []);
 
   // Sync states to LocalStorage safely (crash-proof)
   useEffect(() => {
@@ -500,6 +544,7 @@ export function App() {
         partnerHospitals,
         receiptConfig,
         volunteers,
+        internships,
         inaugurationConfig,
         ...overridePayload,
       };
@@ -520,6 +565,7 @@ export function App() {
         if (res.data.partnerHospitals) setPartnerHospitals(res.data.partnerHospitals);
         if (res.data.receiptConfig) setReceiptConfig(res.data.receiptConfig);
         if (res.data.volunteers) setVolunteers(res.data.volunteers);
+        if (res.data.internships) setInternships(res.data.internships);
         if (res.data.inaugurationConfig) setInaugurationConfig(res.data.inaugurationConfig);
         if (res.data.lastUpdated) setServerSyncTime(res.data.lastUpdated);
         console.log('✅ Site state and photos successfully synced to server disk.');
@@ -546,6 +592,7 @@ export function App() {
     partnerHospitals,
     receiptConfig,
     volunteers,
+    internships,
     inaugurationConfig,
   ]);
 
@@ -605,6 +652,15 @@ export function App() {
           if (d.partnerHospitals) setPartnerHospitals(d.partnerHospitals);
           if (d.receiptConfig) setReceiptConfig(d.receiptConfig);
           if (d.volunteers && Array.isArray(d.volunteers)) setVolunteers(d.volunteers);
+          if (d.internships && Array.isArray(d.internships)) {
+            setInternships((prev) => {
+              const existingIds = new Set(prev.map((i) => i.id));
+              const newItems = d.internships!.filter((i) => !existingIds.has(i.id));
+              const combined = [...newItems, ...prev];
+              safeLocalStorageSet('ruh_internships_v1', combined);
+              return combined;
+            });
+          }
           if (d.inaugurationConfig) {
             setInaugurationConfig(d.inaugurationConfig);
             safeLocalStorageSet('ruh_inauguration_config_v1', d.inaugurationConfig);
@@ -678,6 +734,15 @@ export function App() {
           if (d.partnerHospitals) setPartnerHospitals(d.partnerHospitals);
           if (d.receiptConfig) setReceiptConfig(d.receiptConfig);
           if (d.volunteers && Array.isArray(d.volunteers)) setVolunteers(d.volunteers);
+          if (d.internships && Array.isArray(d.internships)) {
+            setInternships((prev) => {
+              const existingIds = new Set(prev.map((i) => i.id));
+              const newItems = d.internships!.filter((i) => !existingIds.has(i.id));
+              const combined = [...newItems, ...prev];
+              safeLocalStorageSet('ruh_internships_v1', combined);
+              return combined;
+            });
+          }
           if (d.inaugurationConfig) {
             setInaugurationConfig(d.inaugurationConfig);
             safeLocalStorageSet('ruh_inauguration_config_v1', d.inaugurationConfig);
