@@ -228,11 +228,16 @@ export interface InternshipSubmission {
   academicDiscipline?: string;
   institution?: string;
   course?: string;
+  graduationYear?: string;
+  linkedInOrPortfolio?: string;
   priorExperience?: string;
   interestTrack?: string;
   coreSkills?: string[];
   analyticalResponse?: string;
+  groundDignityResponse?: string;
+  researchTopicPreference?: string;
   weeklyAvailability?: string;
+  weeklyHours?: string;
   whyJoin?: string;
   status: 'pending' | 'under_review' | 'selected_ground' | 'selected_remote' | 'completed';
   assignedTrack?: string;

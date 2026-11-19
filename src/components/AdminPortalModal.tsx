@@ -210,8 +210,12 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
       'City',
       'Qualification',
       'Institution',
+      'LinkedIn / Portfolio',
       'Interest Track',
       'Weekly Availability',
+      'Prompt 1 (Maternal Nutrition)',
+      'Prompt 2 (Bedside Empathy)',
+      'Research Topic Preference',
       'Status',
       'Assigned Track',
       'Statement of Purpose',
@@ -229,8 +233,12 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
       `"${(item.city || '').replace(/"/g, '""')}"`,
       `"${(item.qualification || item.course || '').replace(/"/g, '""')}"`,
       `"${(item.institution || '').replace(/"/g, '""')}"`,
+      `"${(item.linkedInOrPortfolio || '').replace(/"/g, '""')}"`,
       `"${(item.interestTrack || '').replace(/"/g, '""')}"`,
-      `"${(item.weeklyAvailability || '').replace(/"/g, '""')}"`,
+      `"${(item.weeklyHours || item.weeklyAvailability || '').replace(/"/g, '""')}"`,
+      `"${(item.analyticalResponse || '').replace(/"/g, '""')}"`,
+      `"${(item.groundDignityResponse || '').replace(/"/g, '""')}"`,
+      `"${(item.researchTopicPreference || '').replace(/"/g, '""')}"`,
       `"${(item.status || 'pending').replace(/"/g, '""')}"`,
       `"${(item.assignedTrack || 'Not Assigned').replace(/"/g, '""')}"`,
       `"${(item.whyJoin || '').replace(/"/g, '""')}"`,
@@ -6218,12 +6226,63 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                             </button>
                           </div>
 
-                          <div>
-                            <span className="text-[11px] font-bold text-neutral-500 uppercase tracking-wider block mb-1">
-                              Statement of Purpose / Why Join
-                            </span>
-                            <div className="bg-neutral-50 p-3.5 rounded-xl border border-neutral-200 text-xs text-neutral-800 leading-relaxed max-h-60 overflow-y-auto">
-                              {viewingCandidate.whyJoin || 'No custom statement provided.'}
+                          <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
+                            {viewingCandidate.linkedInOrPortfolio && (
+                              <div className="text-xs">
+                                <span className="text-[11px] font-bold text-neutral-500 uppercase tracking-wider block mb-0.5">
+                                  Portfolio / LinkedIn URL
+                                </span>
+                                <a
+                                  href={viewingCandidate.linkedInOrPortfolio}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="text-sky-700 underline font-mono break-all text-xs"
+                                >
+                                  {viewingCandidate.linkedInOrPortfolio}
+                                </a>
+                              </div>
+                            )}
+
+                            {viewingCandidate.analyticalResponse && (
+                              <div>
+                                <span className="text-[11px] font-bold text-neutral-500 uppercase tracking-wider block mb-1">
+                                  Prompt 1: Maternal Slum Nutrition Strategy
+                                </span>
+                                <div className="bg-neutral-50 p-3 rounded-xl border border-neutral-200 text-xs text-neutral-800 leading-relaxed">
+                                  {viewingCandidate.analyticalResponse}
+                                </div>
+                              </div>
+                            )}
+
+                            {viewingCandidate.groundDignityResponse && (
+                              <div>
+                                <span className="text-[11px] font-bold text-neutral-500 uppercase tracking-wider block mb-1">
+                                  Prompt 2: Hospital Bedside Empathy vs Speed
+                                </span>
+                                <div className="bg-neutral-50 p-3 rounded-xl border border-neutral-200 text-xs text-neutral-800 leading-relaxed">
+                                  {viewingCandidate.groundDignityResponse}
+                                </div>
+                              </div>
+                            )}
+
+                            {viewingCandidate.researchTopicPreference && (
+                              <div>
+                                <span className="text-[11px] font-bold text-neutral-500 uppercase tracking-wider block mb-1">
+                                  Track B Research Specialization Choice
+                                </span>
+                                <div className="bg-sky-50 p-2.5 rounded-xl border border-sky-200 text-xs text-sky-900 font-semibold">
+                                  {viewingCandidate.researchTopicPreference}
+                                </div>
+                              </div>
+                            )}
+
+                            <div>
+                              <span className="text-[11px] font-bold text-neutral-500 uppercase tracking-wider block mb-1">
+                                Statement of Purpose / Why Join
+                              </span>
+                              <div className="bg-neutral-50 p-3.5 rounded-xl border border-neutral-200 text-xs text-neutral-800 leading-relaxed">
+                                {viewingCandidate.whyJoin || 'No custom statement provided.'}
+                              </div>
                             </div>
                           </div>
 

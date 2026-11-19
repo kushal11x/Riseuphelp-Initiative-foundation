@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft,
   GraduationCap,
@@ -22,6 +22,9 @@ import {
   Check,
   ArrowDown,
   TrendingUp,
+  Link2,
+  ChevronUp,
+  FileQuestion,
 } from 'lucide-react';
 import { Footer } from '../components/Footer';
 import type { InternshipSubmission } from '../types';
@@ -77,28 +80,49 @@ export const QUALIFICATION_OPTIONS = [
 ];
 
 export const ACADEMIC_DISCIPLINE_OPTIONS = [
-  'Social Sciences & Humanities',
-  'Commerce, Finance & Business Administration (BBA/MBA)',
-  'Engineering, Technology & Computer Science (B.Tech/BCA)',
-  'Medicine, Nursing & Public Health / Life Sciences',
-  'Law, Legal Studies & Public Policy',
+  'Social Sciences & Humanities (Sociology, Psychology, History, Economics)',
+  'Commerce, Finance & Business Administration (B.Com, BBA, MBA)',
+  'Engineering, Technology & Computer Science (B.Tech, BCA, MCA)',
+  'Medicine, Nursing, Allied Health & Public Health (MBBS, B.Sc Nursing)',
+  'Law, Legal Studies & Public Policy (BA LLB, LLM)',
   'Mass Communication, Journalism & Media Arts',
   'Pure Sciences, Mathematics & Statistics',
-  'Other Interdisciplinary Discipline',
+  'Other Interdisciplinary Academic Discipline',
+];
+
+export const GRADUATION_YEAR_OPTIONS = [
+  '2024 or earlier (Graduated)',
+  '2025 (Final Year / Graduating)',
+  '2026 (Penultimate Year)',
+  '2027 (Undergraduate)',
+  '2028 or later',
 ];
 
 export const PRIOR_EXPERIENCE_OPTIONS = [
   'Leadership Role (Led student clubs / social initiatives / campus drives)',
-  'Active Volunteer (Participated in NGO drives / community work)',
-  'First-Time Contributor (Passionate about beginning grassroots journey)',
+  'Active Volunteer (Participated in NGO drives / NSS / NCC / community work)',
+  'First-Time Contributor (Passionate about beginning grassroots social journey)',
 ];
 
 export const FELLOWSHIP_TRACK_OPTIONS = [
-  'Hospital Bedside Oncology & Patient Nutrition Relief (Clinical Bedside)',
-  'Slum Maternal & Infant Supplementary Nutrition Policy Dossier (Research File)',
+  'Hospital Bedside Oncology & Patient Nutrition Relief (Clinical Bedside - Jaipur)',
+  'Slum Maternal & Infant Supplementary Nutrition Policy Dossier (Research File - Pan-India Remote)',
   'Pediatric Slum Education & Digital Literacy Intervention (Education Cell)',
   'Ground Documentary Journalism & Transparency Storytelling (Media Track)',
   'Public Administration & Community Field Auditing (Operations)',
+];
+
+export const WEEKLY_HOURS_OPTIONS = [
+  '4 - 6 Hours / Week (Standard Fellowship Pace)',
+  '8 - 10 Hours / Week (Active Cohort Pace)',
+  '12+ Hours / Week (Intensive Leadership Track)',
+];
+
+export const RESEARCH_TOPIC_OPTIONS = [
+  'Maternal & Infant Supplementary Nutrition in Urban Slums (Beyond Coconut Water)',
+  'Government Hospital Oncology Bedside Patient Relief & Nutrition Delivery Systems',
+  'Urban Slum Pediatric Literacy & Drop-Out Prevention Models',
+  'Digital Direct-Donation Transparency & Impact Verification in Indian NGOs',
 ];
 
 const AVAILABLE_SKILLS = [
@@ -108,6 +132,8 @@ const AVAILABLE_SKILLS = [
   'Content & Video Storytelling',
   'Public Speaking & Advocacy',
   'Community Engagement',
+  'Policy Drafting & Analysis',
+  'Digital Outreach & Media',
 ];
 
 export const AGE_BRACKET_OPTIONS = [
@@ -125,32 +151,51 @@ interface InternshipPageProps {
 
 export const InternshipPage: React.FC<InternshipPageProps> = ({
   onBackToHome,
-  onOpenAdmin,
   onSubmitInternship,
 }) => {
-  const { count } = useFellowshipCounter(574);
+  const { count } = useFellowshipCounter(584);
+
+  // Form Expansion State (Controlled via "Begin Fellowship Application" button)
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   // Form States (Clean, Professional, No phone number clutter)
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [ageBracket, setAgeBracket] = useState(AGE_BRACKET_OPTIONS[1]);
   const [gender, setGender] = useState('Female');
+  const [linkedInOrPortfolio, setLinkedInOrPortfolio] = useState('');
   const [state, setState] = useState('Rajasthan');
   const [city, setCity] = useState('');
   const [qualification, setQualification] = useState(QUALIFICATION_OPTIONS[1]);
   const [academicDiscipline, setAcademicDiscipline] = useState(ACADEMIC_DISCIPLINE_OPTIONS[0]);
   const [institution, setInstitution] = useState('');
+  const [graduationYear, setGraduationYear] = useState(GRADUATION_YEAR_OPTIONS[2]);
   const [priorExperience, setPriorExperience] = useState(PRIOR_EXPERIENCE_OPTIONS[0]);
   const [interestTrack, setInterestTrack] = useState(FELLOWSHIP_TRACK_OPTIONS[0]);
+  const [weeklyHours, setWeeklyHours] = useState(WEEKLY_HOURS_OPTIONS[0]);
   const [selectedSkills, setSelectedSkills] = useState<string[]>([
     'Research & Dossier Writing',
     'Community Engagement',
   ]);
   const [analyticalResponse, setAnalyticalResponse] = useState('');
+  const [groundDignityResponse, setGroundDignityResponse] = useState('');
+  const [researchTopicPreference, setResearchTopicPreference] = useState(RESEARCH_TOPIC_OPTIONS[0]);
   const [whyJoin, setWhyJoin] = useState('');
+  const [agreedToHonorCode, setAgreedToHonorCode] = useState(false);
+  const [agreedToFreeTerms, setAgreedToFreeTerms] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedData, setSubmittedData] = useState<InternshipSubmission | null>(null);
+
+  const handleOpenForm = () => {
+    setIsFormOpen(true);
+    setTimeout(() => {
+      const formElement = document.getElementById('application-form');
+      if (formElement) {
+        formElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 120);
+  };
 
   const toggleSkill = (skill: string) => {
     setSelectedSkills((prev) =>
@@ -178,10 +223,15 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
       academicDiscipline,
       institution: institution.trim() || 'Independent Scholar',
       course: qualification,
+      graduationYear,
+      linkedInOrPortfolio: linkedInOrPortfolio.trim() || undefined,
       priorExperience,
       interestTrack,
+      weeklyHours,
       coreSkills: selectedSkills,
       analyticalResponse: analyticalResponse.trim() || undefined,
+      groundDignityResponse: groundDignityResponse.trim() || undefined,
+      researchTopicPreference: researchTopicPreference.trim() || undefined,
       whyJoin: whyJoin.trim() || undefined,
       status: 'pending',
       timestamp: new Date().toISOString(),
@@ -235,160 +285,176 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
         </div>
       </div>
 
-      {/* Hero Header Banner (Grand, Prestigious National Scale - Midnight Obsidian & Gold Luxury Theme) */}
+      {/* Hero Header Banner (Cinematic Background Video & Obsidian Gold Aesthetics) */}
       <div className="max-w-7xl mx-auto w-full px-3 sm:px-6">
-        <div className="rounded-3xl bg-gradient-to-br from-[#090f1d] via-[#0d1627] to-[#060a12] text-white p-6 sm:p-10 lg:p-12 shadow-2xl border border-white/10 ring-1 ring-amber-400/20 relative overflow-hidden">
+        <div className="rounded-3xl relative overflow-hidden shadow-2xl border border-white/15 ring-1 ring-amber-400/20 text-white min-h-[580px] flex items-center">
+          
+          {/* Cinematic Background Video with Rich Atmospheric Layering */}
+          <div className="absolute inset-0 z-0 select-none pointer-events-none overflow-hidden">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="auto"
+              disableRemotePlayback
+              poster="/hero-poster.jpg"
+              className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0"
+            >
+              <source src="/hero-bg.mp4" type="video/mp4" />
+            </video>
+            {/* Dark Cinematic Vignette & Ambient Layer for Crystal-Clear Text Contrast */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/80 pointer-events-none z-0" />
+            <div className="absolute inset-0 bg-[#090f1d]/35 backdrop-blur-[1px] pointer-events-none z-0" />
+          </div>
+
           {/* Ambient Lighting Halos */}
-          <div className="absolute -top-24 -right-24 w-[480px] h-[480px] bg-amber-400/12 rounded-full blur-3xl pointer-events-none animate-pulse" />
+          <div className="absolute -top-24 -right-24 w-[480px] h-[480px] bg-amber-400/15 rounded-full blur-3xl pointer-events-none animate-pulse" />
           <div className="absolute -bottom-24 -left-24 w-[480px] h-[480px] bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(#ffffff06_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" />
 
-          {/* 2-Column Balanced Grid: Left Content (7 cols) + Right Admissions Snapshot (5 cols) */}
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
-            
-            {/* Left Column: Mission, Title, Accreditations & Recognition */}
-            <div className="lg:col-span-7 space-y-4 text-left">
-              {/* Accreditation Badges */}
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="bg-gradient-to-r from-[#FDB813] to-amber-400 text-neutral-950 font-mono font-black text-xs px-3.5 py-1 rounded-full uppercase tracking-wider shadow-sm flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-neutral-950" />
-                  <span>Pan-India Winter 2026 Intake</span>
-                </span>
-                <span className="bg-white/10 backdrop-blur-md text-emerald-300 font-mono text-xs px-3 py-1 rounded-full border border-white/15 flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Govt Section 8 Registered • 80G Certified</span>
-                </span>
-                <span className="bg-white/5 text-neutral-300 font-mono text-xs px-3 py-1 rounded-full border border-white/10 hidden sm:inline">
-                  CIN: U88900RJ2024NPL093120
-                </span>
-              </div>
-
-              {/* Main Headline */}
-              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-neutral-100 to-amber-200 tracking-tight leading-[1.15]">
-                National Youth Social Impact & Policy Fellowship
-              </h1>
-
-              <p className="text-xs sm:text-base text-neutral-300 leading-relaxed font-normal">
-                A prestigious pan-India social leadership initiative by Rise Up Help Initiative Foundation. Uniting passionate high-school & college students and young researchers across all 28 States & 8 UTs to lead frontline healthcare relief in Jaipur or author strategic maternal nutrition policy files from home.
-              </p>
-
-              {/* Dynamic Social Proof Live Counter: 500+ and Increasing */}
-              <div className="pt-1 flex items-center gap-3 flex-wrap">
-                <div className="inline-flex items-center gap-2.5 bg-black/50 backdrop-blur-md px-4 py-2 rounded-full border border-amber-400/35 text-amber-300 font-mono text-xs font-bold shadow-inner">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping shrink-0" />
-                  <span className="text-white font-black text-sm">{count}+</span>
-                  <span className="text-neutral-200">Candidates Applied Across 26 States</span>
-                </div>
-                <span className="text-xs text-amber-200/90 font-mono flex items-center gap-1">
-                  <Clock className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Admissions Open • Direct Email Selection</span>
-                </span>
-              </div>
-
-              {/* 4 Pillars of Recognition */}
-              <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs font-semibold">
-                <div className="bg-white/[0.07] backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/10 flex items-center gap-2.5">
-                  <Award className="w-4 h-4 text-[#FDB813] shrink-0" />
-                  <span>Verified Section 8 Certificate</span>
-                </div>
-                <div className="bg-white/[0.07] backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/10 flex items-center gap-2.5">
-                  <FileText className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>Founder's LOR for Top 10%</span>
-                </div>
-                <div className="bg-white/[0.07] backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/10 flex items-center gap-2.5">
-                  <Compass className="w-4 h-4 text-sky-400 shrink-0" />
-                  <span>Dual Track: Jaipur Ground & Research</span>
-                </div>
-                <div className="bg-white/[0.07] backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/10 flex items-center gap-2.5">
-                  <Mail className="w-4 h-4 text-amber-300 shrink-0" />
-                  <span>Strictly 100% Free Application</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column: Executive Admissions Snapshot Card (No Empty Space) */}
-            <div className="lg:col-span-5 w-full">
-              <div className="bg-white/[0.06] backdrop-blur-xl border border-white/15 rounded-3xl p-6 sm:p-7 shadow-2xl relative overflow-hidden text-left space-y-5">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
-
-                {/* Card Header */}
-                <div className="flex items-center justify-between pb-3 border-b border-white/10">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                    <span className="text-[11px] font-mono font-bold tracking-wider uppercase text-neutral-300">
-                      Admissions Telemetry
-                    </span>
-                  </div>
-                  <span className="text-[11px] font-mono text-emerald-400 font-bold bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
-                    Live Registry
+          {/* 2-Column Balanced Grid: Left Content (7 cols) + Right Admissions Telemetry (5 cols) */}
+          <div className="relative z-10 w-full p-6 sm:p-10 lg:p-12">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+              
+              {/* Left Column: Mission, Title, Accreditations & Recognition */}
+              <div className="lg:col-span-7 space-y-4 text-left">
+                {/* Accreditation Badges */}
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="bg-gradient-to-r from-[#FDB813] to-amber-400 text-neutral-950 font-mono font-black text-xs px-3.5 py-1 rounded-full uppercase tracking-wider shadow-sm flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-neutral-950" />
+                    <span>Pan-India Winter 2026 Intake</span>
+                  </span>
+                  <span className="bg-white/10 backdrop-blur-md text-emerald-300 font-mono text-xs px-3 py-1 rounded-full border border-white/15 flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Govt Section 8 Registered • 80G Certified</span>
+                  </span>
+                  <span className="bg-white/5 text-neutral-300 font-mono text-xs px-3 py-1 rounded-full border border-white/10 hidden sm:inline">
+                    CIN: U88900RJ2024NPL093120
                   </span>
                 </div>
 
-                {/* Big Metric Display */}
-                <div>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-4xl sm:text-5xl font-black text-white tracking-tight">
-                      {count}+
-                    </span>
-                    <span className="text-xs text-amber-300 font-mono font-bold flex items-center gap-0.5">
-                      <TrendingUp className="w-3.5 h-3.5" />
-                      Organic Live
-                    </span>
+                {/* Main Headline */}
+                <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-neutral-100 to-amber-200 tracking-tight leading-[1.15]">
+                  National Youth Social Impact & Policy Fellowship
+                </h1>
+
+                <p className="text-xs sm:text-base text-neutral-200 leading-relaxed font-normal max-w-2xl">
+                  A prestigious pan-India social leadership initiative by Rise Up Help Initiative Foundation. Uniting passionate high-school & college students and young researchers across all 28 States & 8 UTs to lead frontline healthcare relief in Jaipur or author strategic maternal nutrition policy files from home.
+                </p>
+
+                {/* Dynamic Social Proof Live Counter: 500+ and Increasing */}
+                <div className="pt-1 flex items-center gap-3 flex-wrap">
+                  <div className="inline-flex items-center gap-2.5 bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-amber-400/40 text-amber-300 font-mono text-xs font-bold shadow-inner">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping shrink-0" />
+                    <span className="text-white font-black text-sm">{count}+</span>
+                    <span className="text-neutral-200">Candidates Applied Across 26 States</span>
                   </div>
-                  <p className="text-xs text-neutral-400 mt-1">
-                    Verified candidate portfolios submitted across Delhi, Rajasthan, UP, Maharashtra, Karnataka & 21 other regions.
-                  </p>
+                  <span className="text-xs text-amber-200/90 font-mono flex items-center gap-1">
+                    <Clock className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Admissions Open • Direct Email Selection</span>
+                  </span>
                 </div>
 
-                {/* Track Participation Breakdown */}
-                <div className="space-y-2 pt-1">
-                  <div className="flex items-center justify-between text-[11px] font-mono text-neutral-300">
-                    <span>Ground Healthcare (Jaipur)</span>
-                    <span className="text-emerald-400 font-bold">38%</span>
+                {/* 4 Pillars of Recognition */}
+                <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs font-semibold">
+                  <div className="bg-white/[0.08] backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/15 flex items-center gap-2.5">
+                    <Award className="w-4 h-4 text-[#FDB813] shrink-0" />
+                    <span>Verified Section 8 Certificate</span>
                   </div>
-                  <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden flex">
-                    <div className="bg-emerald-400 h-full w-[38%]" />
-                    <div className="bg-sky-400 h-full w-[62%]" />
+                  <div className="bg-white/[0.08] backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/15 flex items-center gap-2.5">
+                    <FileText className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>Founder's LOR for Top 10%</span>
                   </div>
-                  <div className="flex items-center justify-between text-[11px] font-mono text-neutral-300">
-                    <span>Maternal Nutrition Policy (Outstation)</span>
-                    <span className="text-sky-400 font-bold">62%</span>
+                  <div className="bg-white/[0.08] backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/15 flex items-center gap-2.5">
+                    <Compass className="w-4 h-4 text-sky-400 shrink-0" />
+                    <span>Dual Track: Jaipur Ground & Research</span>
                   </div>
-                </div>
-
-                {/* Verification Checkmarks */}
-                <div className="pt-2 border-t border-white/10 space-y-1.5 text-xs text-neutral-300">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>Pure Merit-Based Selection (No bias, 100% free)</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>Official Selection Letter dispatched to Email</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>Certificate issued under Section 8 Registered Seal</span>
+                  <div className="bg-white/[0.08] backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-white/15 flex items-center gap-2.5">
+                    <Mail className="w-4 h-4 text-amber-300 shrink-0" />
+                    <span>Strictly 100% Free Application</span>
                   </div>
                 </div>
-
-                {/* Fast-Track CTA Button */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    const formElement = document.getElementById('application-form');
-                    if (formElement) {
-                      formElement.scrollIntoView({ behavior: 'smooth' });
-                    }
-                  }}
-                  className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#FDB813] to-amber-400 hover:from-amber-300 hover:to-amber-400 text-neutral-950 font-black text-xs sm:text-sm py-3.5 px-6 rounded-2xl shadow-lg transition-all cursor-pointer group"
-                >
-                  <span>Begin Fellowship Application</span>
-                  <ArrowDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
-                </button>
               </div>
-            </div>
 
+              {/* Right Column: Executive Admissions Snapshot Card */}
+              <div className="lg:col-span-5 w-full">
+                <div className="bg-black/55 backdrop-blur-xl border border-white/20 rounded-3xl p-6 sm:p-7 shadow-2xl relative overflow-hidden text-left space-y-5">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
+
+                  {/* Card Header */}
+                  <div className="flex items-center justify-between pb-3 border-b border-white/15">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                      <span className="text-[11px] font-mono font-bold tracking-wider uppercase text-neutral-300">
+                        Admissions Telemetry
+                      </span>
+                    </div>
+                    <span className="text-[11px] font-mono text-emerald-400 font-bold bg-emerald-950/70 px-2.5 py-0.5 rounded-full border border-emerald-500/35">
+                      Live Registry
+                    </span>
+                  </div>
+
+                  {/* Big Metric Display */}
+                  <div>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-4xl sm:text-5xl font-black text-white tracking-tight">
+                        {count}+
+                      </span>
+                      <span className="text-xs text-amber-300 font-mono font-bold flex items-center gap-0.5">
+                        <TrendingUp className="w-3.5 h-3.5" />
+                        Organic Live
+                      </span>
+                    </div>
+                    <p className="text-xs text-neutral-300 mt-1">
+                      Verified candidate portfolios submitted across Delhi, Rajasthan, UP, Maharashtra, Karnataka & 21 other states.
+                    </p>
+                  </div>
+
+                  {/* Track Participation Breakdown */}
+                  <div className="space-y-2 pt-1">
+                    <div className="flex items-center justify-between text-[11px] font-mono text-neutral-300">
+                      <span>Ground Healthcare (Jaipur)</span>
+                      <span className="text-emerald-400 font-bold">38%</span>
+                    </div>
+                    <div className="w-full bg-white/15 h-1.5 rounded-full overflow-hidden flex">
+                      <div className="bg-emerald-400 h-full w-[38%]" />
+                      <div className="bg-sky-400 h-full w-[62%]" />
+                    </div>
+                    <div className="flex items-center justify-between text-[11px] font-mono text-neutral-300">
+                      <span>Maternal Nutrition Policy (Outstation)</span>
+                      <span className="text-sky-400 font-bold">62%</span>
+                    </div>
+                  </div>
+
+                  {/* Verification Checkmarks */}
+                  <div className="pt-2 border-t border-white/15 space-y-1.5 text-xs text-neutral-300">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>Pure Merit-Based Selection (No bias, 100% free)</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>Official Selection Letter dispatched to Email</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>Certificate issued under Section 8 Registered Seal</span>
+                    </div>
+                  </div>
+
+                  {/* Fast-Track CTA Button that triggers animation */}
+                  <button
+                    type="button"
+                    onClick={handleOpenForm}
+                    className="w-full flex items-center justify-center gap-2 bg-[#FDB813] hover:bg-amber-400 text-neutral-950 font-black text-xs sm:text-sm py-4 px-6 rounded-2xl shadow-xl transition-all cursor-pointer group transform hover:scale-[1.01] active:scale-98"
+                  >
+                    <span>Begin Fellowship Application</span>
+                    <ArrowDown className="w-4 h-4 group-hover:translate-y-1 transition-transform" />
+                  </button>
+                </div>
+              </div>
+
+            </div>
           </div>
         </div>
       </div>
@@ -448,439 +514,603 @@ export const InternshipPage: React.FC<InternshipPageProps> = ({
           </div>
 
         </div>
-      </div>
 
-      {/* Main Application Form Container */}
-      <div id="application-form" className="max-w-7xl mx-auto w-full px-3 sm:px-6 scroll-mt-6">
-        <div className="bg-white rounded-3xl p-6 sm:p-10 lg:p-12 border border-neutral-300 shadow-xl">
-          
-          {submittedData ? (
-            /* Success / Confirmation Screen */
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="text-center py-8 sm:py-12 space-y-4 max-w-2xl mx-auto"
+        {/* Collapsed State Callout Button (Shown when form is not yet opened) */}
+        {!isFormOpen && !submittedData && (
+          <div className="text-center py-6 sm:py-8 space-y-3">
+            <button
+              onClick={handleOpenForm}
+              className="inline-flex items-center gap-3 bg-[#FDB813] hover:bg-amber-400 text-neutral-950 font-black text-sm sm:text-base px-9 py-4 rounded-full shadow-2xl hover:shadow-amber-400/20 transition-all cursor-pointer transform hover:-translate-y-0.5 active:scale-98"
             >
-              <div className="w-20 h-20 rounded-3xl bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto shadow-inner">
-                <CheckCircle2 className="w-12 h-12" />
-              </div>
-
-              <div className="space-y-1">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-200">
-                  Fellowship Docket ID: {submittedData.id}
-                </span>
-                <h2 className="text-2xl sm:text-4xl font-black text-neutral-900 pt-2">
-                  Application Successfully Registered!
-                </h2>
-                <p className="text-xs sm:text-sm text-neutral-600 max-w-lg mx-auto leading-relaxed">
-                  Thank you, <span className="font-bold text-neutral-900">{submittedData.fullName}</span> ({submittedData.city}, {submittedData.state}). Your fellowship credentials have been recorded in the National Selection Registry.
-                </p>
-              </div>
-
-              {/* What Happens Next Card */}
-              <div className="bg-[#faf8f5] border border-neutral-300 rounded-3xl p-6 text-left space-y-3 shadow-xs">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-[#084c36] flex items-center gap-2 font-mono">
-                  <Clock className="w-4 h-4 text-emerald-700" />
-                  <span>Official Selection Timeline & Email Dispatch</span>
-                </h4>
-                <p className="text-xs sm:text-sm text-neutral-700 leading-relaxed">
-                  Our selection board is reviewing state representation and candidate profiles. Shortlisted fellows will receive their <strong>Official Selection Letter, Assigned Fellowship Track & Project Dossier</strong> directly on your registered email:
-                </p>
-                <div className="bg-white p-3.5 rounded-2xl border border-emerald-300 flex items-center gap-2.5 font-mono text-xs sm:text-sm text-neutral-900 shadow-2xs">
-                  <Mail className="w-4 h-4 text-[#084c36] shrink-0" />
-                  <span className="truncate font-bold">{submittedData.email}</span>
-                </div>
-                <div className="text-[11px] text-neutral-500 space-y-1 pt-2 border-t border-neutral-200">
-                  <div>• <strong>Assigned Track Criteria:</strong> Jaipur-based fellows receive hospital/slum ground relief; outstation fellows receive policy research files on maternal nutrition & slum development.</div>
-                  <div>• Official dockets are dispatched strictly via email within 48 to 72 hours.</div>
-                </div>
-              </div>
-
-              <div className="pt-4 flex items-center justify-center gap-3">
-                <button
-                  onClick={onBackToHome}
-                  className="bg-[#084c36] hover:bg-emerald-900 text-white font-bold text-xs sm:text-sm px-8 py-3.5 rounded-full transition-all shadow-md cursor-pointer"
-                >
-                  Return to Home
-                </button>
-              </div>
-            </motion.div>
-          ) : (
-            /* Spacious Professional Application Form (Clean, Modern, No Fake Names) */
-            <div className="max-w-4xl mx-auto space-y-8 text-left">
-              
-              <div>
-                <div className="inline-flex items-center gap-1.5 bg-emerald-50 text-[#084c36] font-mono font-bold text-xs px-3 py-1 rounded-full border border-emerald-200 mb-2">
-                  <Sparkles className="w-3.5 h-3.5 text-[#FDB813]" />
-                  <span>National Enrolment Form • Winter 2026 Admissions</span>
-                </div>
-                <h2 className="text-2xl sm:text-3xl font-black text-neutral-900 tracking-tight">
-                  Fellowship Enrolment Application
-                </h2>
-                <p className="text-xs sm:text-sm text-neutral-500 mt-1">
-                  Please provide accurate academic, geographic and analytical responses. Official offer dockets will be communicated strictly via Email.
-                </p>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-8">
-                
-                {/* SECTION 1: Personal & Contact Information (Email Centric, No Clutter) */}
-                <div className="space-y-4 bg-[#faf8f5] p-5 sm:p-7 rounded-3xl border border-neutral-200">
-                  <div className="flex items-center justify-between pb-2 border-b border-neutral-200">
-                    <span className="text-xs font-bold uppercase tracking-wider text-emerald-900 flex items-center gap-2 font-mono">
-                      <span>1. Applicant Identity & Direct Email Dispatch</span>
-                    </span>
-                    <span className="text-[10px] font-mono text-neutral-500 font-semibold">Verified Admissions</span>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* Full Legal Name */}
-                    <div>
-                      <label className="text-xs font-bold text-neutral-800 block mb-1">
-                        Full Legal Name *
-                      </label>
-                      <div className="relative flex items-center">
-                        <User className="w-4 h-4 text-neutral-400 absolute left-3.5 pointer-events-none" />
-                        <input
-                          type="text"
-                          required
-                          value={fullName}
-                          onChange={(e) => setFullName(e.target.value)}
-                          placeholder="Enter your full legal name as per government records"
-                          className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl pl-10 pr-3.5 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-[#084c36] focus:ring-1 focus:ring-[#084c36] focus:outline-none transition-all shadow-2xs"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Official Email */}
-                    <div>
-                      <label className="text-xs font-bold text-neutral-800 block mb-1">
-                        Official Email Address * <span className="text-[10px] font-normal text-emerald-800">(All selection letters dispatched here)</span>
-                      </label>
-                      <div className="relative flex items-center">
-                        <Mail className="w-4 h-4 text-neutral-400 absolute left-3.5 pointer-events-none" />
-                        <input
-                          type="email"
-                          required
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="name@example.com"
-                          className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl pl-10 pr-3.5 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-[#084c36] focus:ring-1 focus:ring-[#084c36] focus:outline-none transition-all font-mono shadow-2xs"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* Age Bracket */}
-                    <div>
-                      <label className="text-xs font-bold text-neutral-800 block mb-1">
-                        Age Bracket *
-                      </label>
-                      <div className="relative flex items-center">
-                        <Calendar className="w-4 h-4 text-neutral-400 absolute left-3.5 pointer-events-none" />
-                        <select
-                          value={ageBracket}
-                          onChange={(e) => setAgeBracket(e.target.value)}
-                          className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl pl-10 pr-3.5 py-3 text-neutral-900 focus:border-[#084c36] focus:outline-none transition-all shadow-2xs"
-                        >
-                          {AGE_BRACKET_OPTIONS.map((opt) => (
-                            <option key={opt} value={opt}>
-                              {opt}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-
-                    {/* Gender */}
-                    <div>
-                      <label className="text-xs font-bold text-neutral-800 block mb-1">
-                        Gender
-                      </label>
-                      <select
-                        value={gender}
-                        onChange={(e) => setGender(e.target.value)}
-                        className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl px-3.5 py-3 text-neutral-900 focus:border-[#084c36] focus:outline-none transition-all shadow-2xs"
-                      >
-                        <option value="Female">Female</option>
-                        <option value="Male">Male</option>
-                        <option value="Non-Binary">Non-Binary</option>
-                        <option value="Prefer not to say">Prefer not to say</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                {/* SECTION 2: Geographic & Educational Credentials */}
-                <div className="space-y-4 bg-[#faf8f5] p-5 sm:p-7 rounded-3xl border border-neutral-200">
-                  <div className="flex items-center justify-between pb-2 border-b border-neutral-200">
-                    <span className="text-xs font-bold uppercase tracking-wider text-emerald-900 flex items-center gap-2 font-mono">
-                      <span>2. Geographic & Educational Credentials</span>
-                    </span>
-                    <span className="text-[10px] font-mono text-neutral-500 font-semibold">Determines Ground vs Research Track</span>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* State / UT */}
-                    <div>
-                      <label className="text-xs font-bold text-neutral-800 block mb-1">
-                        State / Union Territory * <span className="text-[10px] font-normal text-emerald-800">(All 36 States & UTs Open)</span>
-                      </label>
-                      <div className="relative flex items-center">
-                        <MapPin className="w-4 h-4 text-neutral-400 absolute left-3.5 pointer-events-none" />
-                        <select
-                          required
-                          value={state}
-                          onChange={(e) => setState(e.target.value)}
-                          className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl pl-10 pr-3.5 py-3 text-neutral-900 focus:border-[#084c36] focus:outline-none transition-all shadow-2xs"
-                        >
-                          {INDIAN_STATES_AND_UTS.map((st) => (
-                            <option key={st} value={st}>
-                              {st}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-
-                    {/* City / District */}
-                    <div>
-                      <label className="text-xs font-bold text-neutral-800 block mb-1">
-                        Current City / District of Residence *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={city}
-                        onChange={(e) => setCity(e.target.value)}
-                        placeholder="Enter your current city or district name"
-                        className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl px-3.5 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-[#084c36] focus:outline-none transition-all shadow-2xs"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* Highest Educational Qualification */}
-                    <div>
-                      <label className="text-xs font-bold text-neutral-800 block mb-1">
-                        Highest Educational Qualification *
-                      </label>
-                      <div className="relative flex items-center">
-                        <GraduationCap className="w-4 h-4 text-neutral-400 absolute left-3.5 pointer-events-none" />
-                        <select
-                          value={qualification}
-                          onChange={(e) => setQualification(e.target.value)}
-                          className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl pl-10 pr-3.5 py-3 text-neutral-900 focus:border-[#084c36] focus:outline-none transition-all shadow-2xs"
-                        >
-                          {QUALIFICATION_OPTIONS.map((q) => (
-                            <option key={q} value={q}>
-                              {q}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-
-                    {/* Academic Discipline / Field of Study */}
-                    <div>
-                      <label className="text-xs font-bold text-neutral-800 block mb-1">
-                        Academic Stream / Field of Study *
-                      </label>
-                      <select
-                        value={academicDiscipline}
-                        onChange={(e) => setAcademicDiscipline(e.target.value)}
-                        className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl px-3.5 py-3 text-neutral-900 focus:border-[#084c36] focus:outline-none transition-all shadow-2xs"
-                      >
-                        {ACADEMIC_DISCIPLINE_OPTIONS.map((d) => (
-                          <option key={d} value={d}>
-                            {d}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Institution Name */}
-                  <div>
-                    <label className="text-xs font-bold text-neutral-800 block mb-1">
-                      Current College / School / University Name
-                    </label>
-                    <div className="relative flex items-center">
-                      <Building2 className="w-4 h-4 text-neutral-400 absolute left-3.5 pointer-events-none" />
-                      <input
-                        type="text"
-                        value={institution}
-                        onChange={(e) => setInstitution(e.target.value)}
-                        placeholder="Enter your current institution, university or college name"
-                        className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl pl-10 pr-3.5 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-[#084c36] focus:outline-none transition-all shadow-2xs"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* SECTION 3: Social Impact Orientation & Track Selection */}
-                <div className="space-y-4 bg-[#faf8f5] p-5 sm:p-7 rounded-3xl border border-neutral-200">
-                  <div className="flex items-center justify-between pb-2 border-b border-neutral-200">
-                    <span className="text-xs font-bold uppercase tracking-wider text-emerald-900 flex items-center gap-2 font-mono">
-                      <span>3. Social Impact Orientation & Track Matching</span>
-                    </span>
-                    <span className="text-[10px] font-mono text-neutral-500 font-semibold">Leadership Fit</span>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* Prior Community Experience */}
-                    <div>
-                      <label className="text-xs font-bold text-neutral-800 block mb-1">
-                        Prior Volunteering / Student Body Experience *
-                      </label>
-                      <select
-                        value={priorExperience}
-                        onChange={(e) => setPriorExperience(e.target.value)}
-                        className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl px-3.5 py-3 text-neutral-900 focus:border-[#084c36] focus:outline-none transition-all shadow-2xs"
-                      >
-                        {PRIOR_EXPERIENCE_OPTIONS.map((exp) => (
-                          <option key={exp} value={exp}>
-                            {exp}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    {/* Fellowship Track */}
-                    <div>
-                      <label className="text-xs font-bold text-neutral-800 block mb-1">
-                        Preferred Fellowship Pillar & Focus *
-                      </label>
-                      <div className="relative flex items-center">
-                        <BookOpen className="w-4 h-4 text-neutral-400 absolute left-3.5 pointer-events-none" />
-                        <select
-                          value={interestTrack}
-                          onChange={(e) => setInterestTrack(e.target.value)}
-                          className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl pl-10 pr-3.5 py-3 text-neutral-900 focus:border-[#084c36] focus:outline-none transition-all shadow-2xs"
-                        >
-                          {FELLOWSHIP_TRACK_OPTIONS.map((track) => (
-                            <option key={track} value={track}>
-                              {track}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Core Skills Selector (Clickable Modern Interactive Pills) */}
-                  <div>
-                    <label className="text-xs font-bold text-neutral-800 block mb-1.5">
-                      Core Strengths You Bring to the Cohort <span className="text-[10px] font-normal text-neutral-500">(Select all that apply)</span>
-                    </label>
-                    <div className="flex flex-wrap gap-2 pt-0.5">
-                      {AVAILABLE_SKILLS.map((skill) => {
-                        const isSelected = selectedSkills.includes(skill);
-                        return (
-                          <button
-                            key={skill}
-                            type="button"
-                            onClick={() => toggleSkill(skill)}
-                            className={`text-xs px-3.5 py-2 rounded-xl border transition-all cursor-pointer font-medium flex items-center gap-1.5 ${
-                              isSelected
-                                ? 'bg-[#0d1627] text-white border-neutral-800 shadow-xs ring-1 ring-amber-400/40'
-                                : 'bg-white text-neutral-700 border-neutral-300 hover:border-neutral-400'
-                            }`}
-                          >
-                            {isSelected && <Check className="w-3.5 h-3.5 text-[#FDB813]" />}
-                            <span>{skill}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-
-                {/* SECTION 4: Analytical Problem-Solving & Fellowship Statement */}
-                <div className="space-y-4 bg-[#faf8f5] p-5 sm:p-7 rounded-3xl border border-neutral-200">
-                  <div className="flex items-center justify-between pb-2 border-b border-neutral-200">
-                    <span className="text-xs font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2 font-mono">
-                      <span>4. Analytical Thinking & Personal Statement</span>
-                    </span>
-                    <span className="text-[10px] font-mono text-neutral-500 font-semibold">Merit Evaluation</span>
-                  </div>
-
-                  {/* Analytical Problem-Solving Question */}
-                  <div>
-                    <label className="text-xs font-bold text-neutral-800 block mb-1 flex items-center gap-1.5">
-                      <Lightbulb className="w-4 h-4 text-amber-600" />
-                      <span>Analytical Prompt: Healthcare & Nutrition Access in Underserved Areas</span>
-                    </label>
-                    <p className="text-[11px] text-neutral-500 mb-1.5 leading-relaxed">
-                      In your perspective, what is the biggest challenge faced by patient families in government hospitals or slum mothers, and how can structured non-profit relief create lasting dignity?
-                    </p>
-                    <textarea
-                      rows={3}
-                      value={analyticalResponse}
-                      onChange={(e) => setAnalyticalResponse(e.target.value)}
-                      placeholder="Share your structured thoughts or observations on grassroots healthcare, clinical nutrition, or slum development..."
-                      className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl p-4 text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-800 focus:outline-none transition-all resize-none shadow-2xs"
-                    />
-                  </div>
-
-                  {/* Statement of Purpose */}
-                  <div>
-                    <label className="text-xs font-bold text-neutral-800 block mb-1">
-                      Fellowship Motivation: Why do you wish to join Rise Up Help Initiative Foundation?
-                    </label>
-                    <textarea
-                      rows={3}
-                      value={whyJoin}
-                      onChange={(e) => setWhyJoin(e.target.value)}
-                      placeholder="Explain your goals, academic vision, and what you aim to achieve through this national fellowship..."
-                      className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl p-4 text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-800 focus:outline-none transition-all resize-none shadow-2xs"
-                    />
-                  </div>
-                </div>
-
-                {/* Transparent Selection Guarantee Notice */}
-                <div className="bg-amber-50/60 border border-amber-200/80 rounded-3xl p-5 flex items-start gap-3 text-xs text-neutral-700">
-                  <ShieldCheck className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
-                  <p className="leading-relaxed">
-                    <strong>Merit-Based National Intake:</strong> Every application is assessed by the foundation's academic review panel. <strong>No registration fees or hidden charges are ever charged.</strong> Official selection letters, assigned fellowship guides & verification dockets will be dispatched strictly via Email to maintain corporate integrity.
-                  </p>
-                </div>
-
-                {/* Submit Action */}
-                <div className="pt-2">
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-gradient-to-r from-[#090f1d] via-[#131f36] to-[#090f1d] hover:brightness-115 text-white font-black text-sm sm:text-base py-4 rounded-full border-2 border-amber-400/40 hover:border-amber-400 transition-all shadow-xl active:scale-98 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        <span>Submitting Application to National Registry...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Send className="w-4 h-4 text-[#FDB813]" />
-                        <span>Submit National Fellowship Application (100% Free)</span>
-                      </>
-                    )}
-                  </button>
-                  <p className="text-xs text-center text-neutral-400 mt-2.5 font-mono">
-                    Rise Up Help Initiative Foundation • Section 8 Registered Non-Profit • 80G Certified
-                  </p>
-                </div>
-
-              </form>
-            </div>
-          )}
-
-        </div>
+              <span>Begin Fellowship Application</span>
+              <ArrowDown className="w-5 h-5 animate-bounce" />
+            </button>
+            <p className="text-xs text-neutral-500 font-mono">
+              ⚡ 100% Free Application • Open to All 28 States & 8 UTs • Click to Expand Official Form
+            </p>
+          </div>
+        )}
       </div>
 
-      {/* Page Footer */}
-      <Footer onOpenAdmin={onOpenAdmin} />
+      {/* Main Application Form Container with Framer-Motion Accordion Animation */}
+      <AnimatePresence>
+        {(isFormOpen || submittedData) && (
+          <motion.div
+            id="application-form"
+            initial={{ opacity: 0, height: 0, y: 35 }}
+            animate={{ opacity: 1, height: 'auto', y: 0 }}
+            exit={{ opacity: 0, height: 0, y: 25 }}
+            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+            className="max-w-7xl mx-auto w-full px-3 sm:px-6 scroll-mt-6"
+          >
+            <div className="bg-white rounded-3xl p-6 sm:p-10 lg:p-12 border border-neutral-300 shadow-2xl">
+              
+              {submittedData ? (
+                /* Success / Confirmation Screen */
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="text-center py-8 sm:py-12 space-y-4 max-w-2xl mx-auto"
+                >
+                  <div className="w-20 h-20 rounded-3xl bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto shadow-inner">
+                    <CheckCircle2 className="w-12 h-12" />
+                  </div>
 
+                  <div className="space-y-1">
+                    <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-200">
+                      Fellowship Docket ID: {submittedData.id}
+                    </span>
+                    <h2 className="text-2xl sm:text-4xl font-black text-neutral-900 pt-2">
+                      Application Successfully Registered!
+                    </h2>
+                    <p className="text-xs sm:text-sm text-neutral-600 max-w-lg mx-auto leading-relaxed">
+                      Thank you, <span className="font-bold text-neutral-900">{submittedData.fullName}</span> ({submittedData.city}, {submittedData.state}). Your fellowship credentials have been recorded in the National Selection Registry.
+                    </p>
+                  </div>
+
+                  {/* What Happens Next Card */}
+                  <div className="bg-[#faf8f5] border border-neutral-300 rounded-3xl p-6 text-left space-y-3 shadow-xs">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-[#084c36] flex items-center gap-2 font-mono">
+                      <Clock className="w-4 h-4 text-emerald-700" />
+                      <span>Official Selection Timeline & Email Dispatch</span>
+                    </h4>
+                    <p className="text-xs sm:text-sm text-neutral-700 leading-relaxed">
+                      Our selection board is reviewing candidate profiles and analytical evaluations. Shortlisted fellows will receive their <strong>Official Selection Letter, Assigned Fellowship Track & Project Dossier</strong> directly on your registered email:
+                    </p>
+                    <div className="bg-white p-3.5 rounded-2xl border border-emerald-300 flex items-center gap-2.5 font-mono text-xs sm:text-sm text-neutral-900 shadow-2xs">
+                      <Mail className="w-4 h-4 text-[#084c36] shrink-0" />
+                      <span className="truncate font-bold">{submittedData.email}</span>
+                    </div>
+                    <div className="text-[11px] text-neutral-500 space-y-1 pt-2 border-t border-neutral-200">
+                      <div>• <strong>Assigned Track Criteria:</strong> Jaipur-based fellows receive hospital/slum ground relief; outstation fellows receive policy research files on maternal nutrition & slum development.</div>
+                      <div>• Official dockets are dispatched strictly via email within 48 to 72 hours.</div>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 flex items-center justify-center gap-3">
+                    <button
+                      onClick={onBackToHome}
+                      className="bg-[#090f1d] hover:bg-neutral-900 text-white font-bold text-xs sm:text-sm px-8 py-3.5 rounded-full border border-amber-400/40 transition-all shadow-md cursor-pointer"
+                    >
+                      Return to Home
+                    </button>
+                  </div>
+                </motion.div>
+              ) : (
+                /* Spacious Comprehensive Application Form */
+                <div className="max-w-4xl mx-auto space-y-8 text-left">
+                  
+                  {/* Form Header with Collapse Option */}
+                  <div className="flex items-start justify-between gap-4 flex-wrap pb-4 border-b border-neutral-200">
+                    <div>
+                      <div className="inline-flex items-center gap-1.5 bg-[#090f1d] text-amber-300 font-mono font-bold text-xs px-3 py-1 rounded-full border border-neutral-800 mb-2">
+                        <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                        <span>National Enrolment Form • Winter 2026 Admissions</span>
+                      </div>
+                      <h2 className="text-2xl sm:text-3xl font-black text-neutral-900 tracking-tight">
+                        Fellowship Enrolment Application
+                      </h2>
+                      <p className="text-xs sm:text-sm text-neutral-500 mt-1">
+                        Please provide accurate academic, geographic and analytical responses. Official offer dockets will be communicated strictly via Email.
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setIsFormOpen(false)}
+                      className="text-xs font-mono font-semibold text-neutral-600 hover:text-neutral-900 bg-neutral-100 hover:bg-neutral-200 border border-neutral-300 rounded-full px-3.5 py-1.5 transition-all flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <ChevronUp className="w-3.5 h-3.5" />
+                      <span>Collapse Form</span>
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleSubmit} className="space-y-8">
+                    
+                    {/* SECTION 1: Applicant Identity & Contact Information */}
+                    <div className="space-y-4 bg-[#faf8f5] p-5 sm:p-7 rounded-3xl border border-neutral-200">
+                      <div className="flex items-center justify-between pb-2 border-b border-neutral-200">
+                        <span className="text-xs font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2 font-mono">
+                          <span>1. Applicant Identity & Official Email Dispatch</span>
+                        </span>
+                        <span className="text-[10px] font-mono text-neutral-500 font-semibold">Verified Admissions</span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {/* Full Legal Name */}
+                        <div>
+                          <label className="text-xs font-bold text-neutral-800 block mb-1">
+                            Full Legal Name *
+                          </label>
+                          <div className="relative flex items-center">
+                            <User className="w-4 h-4 text-neutral-400 absolute left-3.5 pointer-events-none" />
+                            <input
+                              type="text"
+                              required
+                              value={fullName}
+                              onChange={(e) => setFullName(e.target.value)}
+                              placeholder="Enter your full legal name as per government records"
+                              className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl pl-10 pr-3.5 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-800 focus:outline-none transition-all shadow-2xs"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Official Email */}
+                        <div>
+                          <label className="text-xs font-bold text-neutral-800 block mb-1">
+                            Official Email Address * <span className="text-[10px] font-normal text-emerald-800">(All selection letters dispatched here)</span>
+                          </label>
+                          <div className="relative flex items-center">
+                            <Mail className="w-4 h-4 text-neutral-400 absolute left-3.5 pointer-events-none" />
+                            <input
+                              type="email"
+                              required
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                              placeholder="name@example.com"
+                              className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl pl-10 pr-3.5 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-800 focus:outline-none transition-all font-mono shadow-2xs"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        {/* Age Bracket */}
+                        <div>
+                          <label className="text-xs font-bold text-neutral-800 block mb-1">
+                            Age Bracket *
+                          </label>
+                          <div className="relative flex items-center">
+                            <Calendar className="w-4 h-4 text-neutral-400 absolute left-3.5 pointer-events-none" />
+                            <select
+                              value={ageBracket}
+                              onChange={(e) => setAgeBracket(e.target.value)}
+                              className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl pl-10 pr-3.5 py-3 text-neutral-900 focus:border-neutral-800 focus:outline-none transition-all shadow-2xs"
+                            >
+                              {AGE_BRACKET_OPTIONS.map((opt) => (
+                                <option key={opt} value={opt}>
+                                  {opt}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+
+                        {/* Gender */}
+                        <div>
+                          <label className="text-xs font-bold text-neutral-800 block mb-1">
+                            Gender
+                          </label>
+                          <select
+                            value={gender}
+                            onChange={(e) => setGender(e.target.value)}
+                            className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl px-3.5 py-3 text-neutral-900 focus:border-neutral-800 focus:outline-none transition-all shadow-2xs"
+                          >
+                            <option value="Female">Female</option>
+                            <option value="Male">Male</option>
+                            <option value="Non-Binary">Non-Binary</option>
+                            <option value="Prefer not to say">Prefer not to say</option>
+                          </select>
+                        </div>
+
+                        {/* LinkedIn Profile or Portfolio URL */}
+                        <div>
+                          <label className="text-xs font-bold text-neutral-800 block mb-1">
+                            LinkedIn Profile / Portfolio <span className="text-[10px] font-normal text-neutral-500">(Optional)</span>
+                          </label>
+                          <div className="relative flex items-center">
+                            <Link2 className="w-4 h-4 text-neutral-400 absolute left-3.5 pointer-events-none" />
+                            <input
+                              type="url"
+                              value={linkedInOrPortfolio}
+                              onChange={(e) => setLinkedInOrPortfolio(e.target.value)}
+                              placeholder="https://linkedin.com/in/username"
+                              className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl pl-10 pr-3.5 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-800 focus:outline-none transition-all font-mono shadow-2xs"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* SECTION 2: Geographic & Educational Credentials */}
+                    <div className="space-y-4 bg-[#faf8f5] p-5 sm:p-7 rounded-3xl border border-neutral-200">
+                      <div className="flex items-center justify-between pb-2 border-b border-neutral-200">
+                        <span className="text-xs font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2 font-mono">
+                          <span>2. Geographic & Educational Credentials</span>
+                        </span>
+                        <span className="text-[10px] font-mono text-neutral-500 font-semibold">Determines Ground vs Research Track</span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {/* State / UT */}
+                        <div>
+                          <label className="text-xs font-bold text-neutral-800 block mb-1">
+                            State / Union Territory * <span className="text-[10px] font-normal text-emerald-800">(All 36 States & UTs Open)</span>
+                          </label>
+                          <div className="relative flex items-center">
+                            <MapPin className="w-4 h-4 text-neutral-400 absolute left-3.5 pointer-events-none" />
+                            <select
+                              required
+                              value={state}
+                              onChange={(e) => setState(e.target.value)}
+                              className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl pl-10 pr-3.5 py-3 text-neutral-900 focus:border-neutral-800 focus:outline-none transition-all shadow-2xs"
+                            >
+                              {INDIAN_STATES_AND_UTS.map((st) => (
+                                <option key={st} value={st}>
+                                  {st}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+
+                        {/* City / District */}
+                        <div>
+                          <label className="text-xs font-bold text-neutral-800 block mb-1">
+                            Current City / District of Residence *
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            value={city}
+                            onChange={(e) => setCity(e.target.value)}
+                            placeholder="Enter your current city or district name"
+                            className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl px-3.5 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-800 focus:outline-none transition-all shadow-2xs"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {/* Highest Educational Qualification */}
+                        <div>
+                          <label className="text-xs font-bold text-neutral-800 block mb-1">
+                            Highest Educational Qualification *
+                          </label>
+                          <div className="relative flex items-center">
+                            <GraduationCap className="w-4 h-4 text-neutral-400 absolute left-3.5 pointer-events-none" />
+                            <select
+                              value={qualification}
+                              onChange={(e) => setQualification(e.target.value)}
+                              className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl pl-10 pr-3.5 py-3 text-neutral-900 focus:border-neutral-800 focus:outline-none transition-all shadow-2xs"
+                            >
+                              {QUALIFICATION_OPTIONS.map((q) => (
+                                <option key={q} value={q}>
+                                  {q}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+
+                        {/* Academic Discipline / Field of Study */}
+                        <div>
+                          <label className="text-xs font-bold text-neutral-800 block mb-1">
+                            Academic Stream / Major Field of Study *
+                          </label>
+                          <select
+                            value={academicDiscipline}
+                            onChange={(e) => setAcademicDiscipline(e.target.value)}
+                            className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl px-3.5 py-3 text-neutral-900 focus:border-neutral-800 focus:outline-none transition-all shadow-2xs"
+                          >
+                            {ACADEMIC_DISCIPLINE_OPTIONS.map((d) => (
+                              <option key={d} value={d}>
+                                {d}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {/* Institution Name */}
+                        <div>
+                          <label className="text-xs font-bold text-neutral-800 block mb-1">
+                            Current College / School / University Name
+                          </label>
+                          <div className="relative flex items-center">
+                            <Building2 className="w-4 h-4 text-neutral-400 absolute left-3.5 pointer-events-none" />
+                            <input
+                              type="text"
+                              value={institution}
+                              onChange={(e) => setInstitution(e.target.value)}
+                              placeholder="Enter your institution or college name"
+                              className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl pl-10 pr-3.5 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-800 focus:outline-none transition-all shadow-2xs"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Expected Graduation Year */}
+                        <div>
+                          <label className="text-xs font-bold text-neutral-800 block mb-1">
+                            Year of Graduation / Completion *
+                          </label>
+                          <select
+                            value={graduationYear}
+                            onChange={(e) => setGraduationYear(e.target.value)}
+                            className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl px-3.5 py-3 text-neutral-900 focus:border-neutral-800 focus:outline-none transition-all shadow-2xs"
+                          >
+                            {GRADUATION_YEAR_OPTIONS.map((yr) => (
+                              <option key={yr} value={yr}>
+                                {yr}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* SECTION 3: Social Impact Orientation & Track Selection */}
+                    <div className="space-y-4 bg-[#faf8f5] p-5 sm:p-7 rounded-3xl border border-neutral-200">
+                      <div className="flex items-center justify-between pb-2 border-b border-neutral-200">
+                        <span className="text-xs font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2 font-mono">
+                          <span>3. Social Impact Orientation & Track Matching</span>
+                        </span>
+                        <span className="text-[10px] font-mono text-neutral-500 font-semibold">Leadership Fit</span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {/* Prior Community Experience */}
+                        <div>
+                          <label className="text-xs font-bold text-neutral-800 block mb-1">
+                            Prior Volunteering / Student Body Experience *
+                          </label>
+                          <select
+                            value={priorExperience}
+                            onChange={(e) => setPriorExperience(e.target.value)}
+                            className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl px-3.5 py-3 text-neutral-900 focus:border-neutral-800 focus:outline-none transition-all shadow-2xs"
+                          >
+                            {PRIOR_EXPERIENCE_OPTIONS.map((exp) => (
+                              <option key={exp} value={exp}>
+                                {exp}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        {/* Fellowship Track */}
+                        <div>
+                          <label className="text-xs font-bold text-neutral-800 block mb-1">
+                            Preferred Fellowship Pillar & Focus *
+                          </label>
+                          <div className="relative flex items-center">
+                            <BookOpen className="w-4 h-4 text-neutral-400 absolute left-3.5 pointer-events-none" />
+                            <select
+                              value={interestTrack}
+                              onChange={(e) => setInterestTrack(e.target.value)}
+                              className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl pl-10 pr-3.5 py-3 text-neutral-900 focus:border-neutral-800 focus:outline-none transition-all shadow-2xs"
+                            >
+                              {FELLOWSHIP_TRACK_OPTIONS.map((track) => (
+                                <option key={track} value={track}>
+                                  {track}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Weekly Availability Commitment */}
+                      <div>
+                        <label className="text-xs font-bold text-neutral-800 block mb-1">
+                          Weekly Time Commitment *
+                        </label>
+                        <select
+                          value={weeklyHours}
+                          onChange={(e) => setWeeklyHours(e.target.value)}
+                          className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl px-3.5 py-3 text-neutral-900 focus:border-neutral-800 focus:outline-none transition-all shadow-2xs"
+                        >
+                          {WEEKLY_HOURS_OPTIONS.map((wh) => (
+                            <option key={wh} value={wh}>
+                              {wh}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Core Skills Selector (Clickable Modern Interactive Pills) */}
+                      <div>
+                        <label className="text-xs font-bold text-neutral-800 block mb-1.5">
+                          Core Strengths You Bring to the Cohort <span className="text-[10px] font-normal text-neutral-500">(Select all that apply)</span>
+                        </label>
+                        <div className="flex flex-wrap gap-2 pt-0.5">
+                          {AVAILABLE_SKILLS.map((skill) => {
+                            const isSelected = selectedSkills.includes(skill);
+                            return (
+                              <button
+                                key={skill}
+                                type="button"
+                                onClick={() => toggleSkill(skill)}
+                                className={`text-xs px-3.5 py-2 rounded-xl border transition-all cursor-pointer font-medium flex items-center gap-1.5 ${
+                                  isSelected
+                                    ? 'bg-[#0d1627] text-white border-neutral-800 shadow-xs ring-1 ring-amber-400/40'
+                                    : 'bg-white text-neutral-700 border-neutral-300 hover:border-neutral-400'
+                                }`}
+                              >
+                                {isSelected && <Check className="w-3.5 h-3.5 text-[#FDB813]" />}
+                                <span>{skill}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* SECTION 4: In-Depth Analytical Evaluations & Fellowship Questions */}
+                    <div className="space-y-4 bg-[#faf8f5] p-5 sm:p-7 rounded-3xl border border-neutral-200">
+                      <div className="flex items-center justify-between pb-2 border-b border-neutral-200">
+                        <span className="text-xs font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2 font-mono">
+                          <span>4. Analytical Thinking & Policy Evaluations</span>
+                        </span>
+                        <span className="text-[10px] font-mono text-neutral-500 font-semibold">Merit Evaluation Prompts</span>
+                      </div>
+
+                      {/* Analytical Question 1: Slum Maternal Nutrition Challenge */}
+                      <div>
+                        <label className="text-xs font-bold text-neutral-800 block mb-1 flex items-center gap-1.5">
+                          <Lightbulb className="w-4 h-4 text-amber-600" />
+                          <span>Analytical Prompt 1: Maternal & Infant Nutrition in Urban Slums *</span>
+                        </label>
+                        <p className="text-[11px] text-neutral-500 mb-1.5 leading-relaxed">
+                          In low-income slum settlements, pregnant women and young mothers face severe micronutrient deficits beyond basic calories. Apart from fresh coconut water, what practical, low-cost supplementary nutrition or clinical health intervention could an NGO realistically introduce at scale?
+                        </p>
+                        <textarea
+                          rows={3}
+                          required
+                          value={analyticalResponse}
+                          onChange={(e) => setAnalyticalResponse(e.target.value)}
+                          placeholder="Provide your structured observations on dietary supplementation, localized community distribution, or maternal nutrition models..."
+                          className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl p-4 text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-800 focus:outline-none transition-all resize-none shadow-2xs"
+                        />
+                      </div>
+
+                      {/* Analytical Question 2: Bedside Compassion vs Protocol */}
+                      <div>
+                        <label className="text-xs font-bold text-neutral-800 block mb-1 flex items-center gap-1.5">
+                          <Heart className="w-4 h-4 text-rose-600" />
+                          <span>Analytical Prompt 2: Bedside Oncology Empathy vs Operational Distribution *</span>
+                        </label>
+                        <p className="text-[11px] text-neutral-500 mb-1.5 leading-relaxed">
+                          During government hospital morning rounds serving cancer patients in oncology wards, volunteers often encounter families under extreme emotional and financial distress. How would you balance compassionate human presence with timely operational distribution?
+                        </p>
+                        <textarea
+                          rows={3}
+                          required
+                          value={groundDignityResponse}
+                          onChange={(e) => setGroundDignityResponse(e.target.value)}
+                          placeholder="Explain how you would handle sensitive bedside patient interactions with dignity, patience, and structured teamwork..."
+                          className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl p-4 text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-800 focus:outline-none transition-all resize-none shadow-2xs"
+                        />
+                      </div>
+
+                      {/* Question 3: Research Dossier Topic Preference */}
+                      <div>
+                        <label className="text-xs font-bold text-neutral-800 block mb-1 flex items-center gap-1.5">
+                          <FileQuestion className="w-4 h-4 text-sky-600" />
+                          <span>Track B Specialization: Preferred Policy Investigation Area</span>
+                        </label>
+                        <select
+                          value={researchTopicPreference}
+                          onChange={(e) => setResearchTopicPreference(e.target.value)}
+                          className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl px-3.5 py-3 text-neutral-900 focus:border-neutral-800 focus:outline-none transition-all shadow-2xs"
+                        >
+                          {RESEARCH_TOPIC_OPTIONS.map((topic) => (
+                            <option key={topic} value={topic}>
+                              {topic}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Statement of Purpose */}
+                      <div>
+                        <label className="text-xs font-bold text-neutral-800 block mb-1">
+                          Statement of Purpose: Why do you wish to join Rise Up Help Initiative Foundation? *
+                        </label>
+                        <textarea
+                          rows={3}
+                          required
+                          value={whyJoin}
+                          onChange={(e) => setWhyJoin(e.target.value)}
+                          placeholder="Explain your goals, academic vision, and what unique perspective you aim to contribute to this national fellowship..."
+                          className="w-full text-xs sm:text-sm bg-white border border-neutral-300 rounded-2xl p-4 text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-800 focus:outline-none transition-all resize-none shadow-2xs"
+                        />
+                      </div>
+                    </div>
+
+                    {/* SECTION 5: Code of Honor & Non-Profit Transparency */}
+                    <div className="space-y-3 bg-amber-50/70 border border-amber-200/90 rounded-3xl p-5 text-xs text-neutral-700">
+                      <div className="flex items-start gap-3">
+                        <ShieldCheck className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
+                        <div className="space-y-2">
+                          <p className="leading-relaxed">
+                            <strong>Merit-Based National Intake:</strong> Every application is assessed by the foundation's academic review panel. <strong>No registration fees or hidden charges are ever charged.</strong> Official selection letters, assigned fellowship guides & verification dockets will be dispatched strictly via Email to maintain corporate integrity.
+                          </p>
+
+                          <div className="space-y-2 pt-2">
+                            <label className="flex items-start gap-2.5 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                required
+                                checked={agreedToHonorCode}
+                                onChange={(e) => setAgreedToHonorCode(e.target.checked)}
+                                className="mt-0.5 rounded text-neutral-900 focus:ring-amber-400"
+                              />
+                              <span className="text-[11px] text-neutral-800">
+                                I confirm that all responses provided above are authentic, original, and represent my own independent perspectives.
+                              </span>
+                            </label>
+
+                            <label className="flex items-start gap-2.5 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                required
+                                checked={agreedToFreeTerms}
+                                onChange={(e) => setAgreedToFreeTerms(e.target.checked)}
+                                className="mt-0.5 rounded text-neutral-900 focus:ring-amber-400"
+                              />
+                              <span className="text-[11px] text-neutral-800">
+                                I understand this fellowship application is strictly 100% free with zero fees, and shortlisting is based purely on merit.
+                              </span>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Submit Action */}
+                    <div className="pt-2">
+                      <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="w-full bg-gradient-to-r from-[#090f1d] via-[#131f36] to-[#090f1d] hover:brightness-115 text-white font-black text-sm sm:text-base py-4 rounded-full border-2 border-amber-400/40 hover:border-amber-400 transition-all shadow-xl active:scale-98 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            <span>Submitting Application to National Registry...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Send className="w-4 h-4 text-[#FDB813]" />
+                            <span>Submit National Fellowship Application (100% Free)</span>
+                          </>
+                        )}
+                      </button>
+                      <p className="text-xs text-center text-neutral-400 mt-2.5 font-mono">
+                        Rise Up Help Initiative Foundation • Section 8 Registered Non-Profit • 80G Certified
+                      </p>
+                    </div>
+
+                  </form>
+                </div>
+              )}
+
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <Footer />
     </div>
   );
 };
