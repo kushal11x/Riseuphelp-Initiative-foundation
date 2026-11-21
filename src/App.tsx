@@ -313,6 +313,9 @@ export function App() {
             if (e.id === 'seva-ekadashi-parsva' && e.status === 'active_today') {
               return { ...e, status: 'completed' as const, sponsoredCoconuts: Math.max(e.sponsoredCoconuts || 0, 3000) };
             }
+            if (e.id === 'seva-ekadashi-devutthana') {
+              return { ...e, date: 'Nov 21, 2026', status: 'active_today' as const };
+            }
             return e;
           });
         }
@@ -637,7 +640,10 @@ export function App() {
           if (d.mediaPhotosRow2) setMediaPhotosRow2(d.mediaPhotosRow2);
           if (d.foundationStats) setFoundationStats(d.foundationStats);
           if (d.scheduleEvents && Array.isArray(d.scheduleEvents)) {
-            const { processedEvents } = processEkadashiSchedule(d.scheduleEvents);
+            const normalized = d.scheduleEvents.map((e: any) =>
+              e.id === 'seva-ekadashi-devutthana' ? { ...e, date: 'Nov 21, 2026', status: 'active_today' } : e
+            );
+            const { processedEvents } = processEkadashiSchedule(normalized);
             setScheduleEvents(processedEvents);
             safeLocalStorageSet('ruh_schedule_v4', processedEvents);
             safeLocalStorageSet('ruh_schedule_v3', processedEvents);
@@ -719,7 +725,10 @@ export function App() {
           if (d.mediaPhotosRow2) setMediaPhotosRow2(d.mediaPhotosRow2);
           if (d.foundationStats) setFoundationStats(d.foundationStats);
           if (d.scheduleEvents && Array.isArray(d.scheduleEvents)) {
-            const { processedEvents } = processEkadashiSchedule(d.scheduleEvents);
+            const normalized = d.scheduleEvents.map((e: any) =>
+              e.id === 'seva-ekadashi-devutthana' ? { ...e, date: 'Nov 21, 2026', status: 'active_today' } : e
+            );
+            const { processedEvents } = processEkadashiSchedule(normalized);
             setScheduleEvents(processedEvents);
             safeLocalStorageSet('ruh_schedule_v4', processedEvents);
             safeLocalStorageSet('ruh_schedule_v3', processedEvents);

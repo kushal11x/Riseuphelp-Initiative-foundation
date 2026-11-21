@@ -107,7 +107,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         driveItems={driveItems}
       />
 
-      {/* PROMINENT DEVUTTHANA EKADASHI (20 NOV) LIVE SEVA HIGHLIGHT CARD */}
+      {/* PROMINENT DEVUTTHANA EKADASHI (21 NOV) LIVE SEVA HIGHLIGHT CARD */}
       <div className="max-w-7xl mx-auto w-full px-2 sm:px-4 pt-1 pb-2">
         <motion.div
           initial={{ opacity: 0, y: 15 }}
@@ -124,8 +124,9 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap mb-1">
-                <span className="bg-[#FDB813] text-neutral-950 font-bold text-[10px] sm:text-xs px-2.5 py-0.5 rounded-full uppercase tracking-wider font-mono">
-                  Upcoming • 20 Nov • Devutthana Ekadashi
+                <span className="bg-[#FDB813] text-neutral-950 font-bold text-[10px] sm:text-xs px-2.5 py-0.5 rounded-full uppercase tracking-wider font-mono flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse inline-block" />
+                  Live Today • 21 Nov • Devutthana Ekadashi
                 </span>
                 <span className="text-emerald-200 text-xs font-medium">
                   RUHS State Cancer College & SMS Hospital, Jaipur
@@ -135,7 +136,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 Devutthana (Prabodhini) Ekadashi Maha Seva
               </h3>
               <p className="text-xs sm:text-sm text-emerald-100/90 mt-0.5 max-w-2xl leading-relaxed">
-                On sacred Devutthana Ekadashi (Dev Uthani Gyaras), fresh tender green coconuts (₹65) & pure taaza anaar juice (₹70) will be served bedside to cancer patients across government hospital wards.
+                Today on sacred Devutthana Ekadashi (Dev Uthani Gyaras), fresh tender green coconuts (₹65) & pure taaza anaar juice (₹70) are being served live bedside to cancer patients across government hospital wards.
               </p>
             </div>
           </div>
@@ -145,7 +146,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               onClick={() => onNavigateView('hospital-seva')}
               className="flex-1 md:flex-none bg-[#FDB813] hover:bg-amber-400 text-neutral-950 font-bold text-xs sm:text-sm px-5 py-3 rounded-full transition-all shadow-md active:scale-95 cursor-pointer text-center"
             >
-              Sponsor Ekadashi Seva (₹65)
+              Sponsor Today's Seva (₹65)
             </button>
             <button
               onClick={() => onNavigateView('ekadashi')}

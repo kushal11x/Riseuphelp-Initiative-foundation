@@ -54,8 +54,8 @@ export const SHRAADH_DATES: SevaDateOption[] = [
   { dateStr: "2026-10-31", label: "31 Oct 2026", day: "Sat", note: "Weekend Bedside Meal Drive" },
   { dateStr: "2026-11-01", label: "01 Nov 2026", day: "Sun", note: "November Hospital Relief" },
   { dateStr: "2026-11-05", label: "05 Nov 2026", day: "Thu", note: "Rama Ekadashi Maha Seva" },
-  { dateStr: "2026-11-20", label: "20 Nov 2026", day: "Fri", note: "Devutthana Ekadashi Maha Yagya (Upcoming)" },
-  { dateStr: "2026-11-21", label: "21 Nov 2026", day: "Sat", note: "Devutthana Parana & Bedside Seva" },
+  { dateStr: "2026-11-20", label: "20 Nov 2026", day: "Fri", note: "Dev Uthani Purva Sandhya Seva" },
+  { dateStr: "2026-11-21", label: "21 Nov 2026", day: "Sat", note: "Devutthana (Dev Uthani) Ekadashi Maha Seva (Today)" },
   { dateStr: "2026-11-22", label: "22 Nov 2026", day: "Sun", note: "Tulsi Vivah Patient Nutrition" },
   { dateStr: "2026-12-04", label: "04 Dec 2026", day: "Fri", note: "Utpanna Ekadashi Seva Drive" },
 ];
@@ -94,12 +94,12 @@ export const HospitalSevaPage: React.FC<HospitalSevaPageProps> = ({
 
   // Find first upcoming open date, default to 30 Sep if today is 29 Sep
   const defaultOpenDate =
-    SHRAADH_DATES.find((d) => d.dateStr > todayIST) || SHRAADH_DATES[SHRAADH_DATES.length - 1];
+    SHRAADH_DATES.find((d) => d.dateStr >= todayIST) || SHRAADH_DATES[SHRAADH_DATES.length - 1];
   const [selectedDateStr, setSelectedDateStr] = useState<string>(defaultOpenDate.dateStr);
 
   const selectedDateObj =
     SHRAADH_DATES.find((d) => d.dateStr === selectedDateStr) || defaultOpenDate;
-  const isSelectedDateCompleted = selectedDateObj.dateStr <= todayIST;
+  const isSelectedDateCompleted = selectedDateObj.dateStr < todayIST;
 
   // Check URL query on mount for item override (?item=anar-juice | meal | nariyal)
   useEffect(() => {
